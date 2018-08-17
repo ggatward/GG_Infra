@@ -1,0 +1,9 @@
+[tower]
+ansible.lab.home.gatwards.org
+
+[nagios]
+nagios.lab.home.gatwards.org
+
+[test]
+test1.lab.home.gatwards.org
+test2.lab.home.gatwards.org

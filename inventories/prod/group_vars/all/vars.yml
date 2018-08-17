@@ -1,0 +1,38 @@
+---
+#env: prod
+#project: stincaas
+#domain: example.org
+#netmask: 255.255.255.0
+#network: 192.168.122.0
+#broadcast: 192.168.122.255
+#gateway: 192.168.122.1
+#root_password: "{{ vault_root_password }}"
+#cloud_pubkey: "{{ vault_cloud_pubkey }}"
+#ntpservers:
+#  - 0.pool.ntp.org
+#  - 1.pool.ntp.org
+#  - 2.pool.ntp.org
+
+# Tower deployment vars
+tower_pass: "{{ vault_tower_pass }}"
+tower_version: 3.2.6-1
+tower_lic: "{{ vault_tower_lic }}"
+#git_pass: "{{ vault_git_pass }}"
+#git_url: "https://github.com/ggatward/rh-mgmt-installer.git"
+#git_url: "git@github.com:ggatward/rh-mgmt-installer.git"
+git_branch: "master"
+svc_user: svc-tower
+svc_password: "{{ vault_svc_password }}"
+svc_email: noreply@lab.gatwards.org
+private_key: "{{ vault_private_key }}"
+#public_key: "{{ vault_public_key }}"
+#vault_password: "{{ vault_vault_password }}"
+#enable_telemetry_basic_auth: "true"
+
+
+# Sat6 deployment vars
+#sat6_organization: "Red Hat"
+#sat6_location: "Canberra"
+#sat6_pass: "{{ vault_sat6_pass }}"
+#rhn_pass: "{{ vault_rhn_pass }}"
+#rhn_user: "{{ vault_rhn_user }}"

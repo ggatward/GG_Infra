@@ -1,0 +1,63 @@
+---
+#### THIS IS A DEMO VAULT FILE AND IS USUALLY ENCRYPTED #############################
+
+vault_svc_password: ChangeMe123
+
+vault_private_key: |
+  -----BEGIN RSA PRIVATE KEY-----
+  MIIEpQIBAAKCAQEA4dqI/JnxBx6r10ZPdEljl63Tb6DIG3zUrD9AiJ03al8SVjzc
+  Z5vjtFMZcrq59dRQRk8CblCizZfFP/m4T5DRYI9vb6jybJV4SLtzOeYtmbfT+JKc
+  5RNWU8B9lbwScInHu/wglPADBS5/psjYNd2sLXYY4uEroABsg/kXpSeCkzdIP1PB
+  VPAyfe84cZIMIb0A9vJWa1UFUOwIrf2QYwnhCU8gIO+m6BGLBGq2p/KCooiyNP2D
+  l5PhtVgPsWzfln+DfWDs2ctN2oF1OvaSljbLnPXe90q3/JY01fc1pTiuDeMfmtov
+  rR7nDnjKUJsuMhe9ksMQp7G9eBf+012LyAouUwIDAQABAoIBAQDUmX0XouVDGXkS
+  1OmYAjlQn10HmCal0VT0qznZH3z5kXLWYMXsdc7bgNnUqLbCFFBYTqlwJFGMDFCu
+  DyiTJTQinAJ+7l79HZozhNhLaUQFjghn1cMA07oQboMI/xewfdHZP9V/vYpqR0H8
+  QtVbp0YbKS716pXBMIT1mfXLDi0Y200VlRxFZkp2Ju9UpRYAGIrUj55zPVSKUH1S
+  mcHxa8sVqEKmxZxxsWoMJ5/ZDS6DXQ2wzGZX+msXb0771Fn6wPiTXF4opsgJpkt7
+  bm/q2UbU86QCmtH88pH3ZBwvpAdddwCBo18n14mU4vOp9rWscbFAMWW9C2fKIgks
+  kvyFN8xhAoGBAPlZvDjcuDlx8QI0fwsSuv7AywUO/ZqZvFp0Tc0NK+9w8q95DxTc
+  vIDz1QPJ8J/eVQR+jk5e+ZxG2UmFmhPexD7BlxnrATC3Mci8Vx6PlBOXi0hOSEwR
+  bqmbO8dVxMzqosBP+RWwQkquaZSPwZm5bOKsv2O+2JENC5GXP6XwSm6RAoGBAOfg
+  ZDsUWFuXqIW9k6JgxHTMEpTm7A1ehfmyIKZLg7fzGfkKRi8ClL4eVpkfrSzj9zAe
+  NceHt8igHJcTVJZQiWEXYH93IOxIFJkSKYEkWMWymks1hgxLJLGAnO6oa+/WjP8v
+  xhzVZBW0+ykRaCHnyXPCAS12Mw6XiMFH1bzxPUijAoGBAN5unCclTfmAmPvclI/u
+  L31dwj1K+BPXnFwcb+LBIzY/TV4W4cs8dbOaz6THma0jCjguJQfoVUaBNQgO9DlR
+  eUJ6My5dovwwD2sAB78tWWx4vTjNDFU/H7aQ0ayp6BrcHD7tmEcuqpQwLeLmsk9N
+  R8KVU03JSytpta40fASs69jhAoGAZq3iFJtcySpuUNLzNlt9g27+53semoj58Oll
+  Nd6ItINtQ++9xoFxFoNeu63gRNmqE1+9Vt8NjkUAhBHmSi3dt+XfMHKzXI5KuMHn
+  KS3MNbdyRc2sz3LTC9s1IyXnriwnAbXJF+mSyV38PmJb52+5sI3/cX8++r41q8lA
+  p8t35NsCgYEArRRblQg7cmU/8pZm6dhkG/EUSBTli1fwtDzSjhZkVS/75cqYm0wB
+  KRXa7NouVyx6kiiy6fOOm9RxZ+Z7JnOIgejPoV3RehbDdEwfSM9qWpMnqzoZ7wok
+  Yz7/NsFLF0+AbhdqrT+AwqIOZgBmr6hoKWvgeNYpuKeriw6b98TuPZM=
+  -----END RSA PRIVATE KEY-----
+
+vault_public_key: >
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDh2oj8mfEHHqvXRk90SWOXrdNvoMgbfNSsP0CInTdqXxJWPNxnm+O0U
+  xlyurn11FBGTwJuUKLNl8U/+bhPkNFgj29vqPJslXhIu3M55i2Zt9P4kpzlE1ZTwH2VvBJwice7/CCU8AMFLn+myNg13a
+  wtdhji4SugAGyD+RelJ4KTN0g/U8FU8DJ97zhxkgwhvQD28lZrVQVQ7Ait/ZBjCeEJTyAg76boEYsEaran8oKiiLI0/YO
+  Xk+G1WA+xbN+Wf4N9YOzZy03agXU69pKWNsuc9d73Srf8ljTV9zWlOK4N4x+a2i+tHucOeMpQmy4yF72SwxCnsb14F/7T
+  XYvICi5T root@tower.example.org
+
+# Tower vars
+vault_tower_pass: ChangeMe123
+vault_tower_lic: {
+    "company_name": "Red Hat",
+    "contact_email": "ggatward@redhat.com",
+    "contact_name": "Geoff Gatward",
+    "hostname": "68bd225dd968465883f21f9c5e0b159d",
+    "instance_count": 50,
+    "license_date": 1566026283,
+    "license_key": "0a2a94c28e576d4e52d630a70cb394aa1eb37ae78fc536a65006ef21ff1a3e83",
+    "license_type": "enterprise",
+    "subscription_name": "Ansible Tower by Red Hat (50 Managed Nodes), RHT Internal",
+    "trial": true
+}
+
+#vault_sat6_pass: ChangeMe123
+#vault_cfme_pass: ChangeMe123
+#vault_git_pass: ChangeMe123
+#vault_rhn_pass: SGrp2@3#4
+#vault_rhn_user: ggatward@redhat.com
+#vault_root_password: ChangeMe123
+#vault_vault_password: ChangeMe123
