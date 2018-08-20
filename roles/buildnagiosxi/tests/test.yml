@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - /home/geoff-l/Projects/github/GG_Infra/roles/buildnagiosxi

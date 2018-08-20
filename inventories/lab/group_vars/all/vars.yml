@@ -36,3 +36,5 @@ private_key: "{{ vault_private_key }}"
 #sat6_pass: "{{ vault_sat6_pass }}"
 #rhn_pass: "{{ vault_rhn_pass }}"
 #rhn_user: "{{ vault_rhn_user }}"
+
+nagios_version: 5.5.2-1

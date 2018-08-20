@@ -1,9 +1,4 @@
 ---
-#- name: Enable extras repo
-#  tags:
-#    - install
-#  command: subscription-manager repos --enable rhel-7-server-extras-rpms
-
 # tasks file for buildansibletower
 - name: get Ansible tower bundle
   tags:
@@ -64,7 +59,7 @@
     body: "{{ tower_lic }}"
     body_format: json
 
-- name: install pip 
+- name: install pip
   tags:
     - install
   yum:

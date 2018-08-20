@@ -1,0 +1,6 @@
+---
+- name: create Nagios
+  hosts: nagios
+  remote_user: root
+  roles:
+    - { role: buildnagiosxi }
