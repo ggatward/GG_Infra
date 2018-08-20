@@ -1,8 +1,8 @@
 ---
-- name: Enable extras repo
-  tags:
-    - install
-  command: subscription-manager repos --enable rhel-7-server-extras-rpms
+#- name: Enable extras repo
+#  tags:
+#    - install
+#  command: subscription-manager repos --enable rhel-7-server-extras-rpms
 
 # tasks file for buildansibletower
 - name: get Ansible tower bundle
@@ -64,18 +64,19 @@
     body: "{{ tower_lic }}"
     body_format: json
 
-- name: install pip needed for tower manageiq-client
+- name: install pip 
   tags:
     - install
   yum:
     name: python2-pip
-    state: latest
+    state: present
 
-- name: install manageiq-client
-  tags:
-    - install
-  pip:
-    name: manageiq-client
+# Need to upgrade setuptools (and pip?) via pip before this will work
+#- name: install manageiq-client
+#  tags:
+#    - install
+#  pip:
+#    name: manageiq-client
 
 # Tower-cli from pip is a later version than python2-ansible-tower-cli RPM
 - name: install ansible-tower-cli
