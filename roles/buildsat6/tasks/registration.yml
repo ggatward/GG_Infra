@@ -1,0 +1,63 @@
+---
+#Registering system with CDN.
+- name: Registering system with CDN
+  redhat_subscription:
+    state: present
+    username: "{{ satellite_deployment_rhn_user }}"
+    password: "{{ satellite_deployment_rhn_password }}"
+    consumer_name: "{{ ansible_nodename }}"
+  tags:
+    - cdn
+  when: satellite_register_with_rhn
+
+### TODO - register to another satellite
+
+
+
+
+- name: Check if Satellite is subscribed
+  shell: "/usr/bin/subscription-manager list --consumed
+    --matches='*Satellite*' | awk '/Pool ID/ {print $3}'"
+  tags:
+    - cdn
+  register: satellite_deployment_subscribed
+
+#Get the pool id for the pool that contains the Satellite product
+- name: CDN | get CDN pool id
+  shell: "/usr/bin/subscription-manager list --all --available |
+    grep -A50 'Red Hat Satellite' | grep -B5 'Pool ID' | awk '/Pool ID/ { print $3 }' |
+    head -1"
+  tags:
+    - cdn
+  register: satellite_deployment_pool_id_command
+  ignore_errors: yes
+  when: satellite_deployment_pool_id is undefined
+
+- name: Set pool_id fact
+  set_fact:
+    satellite_deployment_pool_id: "{{ satellite_deployment_pool_id_command.stdout }}"
+  when: satellite_deployment_pool_id is undefined
+
+#Attaching the system to the right Pool
+- name: CDN | subscribing to the right pool
+  command: "/usr/bin/subscription-manager attach
+    --pool={{ satellite_deployment_pool_id }}"
+  tags:
+    - cdn
+  ignore_errors: yes
+  when: satellite_deployment_subscribed.stdout == ''
+
+
+#Enabling the repos
+- name: Enabling required repos
+  command: "/usr/bin/subscription-manager repos --disable '*' --enable
+    rhel-7-server-satellite-{{ satellite_deployment_version }}-rpms
+    --enable rhel-7-server-rpms --enable rhel-server-rhscl-7-rpms
+    --enable rhel-7-server-optional-rpms"
+  tags:
+    - cdn
+
+- name: Clean yum cache
+  command: "yum clean all"
+  tags:
+    - cdn

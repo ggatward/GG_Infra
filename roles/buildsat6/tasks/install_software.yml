@@ -1,0 +1,11 @@
+---
+#Install the base software
+- name: Install software
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - satellite
+  tags:
+    - install
+    - update_satellite

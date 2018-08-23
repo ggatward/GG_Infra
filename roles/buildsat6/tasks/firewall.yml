@@ -1,0 +1,42 @@
+---
+- name: Include firewall.yml
+  include_vars: vars/firewall.yml
+  tags:
+    - firewall
+
+#Install firewalld and enable it
+- name: Install firewalld
+  yum:
+    name: firewalld
+    state: present
+  tags:
+    - firewall
+
+- name: Enable Firewalld
+  service:
+    enabled: yes
+    name: firewalld
+    state: started
+  tags:
+    - firewall
+
+#Opening firewall ports
+- name: Opening Firewalld ports
+  firewalld:
+    permanent: yes
+    immediate: yes
+    port: "{{ item }}"
+    state: enabled
+  with_items: "{{ satellite_firewall_ports }}"
+  tags:
+    - firewall
+
+- name: Opening Firewalld services
+  firewalld:
+    permanent: yes
+    immediate: yes
+    service: "{{ item }}"
+    state: enabled
+  with_items: "{{ satellite_firewall_services }}"
+  tags:
+    - firewall

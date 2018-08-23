@@ -1,0 +1,5 @@
+satellite_firewall_ports:
+  - 22/tcp
+
+satellite_firewall_services:
+  - RH-Satellite-6
