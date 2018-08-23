@@ -1,0 +1,6 @@
+---
+- name: Build Satellite 6
+  hosts: sat6
+  remote_user: root
+  roles:
+    - { role: buildsat6 }
