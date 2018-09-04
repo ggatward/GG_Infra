@@ -10,6 +10,7 @@ satellite_deployment_version: 6.3
 #satellite_deployment_hostname_short: "sat6"
 #satellite_deployment_hostname_full: "sat6.lab.home.gatwards.org"
 #satellite_deployment_ip_address: "127.0.0.1"
+satellite_deployment_admin_username: admin
 
 # install:
 #satellite_deployment_plugin_packages: []

@@ -31,9 +31,9 @@ private_key: "{{ vault_private_key }}"
 
 
 # Sat6 deployment vars
-#sat6_organization: "Red Hat"
-#sat6_location: "Canberra"
-#sat6_pass: "{{ vault_sat6_pass }}"
+satellite_deployment_organization: "Red Hat"
+satellite_deployment_location: "Canberra"
+satellite_deployment_admin_password: "{{ vault_satellite_deployment_admin_password }}"
 #rhn_pass: "{{ vault_rhn_pass }}"
 #rhn_user: "{{ vault_rhn_user }}"
 satellite_deployment_rhn_user: ggatward@redhat.com
