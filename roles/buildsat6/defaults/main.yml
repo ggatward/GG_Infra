@@ -23,11 +23,13 @@ satellite_deployment_rhn_password: "your_rhn_pass"
 # answers:
 # specify answers key: value without -- prefix. Keys you can get when you
 # use satellite-installer with --help | less for easier finding
-#satellite_deployment_answers:
-#  'answer': 'value'
+satellite_deployment_answers:
+  foreman-proxy-tftp: "true"
 
 # configure_satellite:
 satellite_deployment_manifest_path: "satellite_manifest.zip"
+#satellite_deployment_manifest_path: "http://webserver.example.com/satellite_manifest.zip"
+
 #satellite_deployment_manifest_dest_path: "/root/satellite_manifest.zip"
 #satellite_deployment_repositories:
 #  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (Kickstart)', rel: '7Server', architecture: 'x86_64', state: enable}
