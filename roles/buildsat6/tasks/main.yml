@@ -1,9 +1,12 @@
 ---
 - include: set_facts.yml
-- include: registration.yml
-  when: satellite_register_with_rhn
+
 - include: install_software.yml
+
 - include: firewall.yml
+
 - include: install_satellite.yml
+
 #- include: configure_satellite.yml
+
 #- include: configure_capsule.yml

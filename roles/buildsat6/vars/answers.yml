@@ -1,4 +1,43 @@
 ---
 # check defaults/main.yml which vars you have to pass.
 
-satellite_deployment_installer_cmd: "/usr/sbin/satellite-installer --scenario satellite"
+satellite_installer_cmd: "/usr/sbin/satellite-installer --scenario satellite"
+
+# Build the installer answers
+satellite_answers:
+  foreman-admin-username: "{{ satellite_admin_username }}"
+  foreman-admin-password: "{{ satellite_admin_password }}"
+  foreman-initial-organization: "{{ satellite_organization }}"
+  foreman-initial-location: "{{ satellite_location }}"
+
+satellite_answers_certs:
+  certs-server-ca-cert: "{{ satellite_ssl_ca_path }}"
+  certs-server-cert: "{{ satellite_ssl_crt_path }}"
+  certs-server-cert-req: "{{ satellite_ssl_csr_path }}"
+  certs-server-key: "{{ satellite_ssl_key_path }}"
+
+satellite_answers_tftp:
+  foreman-proxy-tftp: "true"
+  # not in 6.2
+  #foreman-proxy-tftp-managed: "true"
+
+satellite_answers_dhcp:
+  foreman-proxy-dhcp: "true"
+  foreman-proxy-dhcp-managed: "true"
+  foreman-proxy-dhcp-interface: "{{ ansible_default_ipv4['interface'] }}"
+  foreman-proxy-dhcp-range: "172.22.4.240 172.22.4.250"
+  foreman-proxy-dhcp-gateway: 172.22.4.1
+  foreman-proxy-dhcp-nameservers: 172.22.4.31
+  foreman-proxy-dhcp-option-domain: "{{ ansible_domain }}"
+
+satellite_answers_dns:
+  foreman-proxy-dns: "true"
+  foreman-proxy-dns-managed: "true"
+  foreman-proxy-dns-interface: "{{ ansible_default_ipv4['interface'] }}"
+  foreman-proxy-dns-zone: "{{ ansible_domain }}"
+  foreman-proxy-dns-forwarders: "172.22.1.91; 172.22.1.92"
+  foreman-proxy-dns-reverse: "6.22.172.in-addr.arpa"
+
+satellite_answers_bmc:
+  foreman-proxy-bmc: "true"
+  foreman-proxy-bmc-default-provider: "freeipmi"

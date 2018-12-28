@@ -1,1 +1,12 @@
 ---
+- src: https://github.com/ggatward/role_generic_os.git
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/role_hardening.git
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/role_nagios_client.git
+  scm: git
+  version: master

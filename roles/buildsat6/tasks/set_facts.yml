@@ -1,6 +1,52 @@
 ---
+- name: "Include answers vars"
+  include_vars: "vars/answers.yml"
+
 - name: Set remote_manifest fact
   set_fact:
     satellite_deployment_remote_manifest: "{{
-      'http://' in satellite_deployment_manifest_path or
-      'ftp://' in satellite_deployment_manifest_path }}"
+      'http://' in satellite_manifest_path or
+      'ftp://' in satellite_manifest_path }}"
+
+- name: Set installation package fact
+  set_fact:
+    satellite_package: capsule
+  when: is_capsule
+
+
+# TFTP (Included in RH-Satellite-6 service, needs to be defined for Capsule)
+- set_fact:
+    fw_services: "{{ fw_services }} + [ 'tftp' ]"
+  when: "'tftp' in satellite_features"
+
+# DHCP (Included in RH-Satellite-6 service, needs to be defined for Capsule)
+- set_fact:
+    fw_ports: "{{ fw_ports }} + [ '67/udp' ] + [ '68/udp' ]"
+  when: "'dhcp' in satellite_features"
+
+# DNS (Included in RH-Satellite-6 service, needs to be defined for Capsule)
+- set_fact:
+    fw_services: "{{ fw_services }} + [ 'dns' ]"
+  when: "'dns' in satellite_features"
+
+# Include custom cert paths if defined
+- set_fact:
+    satellite_answers: "{{ satellite_answers | combine(satellite_answers_certs) }}"
+  when: satellite_custom_certs
+
+# Build the installer answers based on enabled features
+- set_fact:
+    satellite_answers: "{{ satellite_answers | combine(satellite_answers_tftp) }}"
+  when: "'tftp' in satellite_features"
+
+- set_fact:
+    satellite_answers: "{{ satellite_answers | combine(satellite_answers_dhcp) }}"
+  when: "'dhcp' in satellite_features"
+
+- set_fact:
+    satellite_answers: "{{ satellite_answers | combine(satellite_answers_dns) }}"
+  when: "'dns' in satellite_features"
+
+- set_fact:
+    satellite_answers: "{{ satellite_answers | combine(satellite_answers_bmc) }}"
+  when: "'bmc' in satellite_features"

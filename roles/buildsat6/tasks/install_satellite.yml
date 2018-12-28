@@ -1,38 +1,19 @@
 ---
-- name: "Include answers vars"
-  include_vars: "vars/answers.yml"
-  tags:
-  - "install_satellite"
-  - "update_satellite"
-
-
-# Check if service exist for foreman
-- name: "Install and configure | check if service exist"
+# Check if service exists for foreman
+- name: "Check if foreman service exists"
   stat:
     path: "/etc/init.d/foreman"
   register: "foreman_service_file"
-  become: "yes"
-  tags:
-  - "install_satellite"
-  - "update_satellite"
 
-#Run the install of Satellite if foreman is installed
-- name: "Update satellite-installer command"
+# Run the install of Satellite if foreman is installed
+- name: "Update satellite-installer command from answers"
   set_fact:
-    satellite_deployment_installer_cmd: "{{ satellite_deployment_installer_cmd }} --{{ item.key }}='{{ item.value }}'"
-  with_dict: "{{ satellite_deployment_answers }}"
-#  when: satellite_deployment_version == 6.2
-  tags:
-  - "install_satellite"
-  - "update_satellite"
+    satellite_installer_cmd: "{{ satellite_installer_cmd }} --{{ item.key }}='{{ item.value }}'"
+  with_dict: "{{ satellite_answers }}"
+#  when: satellite_version == 6.2
 
-
-#Run the install of Satellite 6.2
+# Run the install of Satellite 6.2
 - name: "Satellite installation"
-  command: "{{ satellite_deployment_installer_cmd }}"
-  become: "yes"
-#  when: foreman_service_file.stat.exists == True and satellite_deployment_version == 6.2
+  command: "{{ satellite_installer_cmd }}"
+#  when: foreman_service_file.stat.exists == True and satellite_version == 6.2
   when: foreman_service_file.stat.exists
-  tags:
-  - "install_satellite"
-  - "update_satellite"

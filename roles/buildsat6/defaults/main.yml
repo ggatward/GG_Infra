@@ -1,33 +1,50 @@
 ---
-# defaults file for juliovp01.ansible_satellite6
-# Go over variables bellow and pass them in extra vars, playbook vars,
-# vars_files, inventory file or whatever which overwrite these values!
+
+# Default is Satellite. Set to 'true' for Capsules.
+is_capsule: false
+
+# Name of the package to install (overridden in set_facts task for capsule)
+satellite_package: satellite
+satellite_version: 6.4
+
+# List of additional features to enable (dns, dhcp. tftp, bmc)
+satellite_features: []
+
+# Initial list of additional ports and services to enable
+# (will be dynamically built from the satellite_features defined)
+fw_ports: []
+fw_services:
+  - RH-Satellite-6
+
+# Installer defaults
+satellite_admin_username: admin
+satellite_admin_password: ChangeMe
+satellite_organization: "Org1"
+satellite_location: "Location1"
+
+# Installer SSL cert info
+satellite_custom_certs: false
+satellite_ssl_ca_path: /root/ca.crt
+satellite_ssl_cert_path: /root/sat6.crt
+satellite_ssl_csr_path: /root/sat6.csr
+satellite_ssl_key_path: /root/sat6.key
 
 
 # main:
-# version should be double! Not string!
-satellite_deployment_version: 6.3
 #satellite_deployment_hostname_short: "sat6"
 #satellite_deployment_hostname_full: "sat6.lab.home.gatwards.org"
 #satellite_deployment_ip_address: "127.0.0.1"
-satellite_deployment_admin_username: admin
 
 # install:
 #satellite_deployment_plugin_packages: []
 
 # registration:
-satellite_register_with_rhn: false
-satellite_deployment_rhn_user: "your_rhn_user"
-satellite_deployment_rhn_password: "your_rhn_pass"
-
-# answers:
-# specify answers key: value without -- prefix. Keys you can get when you
-# use satellite-installer with --help | less for easier finding
-satellite_deployment_answers:
-  foreman-proxy-tftp: "true"
+# satellite_register_with_rhn: false
+# satellite_deployment_rhn_user: "your_rhn_user"
+# satellite_deployment_rhn_password: "your_rhn_pass"
 
 # configure_satellite:
-satellite_deployment_manifest_path: "satellite_manifest.zip"
+# satellite_deployment_manifest_path: "satellite_manifest.zip"
 #satellite_deployment_manifest_path: "http://webserver.example.com/satellite_manifest.zip"
 
 #satellite_deployment_manifest_dest_path: "/root/satellite_manifest.zip"
