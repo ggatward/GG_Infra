@@ -3,11 +3,11 @@
   hosts: all
   remote_user: root
   tasks:
-  # - include_role:
-  #     name: role_generic_os
-  #
-  # - include_role:
-  #     name: role_hardening
+  - include_role:
+      name: role_generic_os
+
+  - include_role:
+      name: role_hardening
 
 
 # - name: Install Tower

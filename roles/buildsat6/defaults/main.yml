@@ -3,6 +3,7 @@
 # Default is Satellite. Set to 'true' for Capsules.
 is_capsule: false
 
+
 # Name of the package to install (overridden in set_facts task for capsule)
 satellite_package: satellite
 satellite_version: 6.4
@@ -10,11 +11,41 @@ satellite_version: 6.4
 # List of additional features to enable (dns, dhcp. tftp, bmc)
 satellite_features: []
 
+# Default is for an internet connected satellite. Set 'true' for disconnected.
+is_disconnected: false
+
+# If we are in a disconnected environment we will need to define a sync_host.
+# Set to 'true' if this is the sync_host.
+is_sync_host: false
+
+# For support of disconencted systems, we need to define an export_dir on the
+# internet-connected sync-host, and an import_dir on the disconnected side.
+export_dir: /var/sat-export
+import_dir: /var/sat-import
+
 # Initial list of additional ports and services to enable
 # (will be dynamically built from the satellite_features defined)
 fw_ports: []
 fw_services:
   - RH-Satellite-6
+
+satellite_device: /dev/sdb
+satellite_volumes:
+  - { lv: pgsql, size: 10g, mount: /var/lib/pgsql }
+  - { lv: mongodb, size: 50g, mount: /var/lib/mongodb }
+  - { lv: pulp, size: 500g, mount: /var/lib/pulp }
+  - { lv: pulp_cache, size: 10g, mount: /var/cache/pulp }
+  - { lv: qpidd, size: 5g, mount: /var/lib/qpidd }
+
+satellite_volumes_64:
+  - { lv: squid, size: 10g, mount: /var/spool/squid }
+
+satellite_volumes_synchost:
+  - { lv: export, size: 100g, mount: {{ export_dir }} }
+
+satellite_volumes_disco:
+  - { lv: import, size: 100g, mount: {{ import_dir }} }
+
 
 # Installer defaults
 satellite_admin_username: admin
@@ -29,33 +60,25 @@ satellite_ssl_cert_path: /root/sat6.crt
 satellite_ssl_csr_path: /root/sat6.csr
 satellite_ssl_key_path: /root/sat6.key
 
+satellite_email_params:
+  - smtp_address: mailhost.{{ ansible_domain }}
+  - smtp_port: 25
+  - email_reply_address: satellite-noreply@{{ ansible_domain }}
+  - email_subject_prefix: '[satellite]'
 
-# main:
-#satellite_deployment_hostname_short: "sat6"
-#satellite_deployment_hostname_full: "sat6.lab.home.gatwards.org"
-#satellite_deployment_ip_address: "127.0.0.1"
 
-# install:
-#satellite_deployment_plugin_packages: []
+# Location of manifest on satellite host
+satellite_manifest_dest_path: "/root/satellite_manifest.zip"
 
-# registration:
-# satellite_register_with_rhn: false
-# satellite_deployment_rhn_user: "your_rhn_user"
-# satellite_deployment_rhn_password: "your_rhn_pass"
-
-# configure_satellite:
-# satellite_deployment_manifest_path: "satellite_manifest.zip"
-#satellite_deployment_manifest_path: "http://webserver.example.com/satellite_manifest.zip"
-
-#satellite_deployment_manifest_dest_path: "/root/satellite_manifest.zip"
-#satellite_deployment_repositories:
+# Repos to enable and sync
+satellite_repositories:
 #  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (Kickstart)', rel: '7Server', architecture: 'x86_64', state: enable}
-#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
-#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - RH Common (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
-#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Optional (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
-#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
-#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_deployment_version }} (for RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
-#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - RH Common (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Optional (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_version }} (for RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64', state: enable}
 
 # configure_capsules:
 #satellite_deployment_puppet_env: "production"

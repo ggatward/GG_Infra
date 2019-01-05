@@ -6,36 +6,57 @@ role: Satellite
 register_with_cdn: true
 cdn_product: Red Hat Satellite
 
+# Explicitly use this pool_id (Employee SKU)
+pool_id: 8a85f98260c27fc50160c32cc4365ccb
+
 repositories:
   - rhel-7-server-satellite-{{ satellite_version }}-rpms
   - rhel-7-server-rpms
   - rhel-server-rhscl-7-rpms
   - rhel-7-server-optional-rpms
+  - rhel-7-server-satellite-maintenance-6-rpms
+  - rhel-7-server-ansible-2.6-rpms
 
 satellite_device: /dev/vdb
 satellite_volumes:
   - { lv: pgsql, size: 10g, mount: /var/lib/pgsql }
   - { lv: mongodb, size: 50g, mount: /var/lib/mongodb }
-  - { lv: pulp, size: 150g, mount: /var/lib/pulp }
+  - { lv: pulp, size: 450g, mount: /var/lib/pulp }
   - { lv: pulp_cache, size: 10g, mount: /var/cache/pulp }
   - { lv: qpidd, size: 5g, mount: /var/lib/qpidd }
-  
+
+satellite_version: 6.4
+satellite_manifest_path: 'https://webshare.lab.home.gatwards.org/sat6/manifest_homesat6.zip'
+
 # Extra features to enable
 satellite_features:
   - tftp
+#  - dhcp
+  - bmc
+
+# We act as a sync_host for disco systems
+is_sync_host: true
 
 # Sat6 deployment vars
 satellite_fqdn: "{{ lookup('dig', ansible_nodename) }}"
-satellite_organization: "MyOrg"
+satellite_organization: "GatwardIT"
 satellite_location: "Home"
 satellite_admin_password: "{{ vault_satellite_admin_password }}"
 
 satellite_repositories:
 #  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (Kickstart)', rel: '7Server', architecture: 'x86_64', state: enable}
-  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.6', architecture: 'x86_64', state: enable}
+#  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.6', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - RH Common (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Optional (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_version }} (for RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Software Collections for RHEL Server', name_repo: 'Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 RHEL 7 Server', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Virtualization', name_repo: 'Red Hat Virtualization 4 Management Agents for RHEL 7 (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Virtualization Host', name_repo: 'Red Hat Virtualization Host 7 (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Virtualization Manager', name_repo: 'Red Hat Virtualization Manager v4.2 (RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Virtualization Manager', name_repo: 'Red Hat Virtualization Manager 4 Tools (RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'JBoss Enterprise Application Platform', name_repo: 'JBoss Enterprise Application Platform 7 (RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Ansible Engine', name_repo: 'Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server', architecture: 'x86_64', state: enable}
+  - { product_name: 'Red Hat Gluster Storage Server for On-premise', name_repo: 'Red Hat Gluster Storage 3 Server (RPMs)', architecture: 'x86_64', state: enable}

@@ -1,204 +1,186 @@
 ---
-#Create Hammer directory on /root
+# Create Hammer directory on /root
 - name: "Create .hammer directory"
   file:
     path: "~/.hammer"
     state: "directory"
     mode: "0755"
 
-#Copy the hammer configuration from template to the .hammer directory
+# Copy the hammer configuration from template to the .hammer directory
 - name: "Deploy hammer configuration from template"
   template:
     src: "hammer_config.yml.j2"
     dest: "~/.hammer/cli_config.yml"
 
-#Copy the manifest
-- name: "Configure | copy manifest"
-  become: "yes"
+# Copy the manifest
+- name: "Copy manifest"
   copy:
     src: "{{ satellite_manifest_path }}"
     dest: "{{ satellite_manifest_dest_path }}"
-  when: "{{ not satellite_deployment_remote_manifest }}"
+  when: not satellite_remote_manifest
 
-- name: "Configure | copy manifest from remote"
-  become: "yes"
+- name: "Copy manifest from remote"
   get_url:
-    url: "{{ satellite_deployment_manifest_path }}"
-    dest: "{{ satellite_deployment_manifest_dest_path }}"
-  when: "{{ satellite_deployment_remote_manifest }}"
+    url: "{{ satellite_manifest_path }}"
+    dest: "{{ satellite_manifest_dest_path }}"
+    validate_certs: no
+  when: satellite_remote_manifest
 
-#Upload the manifest to the satellite
-- name: "Configure | upload the manifest"
-  become: "yes"
+# Upload the manifest to the satellite
+- name: "Upload the manifest"
   shell: "hammer subscription upload --file
-    {{ satellite_deployment_manifest_dest_path }} --organization
-    {{ satellite_deployment_organization }}"
+    {{ satellite_manifest_dest_path }} --organization
+    {{ satellite_organization }}"
 
-#Enabling repos on satellite
-# - name: "Configure | enable repos"
-#   become: "yes"
-#   shell: "hammer repository-set '{{ item.state }}' --organization
-#     '{{ satellite_deployment_organization }}'
-#     --product '{{ item.product_name }}' --name '{{ item.name_repo }}'
-#     {% if item.rel is defined %} --releasever '{{ item.rel }}' {% endif %}
-#     --basearch '{{ item.architecture}}'"
-#   with_items: "{{ satellite_deployment_repositories }}"
-#   ignore_errors: "yes"
-#   tags:
-#     - "satellite_deployment_repositories"
+# Sync host for disconnected environment needs the export directory configured
+- block:
+  # TODO: pulp export perms/contexts
+  #- name: Set permissions on pulp export directory
+
+
+  - name: Configure pulp export directory
+    shell: "hammer settings set pulp_export_destination {{ export_dir }}"
+  when: is_sync_host
+
+# In 6.4 we can set katello up to understand disconnected has no CDN connection.
+- block:
+  - name: Configure Satellite as disconnected
+    shell: "hammer settings set content_disconnected true"
+    when: satellite_version >= 6.4
+
+
+  when: is_disconnected
+
+# Experience shows that these should be immediate for reliable functionality.
+- name: Configure immediate download policy
+  shell: "hammer settings set {{ item }} immediate"
+  with_items:
+    - default_download_policy
+    - default_proxy_download_policy
+
+
+
+- name: Configure Satellite email
+  shell: "hammer settings set {{ item.key }} {{ item.value }}"
+  with_items: "{{ satellite_email_params }}"
+
+#cat << EOF > /etc/postfix/classification
+#/^Content-Transfer-Encoding/i PREPEND x-classification: UNCLASSIFIED
+#/^Content-Transfer-Encoding/i PREPEND x-protective-marking: VER=2012.3, NS=example.org, SEC=UNCLASSIFIED, ORIGIN=satellite@example.org
+#EOF
+#sed -i 's/^#header_checks = /header_checks = regexp:\/etc\/postfix\/classification/' /etc/postfix/main.cf
+#sed -i 's/^#relayhost = uucphost/relayhost = smtp.example.org/' /etc/postfix/main.cf
+
+# Set Satellite to send mail to the local postfix instance:
+#cat << EOF > /etc/foreman/email.yaml
+# Outgoing email settings
+#production:
+#  delivery_method: :smtp
+#  smtp_settings:
+#    address: localhost
+#    port: 25
+#    enable_starttls_auto: false
+#EOF
+
+
+
+
+
+# TODO: Install sat6_scripts
+#- name: Install sat6_scripts (disconnected tools)
+#  yum:
+#    name: sat6_scripts
+#    state: latest
+#  when: is_disconnected or is_sync_host
+
+# TODO: Configure sat6_scripts - maybe in another task file?
+
+
+# TODO: Configure template sync
+#- foreman ssh keys for git (/usr/share/foreman/.ssh)
+#- template-sync params
+#- perform template sync
+# curl -H "Accept:application/json,version=2" -H "Content-Type:application/json" \
+#   -u admin -k https://{{ ansible_fqdn }}/api/v2/templates/import -X POST
+
+
+
+# TODO: Configure IdM user access (Only if host if IdM joined)
+# kinit {{ idm_admin_user }}
+# ipa service-add HTTP/{{ ansible_fqdn }}
+# satellite-installer --foreman-ipa-authentication=true
+
+# TODO: Configure IdM Realm (Host must be IdM joined)
+# foreman-prepare-realm {{ idm_admin_user }} realm-capsule
+# mv /root/freeipa.keytab /etc/foreman-proxy
+# chown foreman-proxy:foreman-proxy /etc/foreman-proxy/freeipa.keytab
+# satellite-installer --foreman-proxy-realm true \
+# --foreman-proxy-realm-keytab /etc/foreman-proxy/freeipa.keytab \
+# --foreman-proxy-realm-principal realm-capsule@EXAMPLE.COM \
+# --foreman-proxy-realm-provider freeipa
+# cp /etc/ipa/ca.crt /etc/pki/ca-trust/source/anchors/ipa.crt
+# update-ca-trust enable
+# update-ca-trust
+# service foreman-proxy restart
+
+
+############### Move below here to content_setup ? #########################
+
+# TODO: Need to sleep a bit here - initial sync can't start immediately
+
+
+
+- name: Get the enabled repos
+  delegate_to: localhost
+  uri:
+    url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
+    method: GET
+    user: "{{ satellite_admin_username }}"
+    password: "{{ satellite_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: no
+    status_code: 200
+  register: api_result
+
+- set_fact:
+    repos: "{{ api_result.json.results }}"
+
+# TODO: Don't enable a repo if it is already enabled
+
+# Enable repos on satellite (Fails if already enabled)
+- name: "Enable repositories"
+  shell: "hammer repository-set '{{ item.state }}' --organization
+    '{{ satellite_organization }}'
+    --product '{{ item.product_name }}' --name '{{ item.name_repo }}'
+    {% if item.rel is defined %} --releasever '{{ item.rel }}' {% endif %}
+    --basearch '{{ item.architecture}}'"
+  with_items: "{{ satellite_repositories }}"
+  ignore_errors: "yes"
+
+- name: Get the enabled repo ids
+  delegate_to: localhost
+  uri:
+    url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
+    method: GET
+    user: "{{ satellite_admin_username }}"
+    password: "{{ satellite_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: no
+    status_code: 200
+  register: api_result
+
+- name: Set repo_ids fact
+  set_fact:
+    repo_ids: "{{ api_result.json.results | map(attribute='id') | list }}"
+
+# - debug:
+#     var: repo_ids
 #
-# #Get the repos ids and sync the repos
-# - name: "Configure | grab repositories uuid"
-#   shell: "hammer repository list --organization
-#     {{ satellite_deployment_organization }} | grep yum | awk '{print $1}'"
-#   register: "repos"
-#
-# - name: sleep as it seems there is race condition in aws
-#   pause:
-#     minutes: 1
-#
-# - name: "Configure | sync repos on satellite"
-#   shell: "hammer repository synchronize --id '{{ item }}' --organization
-#     {{ satellite_deployment_organization }}"
-#   with_items: "{{ repos.stdout_lines }}"
-#   register: "sync_repos_result"
-#   retries: 3
-#   until: "{{ sync_repos_result | success }}"
-#
-# - name: "create contentviews for cv_rhel7_base demo"
-#   shell: "hammer content-view create --organization redhat --name cv_rhel7_base --repository-ids 1,2,3 --description rhelbase"
-#
-# - name: "create contentviews for cv_cfme57_base demo"
-#   shell: "hammer content-view create --organization redhat --name cv_cfme57 --repository-ids 1,2,3,4 --description rhelbase"
-#
-# - name: get rhel7 repoid
-#   shell: "hammer content-view list --organization redhat | grep cv_rhel7_base | awk '{print $1}'"
-#   register: "rhel7repoid"
-#
-# - name: get cfmerepo repoid
-#   shell: "hammer content-view list --organization redhat | grep cv_cfme57 | awk '{print $1}'"
-#   register: "cfme57repoid"
-#
-# - name: publish the content view rhel7
-#   shell: "hammer content-view publish --id {{ rhel7repoid.stdout }}"
-#   register: "publish"
-#   retries: 3
-#   until: "{{ publish | success }}"
-#
-# - name: publish the content view cfme
-#   shell: "hammer content-view publish --id {{ cfme57repoid.stdout }}"
-#   register: "publish"
-#   retries: 3
-#   until: "{{ publish | success }}"
-#
-# - name: create AK for rhel
-#   shell: "hammer activation-key create --name rhel7 --content-view cv_rhel7_base --lifecycle-environment Library --organization redhat"
-#
-# - name: create AK for cfme
-#   shell: "hammer activation-key create --name cfme --content-view cv_cfme57 --lifecycle-environment Library --organization redhat"
-#
-# - name: get ak id rhel
-#   shell: "hammer activation-key list --organization redhat | grep rhel7 | awk '{print $1}'"
-#   register: "akid"
-#
-# - name: get ak id cfme
-#   shell: "hammer activation-key list --organization redhat | grep cfme | awk '{print $1}'"
-#   register: "akidcfme"
-#
-# - name: get subscription id
-#   shell: "hammer subscription list --organization redhat | grep Cloud | awk '{print $1}'"
-#   register: "subid"
-#
-# - name: add subs to key
-#   shell: "hammer activation-key add-subscription --id {{ akid.stdout }} --subscription-id {{ subid.stdout }}"
-#
-# - name: add subs to key
-#   shell: "hammer activation-key add-subscription --id {{ akidcfme.stdout }} --subscription-id {{ subid.stdout }}"
-#
-# - name: get cloudforms id
-#   set_fact:
-#     cloudformsip: "{{ hostvars[groups['tag_Name_' + cfme_tag_Name ][0]]['ec2_private_ip_address'] }}"
-#
-# - name: get sat6 cert
-#   command: cat /root/ssl-build/katello-server-ca.crt
-#   register: sat6cert
-#
-# - name: sat6cert
-#   lineinfile:
-#     dest: /etc/pki/ca-trust/source/anchors/sat6.crt
-#     line: "{{ sat6cert.stdout }}"
-#     create: yes
-#   delegate_to: "{{ cloudformsip }}"
-#
-# - name: update certs
-#   shell: update-ca-trust
-#   delegate_to: "{{ cloudformsip }}"
-#
-# - name: add sat6 to /etc/hosts on cfme
-#   lineinfile:
-#     dest: /etc/hosts
-#     line: "{{ hostvars[groups['tag_Name_' + sat6_tag_Name][0]]['ec2_private_ip_address'] }} {{ hostvars[groups['tag_Name_' + sat6_tag_Name][0]]['ec2_private_dns_name'] }} satellite6"
-#   delegate_to: "{{ cloudformsip }}"
-#
-# - name: create sat6 provider
-#   uri:
-#     url: "https://{{ cloudformsip }}/api/providers?provider_class=provider"
-#     method: "POST"
-#     user: "admin"
-#     password: "{{ cfme_pass }}"
-#     validate_certs: no
-#     body_format: json
-#     body: "{{ lookup('template', 'sat6_provider.json.j2') | to_json }}"
-#
-# - name: get ansible tower pub ip
-#   set_fact:
-#     towerpubip: "{{ hostvars[groups['tag_Name_' + tower_tag_Name][0]]['ec2_ip_address'] }}"
-#
-# - name: create sat6 creds
-#   command: tower-cli credential create -n satellite6 --kind satellite6 --username admin  --password {{ sat6_pass }} --host https://{{ inventory_hostname }} --organization Default
-#   register: sat6creds
-#   retries: 10
-#   until: sat6creds.rc == 0
-#   ignore_errors: yes
-#   delay: 5
-#   delegate_to: "{{ towerpubip }}"
-#
-# - name: create satellite6 inventory
-#   command: tower-cli inventory create -n satellite6 --organization=Default
-#   register: satellite6inv
-#   retries: 10
-#   until: satellite6inv.rc == 0
-#   ignore_errors: yes
-#   delay: 5
-#   delegate_to: "{{ towerpubip }}"
-#
-# - name: create satellite6 group
-#   command: tower-cli group create -n satellite6 --credential satellite6 -i satellite6 --source satellite6
-#   register: satellite6group
-#   retries: 10
-#   until: satellite6group.rc == 0
-#   ignore_errors: yes
-#   delay: 5
-#   delegate_to: "{{ towerpubip }}"
-#
-# - name: satellite6 inventory sync
-#   command: tower-cli group sync satellite6
-#   register: satellite6sync
-#   retries: 10
-#   until: satellite6sync.rc == 0
-#   ignore_errors: yes
-#   delay: 5
-#   delegate_to: "{{ towerpubip }}"
-# 
-# - name: add provider to satellite6
-#   shell: hammer compute-resource create --name='aws' --provider='ec2' --organizations='redhat' --region='us-east-1' --user='{{ ec2_access }}' --password='{{ ec2_secret }}' --url='notneededbutneeded'
-#
-# - name: "Enable basic auth for insights"
-#   template:
-#     src: "templates/config.yml.j2"
-#     dest: "/etc/redhat_access/config.yml"
-#     owner: root
-#     group: root
-#     mode: 0644
-#   notify:
-#     - restart apache
+# - debug:
+#     msg: "ID = {{ item.id }}"
+#   with_items: "{{ repos }}"
+
+
+# TODO: Add EPEL as upstream repo
+
+# TODO: Create sync plan

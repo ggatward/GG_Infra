@@ -4,9 +4,9 @@
 
 - name: Set remote_manifest fact
   set_fact:
-    satellite_deployment_remote_manifest: "{{
-      'http://' in satellite_manifest_path or
-      'ftp://' in satellite_manifest_path }}"
+    satellite_remote_manifest: true
+  when: "'https://' in satellite_manifest_path"
+  #or "'ftp://' in satellite_manifest_path"
 
 - name: Set installation package fact
   set_fact:
@@ -50,3 +50,20 @@
 - set_fact:
     satellite_answers: "{{ satellite_answers | combine(satellite_answers_bmc) }}"
   when: "'bmc' in satellite_features"
+
+# Disk volume adjustments
+- set_fact:
+    satellite_volumes: "{{ satellite_volumes | combine(satellite_volumes_64) }}"
+  when: satellite_version >= '6.4'
+
+- set_fact:
+    satellite_volumes: "{{ satellite_volumes | combine(satellite_volumes_synchost) }}"
+  when: is_sync_host
+
+- set_fact:
+    satellite_volumes: "{{ satellite_volumes | combine(satellite_volumes_disco) }}"
+  when: is_disconencted
+
+# Build Satellite API URLs
+- set_fact:
+    katello_api: "https://{{ ansible_fqdn }}/katello/api"

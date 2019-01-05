@@ -10,10 +10,8 @@
   set_fact:
     satellite_installer_cmd: "{{ satellite_installer_cmd }} --{{ item.key }}='{{ item.value }}'"
   with_dict: "{{ satellite_answers }}"
-#  when: satellite_version == 6.2
 
 # Run the install of Satellite 6.2
-- name: "Satellite installation"
+- name: "Run Satellite installer"
   command: "{{ satellite_installer_cmd }}"
-#  when: foreman_service_file.stat.exists == True and satellite_version == 6.2
   when: foreman_service_file.stat.exists

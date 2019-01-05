@@ -1,4 +1,43 @@
 ---
+# Configure filesystems
+# Disk 2 (/dev/sdb) should be configured to hold the Satellite volumes
+- name: Create Satellite volume group
+  lvg:
+    vg: vg_satellite
+    pvs: "{{ satellite_device }}"
+
+- name: Create Satellite volumes
+  lvol:
+    vg: vg_satellite
+    lv: "{{ item.lv }}"
+    size: "{{ item.size }}"
+  with_items:
+    - "{{ satellite_volumes }}"
+
+- name: Format Satellite volumes
+  filesystem:
+    dev: "/dev/vg_satellite/{{ item.lv }}"
+    fstype: xfs
+  with_items:
+    - "{{ satellite_volumes }}"
+
+- name: Create mountpoints
+  file:
+    path: "{{ item.mount }}"
+    state: directory
+  with_items:
+    - "{{ satellite_volumes }}"
+
+- name: Mount Satellite volumes
+  mount:
+    path: "{{ item.mount }}"
+    src: "/dev/vg_satellite/{{ item.lv }}"
+    fstype: xfs
+    opts: nosuid,nodev,noatime
+    state: mounted
+  with_items:
+    - "{{ satellite_volumes }}"
+
 #Install the base software
 - name: Install software
   yum:
