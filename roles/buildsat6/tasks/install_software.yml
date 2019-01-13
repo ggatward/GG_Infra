@@ -47,3 +47,17 @@
     packages:
       - firewalld
       - "{{ satellite_package }}"
+
+- name: Create pulp cache dir
+  file:
+    dest: /var/lib/pulp/cache
+    owner: apache
+    group: apache
+    mode: 0755
+    setype: pulp_var_cache_t
+
+- name: Create pulp cache links
+  file:
+    src: /var/lib/pulp/cache
+    dest: /var/cache/pulp
+    state: link

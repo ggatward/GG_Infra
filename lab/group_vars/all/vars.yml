@@ -5,15 +5,7 @@ sys_env: LAB
 
 # Hardening overrides
 ssh_PermitRootLogin: 'yes'
-
-
-#domain: example.org
-#netmask: 255.255.255.0
-#network: 192.168.122.0
-#broadcast: 192.168.122.255
-#gateway: 192.168.122.1
-#root_password: "{{ vault_root_password }}"
-#cloud_pubkey: "{{ vault_cloud_pubkey }}"
+ssh_MaxAuthTries: 4
 
 ntpservers:
  - ntp1.core.home.gatwards.org
@@ -24,24 +16,8 @@ ntpservers:
 cdn_user: ggatward@redhat.com
 cdn_password: "{{ vault_satellite_cdn_password }}"
 
+enable_epel: true
+sat_epel_repo: GatwardIT_EPEL-7_epel-7-x86_64
 
-# Tower deployment vars
-tower_pass: "{{ vault_tower_pass }}"
-tower_version: 3.2.6-1
-tower_lic: "{{ vault_tower_lic }}"
-#git_pass: "{{ vault_git_pass }}"
-#git_url: "https://github.com/ggatward/rh-mgmt-installer.git"
-#git_url: "git@github.com:ggatward/rh-mgmt-installer.git"
-git_branch: "master"
-svc_user: svc-tower
-svc_password: "{{ vault_svc_password }}"
-svc_email: noreply@lab.gatwards.org
-private_key: "{{ vault_private_key }}"
-#public_key: "{{ vault_public_key }}"
-#vault_password: "{{ vault_vault_password }}"
-#enable_telemetry_basic_auth: "true"
-
-
-
-
-nagios_version: 5.5.2-1
+sat6_tower_user: svc-tower-sat6
+sat6_tower_pass: "{{ vault_sat6_tower_pass }}"

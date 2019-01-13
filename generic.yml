@@ -1,0 +1,12 @@
+---
+- name: Generic Infrastructure
+  remote_user: svc-ansible
+  become: true
+  hosts: all
+  tasks:
+  - include_role:
+      name: role_generic_os
+
+  - include_role:
+      name: role_hardening
+    when: skip_hardening is not defined

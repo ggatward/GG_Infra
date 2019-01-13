@@ -5,7 +5,10 @@ sys_env: Core
 
 # Hardening overrides
 ssh_PermitRootLogin: 'yes'
+ssh_MaxAuthTries: 4
 
+# Disable all repos before re-enabling them?
+reset_redhat_repos: no
 
 #domain: example.org
 #netmask: 255.255.255.0
@@ -24,24 +27,5 @@ ntpservers:
 cdn_user: ggatward@redhat.com
 cdn_password: "{{ vault_satellite_cdn_password }}"
 
-
-# Tower deployment vars
-tower_pass: "{{ vault_tower_pass }}"
-tower_version: 3.2.6-1
-tower_lic: "{{ vault_tower_lic }}"
-#git_pass: "{{ vault_git_pass }}"
-#git_url: "https://github.com/ggatward/rh-mgmt-installer.git"
-#git_url: "git@github.com:ggatward/rh-mgmt-installer.git"
-git_branch: "master"
-svc_user: svc-tower
-svc_password: "{{ vault_svc_password }}"
-svc_email: noreply@lab.gatwards.org
-private_key: "{{ vault_private_key }}"
-#public_key: "{{ vault_public_key }}"
-#vault_password: "{{ vault_vault_password }}"
-#enable_telemetry_basic_auth: "true"
-
-
-
-
-nagios_version: 5.5.2-1
+enable_epel: true
+sat_epel_repo: GatwardIT_EPEL-7_epel-7-x86_64

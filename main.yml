@@ -1,34 +1,13 @@
 ---
+# Do all infra setups
+
 - name: Generic Infrastructure
   hosts: all
   remote_user: root
   tasks:
-  - include_role:
-      name: role_generic_os
 
-  - include_role:
-      name: role_hardening
-
-
-# - name: Install Tower
-#   hosts: tower
-#   remote_user: root
-#   tasks:
-#   - include_role:
-#       name: buildansibletower
-
-
-- name: Satellite Installation
-  hosts: sat6
-  remote_user: root
-  tasks:
-  - include_role:
-      name: buildsat6
-
-
-# - name: create Nagios
-#   hosts: nagios
-#   remote_user: root
-#   tasks:
-#   - include_role:
-#       name: buildnagiosxi
+  - import_tasks:
+    - generic.yml
+    - buildsat6.yml
+    - buildtower.yml
+    - buildnagios.yml

@@ -1,6 +1,8 @@
 ---
-- name: create tower
+- name: Install Tower
+  remote_user: svc-ansible
+  become: true
   hosts: tower
-  remote_user: root
-  roles:
-    - { role: buildansibletower }
+  tasks:
+  - include_role:
+      name: buildansibletower

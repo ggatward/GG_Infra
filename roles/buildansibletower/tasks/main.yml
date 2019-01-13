@@ -1,70 +1,14 @@
 ---
-# tasks file for buildansibletower
-- name: get Ansible tower bundle
-  tags:
-    - install
-  get_url:
-    url: http://releases.ansible.com/ansible-tower/setup-bundle/ansible-tower-setup-bundle-{{ tower_version }}.el7.tar.gz
-    dest: /tmp/ansible-tower-setup-bundle.tar.gz
-
-- name: untar /tmp/ansible-tower-setup-bundle.tar.gz
-  tags:
-    - install
-  unarchive:
-    src: /tmp/ansible-tower-setup-bundle.tar.gz
-    dest: /tmp/
-    remote_src: true
-    owner: root
-
-# Allow other jobs to read the tower config dir. This is so that we can use the tower cert in CFME
-- name: add /etc/tower path to setting.py
-  tags:
-    - install
-  lineinfile:
-    dest: /tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7/roles/awx_install/templates/settings.py.j2
-    line: "AWX_PROOT_SHOW_PATHS = ['/etc/tower/']"
-
-- name: copy inventory to tower setup folder
-  tags:
-    - install
-  template:
-    src: templates/towerinventorysetup
-    dest: /tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7/inventory
-
-- name: execute the tower installation
-  tags:
-    - install
-  command: chdir=/tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7 ./setup.sh
-  register: towerinstall
-
-- name: change perms on tower.cert
-  tags:
-    - install
-  file:
-    path: /etc/tower/tower.cert
-    mode: 0444
-    group: root
-    owner: root
-
-- name: add tower license
-  tags:
-    - install
-  uri:
-    url: https://{{ inventory_hostname }}/api/v1/config/
-    method: POST
-    validate_certs: no
-    user: admin
-    password: "{{ tower_pass }}"
-    status_code: 200
-    body: "{{ tower_lic }}"
-    body_format: json
-
-- name: install pip
-  tags:
-    - install
+- name: Install additional RPM packages
   yum:
-    name: python2-pip
+    name: "{{ packages }}"
     state: present
+  vars:
+    packages:
+      - python2-pip
+      - git
+      - sshpass
+
 
 # Need to upgrade setuptools (and pip?) via pip before this will work
 #- name: install manageiq-client
@@ -73,14 +17,126 @@
 #  pip:
 #    name: manageiq-client
 
+
+- name: install the last version of OpenSSL
+  pip: 
+    name: pyOpenSSL
+    state: latest
+
 # Tower-cli from pip is a later version than python2-ansible-tower-cli RPM
-- name: install ansible-tower-cli
-  tags:
-    - tower-cli
+- name: Install tower-cli from pip
   pip:
     name: ansible-tower-cli
 
-- name: copy tower-cli config /etc/tower/tower_cli.cfg
+- name: Install pywinrm for connecting to windows hosts
+  pip:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - pywinrm>=0.2.2
+    - pywinrm[kerberos]
+    - pywinrm[credssp]
+
+
+- name: Allow insecure git repos for self signed certificates
+  command: git config --global http.sslVerify "false"
+
+  #- name: Set git user
+  #  command: git config --global user.name "{{ user_prefix }}{{ inventory_hostname | regex_replace('\\D') }}"
+
+  #- name: Set git user email
+  #  command: git config --global user.email "{{ user_prefix }}{{ inventory_hostname | regex_replace('\\D') }}@{{ ansible_domain }}"
+
+  #- name: Set git to cache credentials
+  #  command: git config --global credential.helper cache
+
+  #- name: Update git to credential timeout after 1 day
+  #  command: git config --global credential.helper 'cache --timeout=86400'
+
+
+
+- name: check if we need to do installer things
+  uri:
+    url: https://localhost/api/v1/ping/
+    method: GET
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False 
+  register: checkout
+  ignore_errors: True
+
+- name: set condtional if the above didn't error
+  set_fact:
+    towerchk: "{{ checkout.json.version }}"
+  when: checkout.json is defined
+
+
+- name: Download Ansible Tower bundle
+  tags:
+    - install
+  get_url:
+    url: "{{ tower_repo_url }}/ansible-tower-setup-bundle-{{ tower_version }}.el7.tar.gz"
+    dest: /tmp/ansible-tower-setup-bundle.tar.gz
+  when: towerchk not in tower_version
+
+- name: Untar Tower bundle
+  tags:
+    - install
+  unarchive:
+    src: /tmp/ansible-tower-setup-bundle.tar.gz
+    dest: /tmp/
+    remote_src: true
+    owner: root
+  when: towerchk not in tower_version
+
+# Allow other jobs to read the tower config dir. This is so that we can use the tower cert in CFME
+- name: Allow access to Tower config directory
+  tags:
+    - install
+  lineinfile:
+    dest: /tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7/roles/awx_install/templates/settings.py.j2
+    line: "AWX_PROOT_SHOW_PATHS = ['/etc/tower/']"
+  when: towerchk != tower_version
+
+- name: Stage Tower installation inventory
+  tags:
+    - install
+  template:
+    src: templates/towerinventorysetup
+    dest: /tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7/inventory
+  when: towerchk != tower_version
+
+- name: Run the Tower installer (This will take some time)
+  tags:
+    - install
+  command: chdir=/tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7 ./setup.sh
+  register: towerinstall
+  when: towerchk not in tower_version
+
+- name: wait for tower to be up
+  uri:
+    url: https://localhost/api/v1/ping/
+    method: GET
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+  register: check2
+  until: check2.json is defined and check2.json.version in tower_version
+  retries: 10
+  delay: 30
+  when: towerchk not in tower_version
+
+- name: Update permissions on Tower certificate
+  tags:
+    - install
+  file:
+    path: /etc/tower/tower.cert
+    mode: 0444
+    group: root
+    owner: root
+
+- name: Deploy tower-cli config
   tags:
     - tower-cli
   template:
@@ -88,59 +144,209 @@
     dest: /etc/tower/tower_cli.cfg
     mode: 0600
 
-- name: add svc-tower user
+- name: Install Tower license
   tags:
-    - tower-config
+    - install
+  uri:
+    url: https://{{ inventory_hostname }}/api/v2/config/
+    method: POST
+    validate_certs: no
+    user: admin
+    password: "{{ tower_pass }}"
+    force_basic_auth: yes
+    status_code: 200
+    body: "{{ tower_lic }}"
+    body_format: json
+
+
+    #- name: Add LDAP Config
+  #  uri:
+          #    url: https://localhost/api/v2/settings/ldap/
+    #    method: PATCH
+    #    user: admin
+    #    password: "{{ tower_pass }}"
+    #    body: "{{ lookup('template','ldap_conf.json.j2') }}"
+    #    body_format: json
+    #    validate_certs: False
+    #    force_basic_auth: yes
+
+- name: Delete demo inventory
+  uri:
+    url:  https://localhost/api/v2/inventories/1/
+    method: DELETE
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False 
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 202
+      - 204
+      - 400
+      - 404
+  register: response
+  changed_when: response.status == 204
+
+- name: Delete demo project
+  uri:
+    url:  https://localhost/api/v2/projects/4/
+    method: DELETE
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False 
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 202
+      - 204
+      - 400
+      - 404
+  register: response
+  changed_when: response.status == 204
+
+- name: Delete demo template
+  uri:
+    url:  https://localhost/api/v2/job_templates/5/
+    method: DELETE
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False 
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 202
+      - 204
+      - 400
+      - 404
+  register: response
+  changed_when: response.status == 204
+
+- name: Delete demo credential
+  uri:
+    url:  https://localhost/api/v2/credentials/1/
+    method: DELETE
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False 
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 202
+      - 204
+      - 400
+      - 404
+  register: response
+  changed_when: response.status == 204
+
+- name: Add win_shell/win_feature/win_reboot to allowed adhoc modules
+  uri:
+    url:  https://localhost/api/v2/settings/all/
+    method: PATCH
+    user: admin
+    password: "{{ tower_pass }}"
+    body: "{{ lookup('template','tower_config_adhoc.json.j2') }}"
+    body_format: json
+    validate_certs: False
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 204
+      - 400
+  register: response
+  changed_when: response.status == 200
+
+- name: Set Base URL of Tower to resolve issues with websocket
+  uri:
+    url:  https://localhost/api/v2/settings/system/
+    method: PATCH
+    user: admin
+    password: "{{ tower_pass }}"
+    body: '{ "TOWER_URL_BASE": "https://{{ inventory_hostname }}" }'
+    body_format: json
+    validate_certs: False
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 204
+      - 400
+  register: response
+  changed_when: response.status == 200
+
+  #https://github.com/mgmt-sa-tiger-team/skylight/blob/master/roles/ansible-tower/tasks/setup.yml#L55
+
+
+- name: Add Ansible service account
   tower_user:
     username: "{{ svc_user }}"
     password: "{{ svc_password }}"
     email: "{{ svc_email }}"
-    first_name: Tower
+    first_name: Ansible
     last_name: Generic
     state: present
 
-# Needed for tower-cli methods for tower 3.2
-- name: Set git_creds json
-  tags:
-    - tower-config
-  set_fact:
-    json_input:
-      ssh_key_data: "{{ private_key }}"
-      username: "{{ svc_user }}"
-      password: "{{ svc_password }}"
+
+# TODO: Add user to organization
+
 
 # Needed for tower_credential method
-#- name: ssh key
-#  tags:
-#    - tower-config
-#  copy:
-#    content: "{{ private_key }}"
-#    dest: /tmp/ssh.key
+- name: Stage SSH key to temp file
+  copy:
+    content: "{{ private_ssh_key }}"
+    dest: /tmp/ssh.key
 
-# tower_credential module doesn't work yet with tower 3.2
-- name: add svc-tower machine creds
-  tags:
-    - tower-config
+- name: add Ansible user SSH key
+  tower_credential:
+    name: "{{ svc_user }} SSH key"
+    description: SSH key
+    organization: Default
+    state: present
+    username: "{{ svc_user }}"
+    user: "{{ svc_user }}"
+    kind: ssh
+    ssh_key_data: /tmp/ssh.key
+
+- name: add Ansible user git credentials
+  tower_credential:
+    name: "{{ svc_user }} Git key"
+    description: git
+    organization: Default
+    state: present
+    username: "{{ svc_user }}"
+    user: "{{ svc_user }}"
+    kind: scm
+    ssh_key_data: /tmp/ssh.key
+
+- name: add Ansible Vault credentials
+  tower_credential:
+    name: "vault credential"
+    description: vault
+    organization: Default
+    state: present
+    kind: vault
+    vault_password: "{{ vault_password }}"
+
+#- name: Create sat6 credentials
 #  tower_credential:
-#    name: "{{ svc_user }}"
-#    description: SSH key
+#    name: "satellite 6"
+#    description: Sat6
 #    organization: Default
 #    state: present
-#    username: "{{ svc_user }}"
-#    kind: ssh
-#    ssh_key_data: /tmp/ssh.key
-  command: tower-cli credential create --name {{ svc_user }} -d 'SSH Key' --credential-type 1 --user {{ svc_user }} --inputs '{{ json_input | to_json }}'
+#    kind: satellite6
+#    username: "{{ sat6_tower_user }}"
+#    password: "{{ sat6_tower_pass }}"
+#    url: "{{ sat6_url }}"
+    
 
-# tower_credential module doesn't work yet with tower 3.2
-- name: add svc-tower git creds
-  tags:
-    - tower-config
-#  tower_credential:
-#    name: "{{ svc_user }}_git"
-#    description: git
-#    organization: Default
-#    state: present
-#    username: "{{ svc_user }}"
-#    kind: scm
-#    ssh_key_data: /tmp/ssh.key
-  command: tower-cli credential create --organization Default --name {{ svc_user }}_git --credential-type 2 --inputs '{{ json_input | to_json }}'
+# Give the ansible user permission to use the credentials
+# (might be sorted by adding user to org?)
+
+# Create inventory script
+
+# Create project
+
+# Checkout Project
+

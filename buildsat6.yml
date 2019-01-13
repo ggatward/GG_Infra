@@ -1,8 +1,8 @@
 ---
-- name: create Nagios
+- name: Satellite Installation
   remote_user: svc-ansible
   become: true
-  hosts: nagios
+  hosts: sat6
   tasks:
   - include_role:
-      name: buildnagiosxi
+      name: buildsat6

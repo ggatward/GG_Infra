@@ -1,0 +1,20 @@
+---
+# Tower deployment vars
+tower_version: 3.4.0-2
+
+tower_pass: "{{ vault_tower_pass }}"
+tower_lic: "{{ vault_tower_lic }}"
+
+#git_pass: "{{ vault_git_pass }}"
+#git_url: "https://github.com/ggatward/rh-mgmt-installer.git"
+#git_url: "git@github.com:ggatward/rh-mgmt-installer.git"
+
+git_branch: "master"
+svc_user: svc-ansible
+svc_password: "{{ vault_svc_password }}"
+svc_email: noreply@lab.gatwards.org
+private_ssh_key: "{{ vault_ansible_ssh_private_key }}"
+
+#public_key: "{{ vault_public_key }}"
+#vault_password: "{{ vault_vault_password }}"
+#enable_telemetry_basic_auth: "true"

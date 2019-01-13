@@ -1,3 +1,8 @@
 ---
-# defaults file for buildansibletower
-groups: tower
+tower_repo_url: http://releases.ansible.com/ansible-tower/setup-bundle
+
+ldap_search_base: "DC=example,DC=com"
+ldap_access_filter: "(&(objectClass=user)(memberOf=CN=LinuxServers,CN=Users,DC=example,DC=com))"
+
+
+towerchk: undefined

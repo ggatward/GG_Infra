@@ -1,25 +1,27 @@
 ---
 # MOTD vars
-role: Satellite
+role: Dev Satellite {{ satellite_version }}
 
 # We need Satellite to register directly to CDN
 register_with_cdn: true
 cdn_product: Red Hat Satellite
 
-repositories:
-  - rhel-7-server-satellite-{{ satellite_version }}-rpms
+redhat_repositories:
   - rhel-7-server-rpms
-  - rhel-server-rhscl-7-rpms
   - rhel-7-server-optional-rpms
+  - rhel-server-rhscl-7-rpms
+  - rhel-7-server-satellite-{{ satellite_version }}-rpms
+
+enable_epel: no
 
 satellite_device: /dev/vdb
 satellite_volumes:
   - { lv: pgsql, size: 10g, mount: /var/lib/pgsql }
   - { lv: mongodb, size: 50g, mount: /var/lib/mongodb }
   - { lv: pulp, size: 150g, mount: /var/lib/pulp }
-  - { lv: pulp_cache, size: 10g, mount: /var/cache/pulp }
+#  - { lv: pulp_cache, size: 10g, mount: /var/cache/pulp }
   - { lv: qpidd, size: 5g, mount: /var/lib/qpidd }
-  
+
 # Extra features to enable
 satellite_features:
   - tftp
