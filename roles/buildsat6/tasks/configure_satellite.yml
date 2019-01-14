@@ -184,3 +184,8 @@
 # TODO: Add EPEL as upstream repo
 
 # TODO: Create sync plan
+
+# TODO: Add Tower svc account
+# Role:  Fact value -> view_facts -> Read Satellite Server facts
+#        Host -> view hosts -> Read Satellite Server hosts
+#        Host group -> view_hostgroups -> View Satelltie server host groups

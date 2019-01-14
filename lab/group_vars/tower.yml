@@ -5,16 +5,22 @@ tower_version: 3.4.0-2
 tower_pass: "{{ vault_tower_pass }}"
 tower_lic: "{{ vault_tower_lic }}"
 
-#git_pass: "{{ vault_git_pass }}"
-#git_url: "https://github.com/ggatward/rh-mgmt-installer.git"
-#git_url: "git@github.com:ggatward/rh-mgmt-installer.git"
+# LDAP params for Tower
+tower_ldap_bind_user: uid=svc-tower,CN=sysaccounts,CN=etc,DC=gatwards,DC=org
+tower_ldap_bind_pass: "{{ vault_tower_ldap_bind_pass }}"
+tower_admins_group: 'CN=tower_admins,CN=groups,CN=accounts,DC=gatwards,DC=org'
 
-git_branch: "master"
-svc_user: svc-ansible
-svc_password: "{{ vault_svc_password }}"
-svc_email: noreply@lab.gatwards.org
-private_ssh_key: "{{ vault_ansible_ssh_private_key }}"
+# Service accounts
+svc_ansible_user: svc-ansible
+svc_ansible_password: "{{ vault_svc_ansible_password }}"
+svc_ansible_email: noreply@lab.gatwards.org
+svc_ansible_private_ssh_key: "{{ vault_svc_ansible_private_ssh_key }}"
 
-#public_key: "{{ vault_public_key }}"
-#vault_password: "{{ vault_vault_password }}"
+svc_git_user: svc-tower
+svc_git_private_ssh_key: "{{ vault_svc_ansible_private_ssh_key }}"
+
+# Git project
+git_url: "git@github.com:ggatward/GG_Infra.git"
+git_branch: development
+
 #enable_telemetry_basic_auth: "true"

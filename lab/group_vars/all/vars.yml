@@ -12,6 +12,15 @@ ntpservers:
  - ntp2.core.home.gatwards.org
  - ntp3.core.home.gatwards.org
 
+ldap_servers:
+  - auth1.idm.home.gatwards.org
+  - auth2.idm.home.gatwards.org
+
+ldap_user_dn: 'CN=users,CN=accounts,DC=gatwards,DC=org'
+ldap_user_filter: '(uid=%(user)s)'
+ldap_group_dn: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
+ldap_group_filter: '(objectClass=ipausergroup)'
+
 # Generic vars
 cdn_user: ggatward@redhat.com
 cdn_password: "{{ vault_satellite_cdn_password }}"

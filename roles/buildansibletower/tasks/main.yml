@@ -8,6 +8,7 @@
       - python2-pip
       - git
       - sshpass
+      - openldap-clients
 
 
 # Need to upgrade setuptools (and pip?) via pip before this will work
@@ -19,7 +20,7 @@
 
 
 - name: install the last version of OpenSSL
-  pip: 
+  pip:
     name: pyOpenSSL
     state: latest
 
@@ -61,7 +62,7 @@
     method: GET
     user: admin
     password: "{{ tower_pass }}"
-    validate_certs: False 
+    validate_certs: False
   register: checkout
   ignore_errors: True
 
@@ -72,16 +73,12 @@
 
 
 - name: Download Ansible Tower bundle
-  tags:
-    - install
   get_url:
     url: "{{ tower_repo_url }}/ansible-tower-setup-bundle-{{ tower_version }}.el7.tar.gz"
     dest: /tmp/ansible-tower-setup-bundle.tar.gz
   when: towerchk not in tower_version
 
 - name: Untar Tower bundle
-  tags:
-    - install
   unarchive:
     src: /tmp/ansible-tower-setup-bundle.tar.gz
     dest: /tmp/
@@ -91,24 +88,18 @@
 
 # Allow other jobs to read the tower config dir. This is so that we can use the tower cert in CFME
 - name: Allow access to Tower config directory
-  tags:
-    - install
   lineinfile:
     dest: /tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7/roles/awx_install/templates/settings.py.j2
     line: "AWX_PROOT_SHOW_PATHS = ['/etc/tower/']"
   when: towerchk != tower_version
 
 - name: Stage Tower installation inventory
-  tags:
-    - install
   template:
     src: templates/towerinventorysetup
     dest: /tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7/inventory
   when: towerchk != tower_version
 
 - name: Run the Tower installer (This will take some time)
-  tags:
-    - install
   command: chdir=/tmp/ansible-tower-setup-bundle-{{ tower_version }}.el7 ./setup.sh
   register: towerinstall
   when: towerchk not in tower_version
@@ -128,8 +119,6 @@
   when: towerchk not in tower_version
 
 - name: Update permissions on Tower certificate
-  tags:
-    - install
   file:
     path: /etc/tower/tower.cert
     mode: 0444
@@ -137,16 +126,12 @@
     owner: root
 
 - name: Deploy tower-cli config
-  tags:
-    - tower-cli
   template:
     src: templates/tower_cli.cfg.j2
     dest: /etc/tower/tower_cli.cfg
     mode: 0600
 
 - name: Install Tower license
-  tags:
-    - install
   uri:
     url: https://{{ inventory_hostname }}/api/v2/config/
     method: POST
@@ -158,17 +143,16 @@
     body: "{{ tower_lic }}"
     body_format: json
 
-
-    #- name: Add LDAP Config
-  #  uri:
-          #    url: https://localhost/api/v2/settings/ldap/
-    #    method: PATCH
-    #    user: admin
-    #    password: "{{ tower_pass }}"
-    #    body: "{{ lookup('template','ldap_conf.json.j2') }}"
-    #    body_format: json
-    #    validate_certs: False
-    #    force_basic_auth: yes
+- name: Add LDAP Config
+  uri:
+    url: https://localhost/api/v2/settings/ldap/
+    method: PATCH
+    user: admin
+    password: "{{ tower_pass }}"
+    body: "{{ lookup('template','ldap_conf.json.j2') }}"
+    body_format: json
+    validate_certs: False
+    force_basic_auth: yes
 
 - name: Delete demo inventory
   uri:
@@ -176,7 +160,7 @@
     method: DELETE
     user: admin
     password: "{{ tower_pass }}"
-    validate_certs: False 
+    validate_certs: False
     force_basic_auth: yes
     status_code:
       - 200
@@ -194,7 +178,7 @@
     method: DELETE
     user: admin
     password: "{{ tower_pass }}"
-    validate_certs: False 
+    validate_certs: False
     force_basic_auth: yes
     status_code:
       - 200
@@ -212,7 +196,7 @@
     method: DELETE
     user: admin
     password: "{{ tower_pass }}"
-    validate_certs: False 
+    validate_certs: False
     force_basic_auth: yes
     status_code:
       - 200
@@ -230,7 +214,7 @@
     method: DELETE
     user: admin
     password: "{{ tower_pass }}"
-    validate_certs: False 
+    validate_certs: False
     force_basic_auth: yes
     status_code:
       - 200
@@ -281,9 +265,9 @@
 
 - name: Add Ansible service account
   tower_user:
-    username: "{{ svc_user }}"
-    password: "{{ svc_password }}"
-    email: "{{ svc_email }}"
+    username: "{{ svc_ansible_user }}"
+    password: "{{ svc_ansible_password }}"
+    email: "{{ svc_ansible_email }}"
     first_name: Ansible
     last_name: Generic
     state: present
@@ -295,28 +279,33 @@
 # Needed for tower_credential method
 - name: Stage SSH key to temp file
   copy:
-    content: "{{ private_ssh_key }}"
+    content: "{{ svc_ansible_private_ssh_key }}"
     dest: /tmp/ssh.key
 
 - name: add Ansible user SSH key
   tower_credential:
-    name: "{{ svc_user }} SSH key"
+    name: "{{ svc_ansible_user }} SSH key"
     description: SSH key
     organization: Default
     state: present
-    username: "{{ svc_user }}"
-    user: "{{ svc_user }}"
+    username: "{{ svc_ansible_user }}"
+    user: "{{ svc_ansible_user }}"
     kind: ssh
     ssh_key_data: /tmp/ssh.key
 
+- name: Stage SCM SSH key to temp file
+  copy:
+    content: "{{ svc_git_private_ssh_key }}"
+    dest: /tmp/ssh.key
+
 - name: add Ansible user git credentials
   tower_credential:
-    name: "{{ svc_user }} Git key"
-    description: git
+    name: "{{ svc_git_user }} SCM key"
+    description: "SCM key"
     organization: Default
     state: present
-    username: "{{ svc_user }}"
-    user: "{{ svc_user }}"
+    username: "{{ svc_git_user }}"
+    user: "{{ svc_ansible_user }}"
     kind: scm
     ssh_key_data: /tmp/ssh.key
 
@@ -329,24 +318,60 @@
     kind: vault
     vault_password: "{{ vault_password }}"
 
-#- name: Create sat6 credentials
+# Not currently working - https://github.com/ansible/ansible/issues/45172
+#- name: Create satellite 6 credentials
 #  tower_credential:
 #    name: "satellite 6"
-#    description: Sat6
+#    description: "Satellite 6"
 #    organization: Default
 #    state: present
 #    kind: satellite6
 #    username: "{{ sat6_tower_user }}"
 #    password: "{{ sat6_tower_pass }}"
-#    url: "{{ sat6_url }}"
-    
+#    satellite_6_url: "{{ sat6_url }}"
 
-# Give the ansible user permission to use the credentials
-# (might be sorted by adding user to org?)
 
-# Create inventory script
+# TODO: Give the ansible user permission to use each of the the credentials
+
+
+# Add new inventory
+- name: Create Satellite inventory
+  tower_inventory:
+    name: "satellite 6"
+    description: "Satellite 6"
+    organization: Default
+    state: present
+
+# Create Sat6 inventory source
+- name: Setup Sat6 as an inventory source
+  tower_inventory_source:
+    name: "satellite 6"
+    description: "Satellite 6"
+    state: present
+    inventory: "satellite 6"
+    credential: "satellite 6"
+    overwrite: true
+    overwrite_vars: true
+    source: satellite6
+    update_cache_timeout: 0
+    update_on_launch: true
+
+# TODO: Give the ansible user permission to use and update the inventory
 
 # Create project
+- name: Create project
+  tower_project:
+    name: GG_Infra
+    organization: Default
+    scm_type: git
+    scm_url: "{{ git_url }}"
+    scm_branch: "{{ git_branch }}"
+    scm_clean: true
+    scm_credential: "{{ svc_git_user }} SCM key"
+    scm_update_on_launch: true
 
-# Checkout Project
+# Checkout Project (should happen on creation - need to wait for it to complete)
 
+# Create job templates from project
+#- name: Create job template
+#  tower_job_template:
