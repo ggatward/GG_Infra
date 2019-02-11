@@ -4,5 +4,23 @@
   become: true
   hosts: sat6
   tasks:
+
+  - block:
+    - name: Stage certificates to Satellite
+      copy:
+        src: "/certs/{{ item }}"
+        dest: "/root/{{ item }}.pem"
+      with_items:
+        - "{{ satellite_ssl_cert }}"
+        - "{{ satellite_ssl_csr }}"
+        - "{{ satellite_ssl_ca }}"
+
+    - name: Deploy SSL key
+      copy:
+        content: "{{ satellite_ssl_key }}"
+        dest: "/root/satellite_ssl.key"
+    when: satellite_use_custom_cert
+
+
   - include_role:
       name: buildsat6

@@ -54,7 +54,7 @@
 # Disk volume adjustments
 - set_fact:
     satellite_volumes: "{{ satellite_volumes | combine(satellite_volumes_64) }}"
-  when: satellite_version >= '6.4'
+  when: satellite_version >= 6.4
 
 - set_fact:
     satellite_volumes: "{{ satellite_volumes | combine(satellite_volumes_synchost) }}"
@@ -62,7 +62,7 @@
 
 - set_fact:
     satellite_volumes: "{{ satellite_volumes | combine(satellite_volumes_disco) }}"
-  when: is_disconencted
+  when: is_disconnected
 
 # Build Satellite API URLs
 - set_fact:

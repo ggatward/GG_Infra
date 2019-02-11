@@ -40,4 +40,4 @@ satellite_answers_dns:
 
 satellite_answers_bmc:
   foreman-proxy-bmc: "true"
-  foreman-proxy-bmc-default-provider: "freeipmi"
+  foreman-proxy-bmc-default-provider: "ipmitool"

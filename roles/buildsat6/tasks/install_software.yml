@@ -51,6 +51,7 @@
 - name: Create pulp cache dir
   file:
     dest: /var/lib/pulp/cache
+    state: directory
     owner: apache
     group: apache
     mode: 0755

@@ -3,7 +3,6 @@
 # Default is Satellite. Set to 'true' for Capsules.
 is_capsule: false
 
-
 # Name of the package to install (overridden in set_facts task for capsule)
 satellite_package: satellite
 satellite_version: 6.4
@@ -18,7 +17,7 @@ is_disconnected: false
 # Set to 'true' if this is the sync_host.
 is_sync_host: false
 
-# For support of disconencted systems, we need to define an export_dir on the
+# For support of disconnected systems, we need to define an export_dir on the
 # internet-connected sync-host, and an import_dir on the disconnected side.
 export_dir: /var/sat-export
 import_dir: /var/sat-import
@@ -41,10 +40,10 @@ satellite_volumes_64:
   - { lv: squid, size: 10g, mount: /var/spool/squid }
 
 satellite_volumes_synchost:
-  - { lv: export, size: 100g, mount: {{ export_dir }} }
+  - { lv: export, size: 100g, mount: "{{ export_dir }}" }
 
 satellite_volumes_disco:
-  - { lv: import, size: 100g, mount: {{ import_dir }} }
+  - { lv: import, size: 100g, mount: "{{ import_dir }}" }
 
 
 # Installer defaults

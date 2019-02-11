@@ -12,3 +12,6 @@ sat64.lab.home.gatwards.org
 [test]
 sandbox1.lab.home.gatwards.org
 sandbox2.lab.home.gatwards.org
+
+[raspberry]
+rpi-usb1.core.home.gatwards.org
