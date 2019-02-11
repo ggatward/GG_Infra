@@ -44,7 +44,7 @@ satellite_repositories:
 
 # Certs
 satellite_use_custom_cert: yes
-satellite_ssl_cert: certs/wildcard.lab.home.gatwards.org.pem
+satellite_ssl_cert: wildcard.lab.home.gatwards.org.pem
 satellite_ssl_csr: wildcard.lab.home.gatwards.org.csr
 satellite_ssl_ca: GatwardIT-chain.pem
 satellite_ssl_key: "{{ vault_satellite_ssl_key }}"
