@@ -7,7 +7,7 @@ is_capsule: false
 satellite_package: satellite
 satellite_version: 6.4
 
-# List of additional features to enable (dns, dhcp. tftp, bmc)
+# List of additional features to enable (dns, dhcp. tftp, bmc, templatesync)
 satellite_features: []
 
 # Default is for an internet connected satellite. Set 'true' for disconnected.
@@ -33,15 +33,15 @@ satellite_volumes:
   - { lv: pgsql, size: 10g, mount: /var/lib/pgsql }
   - { lv: mongodb, size: 50g, mount: /var/lib/mongodb }
   - { lv: pulp, size: 500g, mount: /var/lib/pulp }
-  - { lv: pulp_cache, size: 10g, mount: /var/cache/pulp }
   - { lv: qpidd, size: 5g, mount: /var/lib/qpidd }
 
+# Additional volumes required for Satellite 6.4
 satellite_volumes_64:
   - { lv: squid, size: 10g, mount: /var/spool/squid }
 
+# Additional volumes required for disconnected/sync-host systems
 satellite_volumes_synchost:
   - { lv: export, size: 100g, mount: "{{ export_dir }}" }
-
 satellite_volumes_disco:
   - { lv: import, size: 100g, mount: "{{ import_dir }}" }
 
@@ -54,16 +54,31 @@ satellite_location: "Location1"
 
 # Installer SSL cert info
 satellite_custom_certs: false
-satellite_ssl_ca_path: /root/ca.crt
-satellite_ssl_cert_path: /root/sat6.crt
-satellite_ssl_csr_path: /root/sat6.csr
-satellite_ssl_key_path: /root/sat6.key
+satellite_ssl_ca_path: /etc/pki/ca-trust/source/anchors
+satellite_ssl_cert_path: /etc/pki/tls/certs
+satellite_ssl_key_path: /etc/pki/tls/private
 
-satellite_email_params:
-  - smtp_address: mailhost.{{ ansible_domain }}
-  - smtp_port: 25
-  - email_reply_address: satellite-noreply@{{ ansible_domain }}
-  - email_subject_prefix: '[satellite]'
+# DHCP parameters
+dhcp_puppet_managed: true
+
+
+# DNS parameters
+dns_puppet_managed: true
+
+
+# Additional Foreman plugins
+foreman_plugin_templates: true
+
+# Email parameters
+configure_email: true
+email_smtp_address: localhost
+email_smtp_port: 25
+email_reply_address: satellite-noreply@{{ ansible_domain }}
+email_subject_prefix: '[satellite6]'
+
+# Postfix classification headers
+postfix_headers: false
+postfix_header_classification: UNCLASSIFIED
 
 
 # Location of manifest on satellite host

@@ -2,7 +2,7 @@
 # Create Hammer directory on /root
 - name: "Create .hammer directory"
   file:
-    path: "~/.hammer"
+    path: "/root/.hammer"
     state: "directory"
     mode: "0755"
 
@@ -10,7 +10,7 @@
 - name: "Deploy hammer configuration from template"
   template:
     src: "hammer_config.yml.j2"
-    dest: "~/.hammer/cli_config.yml"
+    dest: "/root/.hammer/cli_config.yml"
 
 # Copy the manifest
 - name: "Copy manifest"
@@ -27,81 +27,125 @@
   when: satellite_remote_manifest
 
 # Upload the manifest to the satellite
+#   (rc 70 returned when 'Import is the same as existing data')
 - name: "Upload the manifest"
   shell: "hammer subscription upload --file
     {{ satellite_manifest_dest_path }} --organization
     {{ satellite_organization }}"
+  register: uploadstatus
+  failed_when: "uploadstatus.rc != 0 and uploadstatus.rc != 70"
 
-# Sync host for disconnected environment needs the export directory configured
+# Tasks for sync-host and disco systems
 - block:
-  # TODO: pulp export perms/contexts
-  #- name: Set permissions on pulp export directory
+  # TODO: Install sat6_scripts
+  - name: Install sat6_scripts (disconnected tools)
+    yum:
+      name: sat6_scripts
+      state: latest
+
+  # TODO: Configure sat6_scripts - maybe in another task file?
 
 
-  - name: Configure pulp export directory
-    shell: "hammer settings set pulp_export_destination {{ export_dir }}"
-  when: is_sync_host
 
-# In 6.4 we can set katello up to understand disconnected has no CDN connection.
-- block:
-  - name: Configure Satellite as disconnected
-    shell: "hammer settings set content_disconnected true"
-    when: satellite_version >= 6.4
+  # Tasks for sync host
+  - block:
+    # TODO: pulp export perms/contexts
+    #- name: Set permissions on pulp export directory
 
 
-  when: is_disconnected
+    - name: Configure pulp export directory
+      shell: "hammer settings set --name pulp_export_destination --value {{ export_dir }}"
+    when: is_sync_host
 
-# Experience shows that these should be immediate for reliable functionality.
+  # Tasks for disconnected system
+  - block:
+    # In 6.4 we can set katello up to understand disconnected has no CDN connection.
+    - name: Configure Satellite as disconnected (6.4+)
+      shell: "hammer settings set --name content_disconnected --value true"
+      when: satellite_version >= 6.4
+
+    when: is_disconnected
+  when: is_disconnected or is_sync_host
+
+# Experience shows that these should be immediate for reliable functionality - in ALL cases
 - name: Configure immediate download policy
-  shell: "hammer settings set {{ item }} immediate"
+  shell: "hammer settings set --name {{ item }} --value immediate"
   with_items:
     - default_download_policy
     - default_proxy_download_policy
 
 
+# Email configurations
+- block:
+  # All sat6 versions configure these via hammer
+  - name: Configure Satellite email
+    shell: "hammer settings set --name {{ item.param }} --value {{ item.value }}"
+    with_items:
+      - param: email_reply_address
+        value: "{{ email_reply_address }}"
+      - param: email_subject_prefix
+        value: "{{ email_subject_prefix }}"
 
-- name: Configure Satellite email
-  shell: "hammer settings set {{ item.key }} {{ item.value }}"
-  with_items: "{{ satellite_email_params }}"
+  - block:
+    # 6.2 and 6.3 require email config in /usr/share/foreman/config/email.yaml
+    - name: Deploy Foreman email config
+      template:
+        src: email.yaml.j2
+        dest: /etc/foreman/email.yaml
+    when: satellite_version <= 6.3
 
-#cat << EOF > /etc/postfix/classification
-#/^Content-Transfer-Encoding/i PREPEND x-classification: UNCLASSIFIED
-#/^Content-Transfer-Encoding/i PREPEND x-protective-marking: VER=2012.3, NS=example.org, SEC=UNCLASSIFIED, ORIGIN=satellite@example.org
-#EOF
-#sed -i 's/^#header_checks = /header_checks = regexp:\/etc\/postfix\/classification/' /etc/postfix/main.cf
-#sed -i 's/^#relayhost = uucphost/relayhost = smtp.example.org/' /etc/postfix/main.cf
+   # 6.4 can set these params via hammer
+  - block:
+    - name: Configure Satellite email
+      shell: "hammer settings set --name {{ item.param }} --value {{ item.value }}"
+      with_items:
+        - param: email_smtp_host
+          value: "{{ email_smtp_host }}"
+        - param: email_smtp_port
+          value: "{{ email_smtp_port }}"
+    when: satellite_version >= 6.4
 
-# Set Satellite to send mail to the local postfix instance:
-#cat << EOF > /etc/foreman/email.yaml
-# Outgoing email settings
-#production:
-#  delivery_method: :smtp
-#  smtp_settings:
-#    address: localhost
-#    port: 25
-#    enable_starttls_auto: false
-#EOF
+  # If we need to append classification headers...
+  - block:
+    - name: Configure Postfix classification headers
+      template:
+        src: postfix_classify.j2
+        dest: /etc/postfix/classification
+      notify: restart_postfix
+
+    - name: Update Postfix config to include headers
+      lineinfile:
+        path: /etc/postfix/main.cf
+        regexp: "^header_checks "
+        insertafter: "^#header_checks"
+        line: "header_checks = regexp:/etc/postfix/classification"
+      notify: restart_postfix
+
+    - name: Update Postfix config to include headers
+      lineinfile:
+        path: /etc/postfix/main.cf
+        regexp: "^relayhost "
+        insertafter: "^#relayhost"
+        line: "relayhost = smtp.example.org"
+      notify: restart_postfix
+    when: postfix_headers
+  when: configure_email
 
 
+- block:
+  - name: "Configure Template Sync (6.3+)"
+    command: "{{ plugin_installer_cmd }} --enable-foreman-plugin-templates"
+
+    #- foreman ssh keys for git (/usr/share/foreman/.ssh)
+
+    #- template-sync params
+
+    #- perform template sync
+    # curl -H "Accept:application/json,version=2" -H "Content-Type:application/json" \
+    #   -u admin -k https://{{ ansible_fqdn }}/api/v2/templates/import -X POST
+  when: foreman_plugin_templates and satellite_version >= 6.3
 
 
-
-# TODO: Install sat6_scripts
-#- name: Install sat6_scripts (disconnected tools)
-#  yum:
-#    name: sat6_scripts
-#    state: latest
-#  when: is_disconnected or is_sync_host
-
-# TODO: Configure sat6_scripts - maybe in another task file?
-
-
-# TODO: Configure template sync
-#- foreman ssh keys for git (/usr/share/foreman/.ssh)
-#- template-sync params
-#- perform template sync
-# curl -H "Accept:application/json,version=2" -H "Content-Type:application/json" \
-#   -u admin -k https://{{ ansible_fqdn }}/api/v2/templates/import -X POST
 
 
 
@@ -130,48 +174,48 @@
 
 
 
-- name: Get the enabled repos
-  delegate_to: localhost
-  uri:
-    url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
-    method: GET
-    user: "{{ satellite_admin_username }}"
-    password: "{{ satellite_admin_password }}"
-    force_basic_auth: yes
-    validate_certs: no
-    status_code: 200
-  register: api_result
+# - name: Get the enabled repos
+#   delegate_to: localhost
+#   uri:
+#     url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
+#     method: GET
+#     user: "{{ satellite_admin_username }}"
+#     password: "{{ satellite_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: no
+#     status_code: 200
+#   register: api_result
 
-- set_fact:
-    repos: "{{ api_result.json.results }}"
+# - set_fact:
+#     repos: "{{ api_result.json.results }}"
 
-# TODO: Don't enable a repo if it is already enabled
+# # TODO: Don't enable a repo if it is already enabled
 
-# Enable repos on satellite (Fails if already enabled)
-- name: "Enable repositories"
-  shell: "hammer repository-set '{{ item.state }}' --organization
-    '{{ satellite_organization }}'
-    --product '{{ item.product_name }}' --name '{{ item.name_repo }}'
-    {% if item.rel is defined %} --releasever '{{ item.rel }}' {% endif %}
-    --basearch '{{ item.architecture}}'"
-  with_items: "{{ satellite_repositories }}"
-  ignore_errors: "yes"
+# # Enable repos on satellite (Fails if already enabled)
+# - name: "Enable repositories"
+#   shell: "hammer repository-set '{{ item.state }}' --organization
+#     '{{ satellite_organization }}'
+#     --product '{{ item.product_name }}' --name '{{ item.name_repo }}'
+#     {% if item.rel is defined %} --releasever '{{ item.rel }}' {% endif %}
+#     --basearch '{{ item.architecture}}'"
+#   with_items: "{{ satellite_repositories }}"
+#   ignore_errors: "yes"
 
-- name: Get the enabled repo ids
-  delegate_to: localhost
-  uri:
-    url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
-    method: GET
-    user: "{{ satellite_admin_username }}"
-    password: "{{ satellite_admin_password }}"
-    force_basic_auth: yes
-    validate_certs: no
-    status_code: 200
-  register: api_result
+# - name: Get the enabled repo ids
+#   delegate_to: localhost
+#   uri:
+#     url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
+#     method: GET
+#     user: "{{ satellite_admin_username }}"
+#     password: "{{ satellite_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: no
+#     status_code: 200
+#   register: api_result
 
-- name: Set repo_ids fact
-  set_fact:
-    repo_ids: "{{ api_result.json.results | map(attribute='id') | list }}"
+# - name: Set repo_ids fact
+#   set_fact:
+#     repo_ids: "{{ api_result.json.results | map(attribute='id') | list }}"
 
 # - debug:
 #     var: repo_ids

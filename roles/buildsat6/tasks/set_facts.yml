@@ -29,10 +29,11 @@
     fw_services: "{{ fw_services }} + [ 'dns' ]"
   when: "'dns' in satellite_features"
 
+
 # Include custom cert paths if defined
 - set_fact:
     satellite_answers: "{{ satellite_answers | combine(satellite_answers_certs) }}"
-  when: satellite_custom_certs
+  when: satellite_use_custom_cert
 
 # Build the installer answers based on enabled features
 - set_fact:

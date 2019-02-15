@@ -19,7 +19,6 @@ satellite_volumes:
   - { lv: pgsql, size: 10g, mount: /var/lib/pgsql }
   - { lv: mongodb, size: 50g, mount: /var/lib/mongodb }
   - { lv: pulp, size: 150g, mount: /var/lib/pulp }
-#  - { lv: pulp_cache, size: 10g, mount: /var/cache/pulp }
   - { lv: qpidd, size: 5g, mount: /var/lib/qpidd }
 
 # Extra features to enable
@@ -32,6 +31,17 @@ satellite_organization: "MyOrg"
 satellite_location: "Home"
 satellite_admin_password: "{{ vault_satellite_admin_password }}"
 
+# Certs
+satellite_use_custom_cert: yes
+satellite_ssl_ca_path: /etc/pki/ca-trust/source/anchors
+satellite_ssl_cert_path: /etc/pki/tls/certs
+satellite_ssl_key_path: /etc/pki/tls/private
+satellite_ssl_cert: wildcard.lab.home.gatwards.org.pem
+satellite_ssl_csr: wildcard.lab.home.gatwards.org.csr
+satellite_ssl_ca: GatwardIT-chain.pem
+satellite_ssl_key: "{{ vault_satellite_ssl_key }}"
+
+# Repos to enable
 satellite_repositories:
 #  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (Kickstart)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.6', architecture: 'x86_64', state: enable}
@@ -41,10 +51,3 @@ satellite_repositories:
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_version }} (for RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64', state: enable}
-
-# Certs
-satellite_use_custom_cert: yes
-satellite_ssl_cert: wildcard.lab.home.gatwards.org.pem
-satellite_ssl_csr: wildcard.lab.home.gatwards.org.csr
-satellite_ssl_ca: GatwardIT-chain.pem
-satellite_ssl_key: "{{ vault_satellite_ssl_key }}"

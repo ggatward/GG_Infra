@@ -2,6 +2,7 @@
 # check defaults/main.yml which vars you have to pass.
 
 satellite_installer_cmd: "/usr/sbin/satellite-installer --scenario satellite"
+plugin_installer_cmd: "/usr/sbin/satellite-installer"
 
 # Build the installer answers
 satellite_answers:
@@ -11,10 +12,10 @@ satellite_answers:
   foreman-initial-location: "{{ satellite_location }}"
 
 satellite_answers_certs:
-  certs-server-ca-cert: "{{ satellite_ssl_ca_path }}"
-  certs-server-cert: "{{ satellite_ssl_crt_path }}"
-  certs-server-cert-req: "{{ satellite_ssl_csr_path }}"
-  certs-server-key: "{{ satellite_ssl_key_path }}"
+  certs-server-ca-cert: "{{ satellite_ssl_ca_path }}/{{ satellite_ssl_ca }}"
+  certs-server-cert: "{{ satellite_ssl_cert_path }}/{{ satellite_ssl_cert }}"
+  certs-server-cert-req: "{{ satellite_ssl_cert_path }}/{{ satellite_ssl_csr }}"
+  certs-server-key: "{{ satellite_ssl_key_path }}/satellite_ssl.key"
 
 satellite_answers_tftp:
   foreman-proxy-tftp: "true"
@@ -23,7 +24,7 @@ satellite_answers_tftp:
 
 satellite_answers_dhcp:
   foreman-proxy-dhcp: "true"
-  foreman-proxy-dhcp-managed: "true"
+  foreman-proxy-dhcp-managed: "{{ dhcp_puppet_managed }}"
   foreman-proxy-dhcp-interface: "{{ ansible_default_ipv4['interface'] }}"
   foreman-proxy-dhcp-range: "172.22.4.240 172.22.4.250"
   foreman-proxy-dhcp-gateway: 172.22.4.1
@@ -32,7 +33,7 @@ satellite_answers_dhcp:
 
 satellite_answers_dns:
   foreman-proxy-dns: "true"
-  foreman-proxy-dns-managed: "true"
+  foreman-proxy-dns-managed: "{{ dns_puppet_managed }}"
   foreman-proxy-dns-interface: "{{ ansible_default_ipv4['interface'] }}"
   foreman-proxy-dns-zone: "{{ ansible_domain }}"
   foreman-proxy-dns-forwarders: "172.22.1.91; 172.22.1.92"

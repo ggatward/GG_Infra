@@ -62,3 +62,28 @@
     src: /var/lib/pulp/cache
     dest: /var/cache/pulp
     state: link
+
+- name: Enable Firewalld
+  service:
+    enabled: yes
+    name: firewalld
+    state: started
+
+- name: Configure firewall ports
+  firewalld:
+    permanent: yes
+    immediate: yes
+    port: "{{ item }}"
+    state: enabled
+  with_items:
+    - "{{ fw_ports }}"
+  when: fw_ports is defined
+
+- name: Configure firewall services
+  firewalld:
+    permanent: yes
+    immediate: yes
+    service: "{{ item }}"
+    state: enabled
+  with_items:
+    - "{{ fw_services }}"

@@ -1,9 +1,7 @@
 ---
 - include: set_facts.yml
 
-- include: install_software.yml
-
-- include: firewall.yml
+- include: prepare_system.yml
 
 - include: install_satellite.yml
 

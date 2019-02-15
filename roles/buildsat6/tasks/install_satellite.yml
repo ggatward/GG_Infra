@@ -1,20 +1,20 @@
 ---
 
-# - name: "Copy SSL certs to Satellite host"
-#   copy:
-#     content: "{{ item }}"
-#     dest: "/root/{{ item }}.pem"
-#   with_items:
-#   - "{{ ssl_cert }}"
+- name: check if Satellite is already running
+  uri:
+    url: https://localhost/katello/api/status
+    method: GET
+    validate_certs: False
+  register: status
+  ignore_errors: True
 
+- name: set version fact
+  set_fact:
+    sat6chk: "{{ status.json.version }}"
+  when: status.json is defined
 
-
-
-# Check if service exists for foreman
-- name: "Check if foreman service exists"
-  stat:
-    path: "/etc/init.d/foreman"
-  register: "foreman_service_file"
+- debug:
+    var: sat6chk
 
 # Run the install of Satellite if foreman is installed
 - name: "Update satellite-installer command from answers"
@@ -22,7 +22,10 @@
     satellite_installer_cmd: "{{ satellite_installer_cmd }} --{{ item.key }}='{{ item.value }}'"
   with_dict: "{{ satellite_answers }}"
 
-# Run the install of Satellite 6
-# - name: "Run Satellite installer"
-#   command: "{{ satellite_installer_cmd }}"
-#   when: foreman_service_file.stat.exists
+- debug:
+    var: satellite_answers
+
+# Run the install of Satellite 6 when there is no response to the status API (it's not installed)
+- name: "Run Satellite installer"
+  command: "{{ satellite_installer_cmd }}"
+  when: status.json is not defined

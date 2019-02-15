@@ -1,0 +1,2 @@
+/^Content-Transfer-Encoding/i PREPEND x-classification: {{ email_classification }}
+/^Content-Transfer-Encoding/i PREPEND x-protective-marking: VER=2012.3, NS={{ ansible_domain }}, SEC={{ email_classification }}, ORIGIN={{ satellite_email_params.email_reply_address }}

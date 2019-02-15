@@ -3,10 +3,9 @@
 
 - name: Generic Infrastructure
   hosts: all
-  remote_user: root
   tasks:
 
-  - import_tasks:
+  - include:
     - generic.yml
     - buildsat6.yml
     - buildtower.yml
