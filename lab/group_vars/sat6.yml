@@ -51,3 +51,19 @@ satellite_repositories:
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_version }} (for RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64', state: enable}
+
+# Provisioning Template Sync
+foreman_plugin_templates: true
+template_sync_repo: https://github.com/ggatward/GG_Kickstart
+template_sync_branch: development
+template_sync_prefix: "GatwardIT"
+global_PXEGrub: "PXEGrub global default"
+global_PXEGrub2: "PXEGrub2 global default"
+global_PXELinux: "GatwardIT-PXELinux global default"
+local_boot_PXEGrub: "GatwardIT-PXEGrub default local boot"
+local_boot_PXEGrub2: "PXEGrub2 default local boot"
+local_boot_PXELinux: "GatwardIT-PXELinux default local boot"
+
+# General settings to tweak
+entries_per_page: 50
+errata_status_installable: 'Yes'

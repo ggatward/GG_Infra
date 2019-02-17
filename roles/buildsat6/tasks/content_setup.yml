@@ -1,4 +1,60 @@
 
+# - name: Get the enabled repos
+#   delegate_to: localhost
+#   uri:
+#     url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
+#     method: GET
+#     user: "{{ satellite_admin_username }}"
+#     password: "{{ satellite_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: no
+#     status_code: 200
+#   register: api_result
+
+# - set_fact:
+#     repos: "{{ api_result.json.results }}"
+
+# # TODO: Don't enable a repo if it is already enabled
+
+# # Enable repos on satellite (Fails if already enabled)
+# - name: "Enable repositories"
+#   shell: "hammer repository-set '{{ item.state }}' --organization
+#     '{{ satellite_organization }}'
+#     --product '{{ item.product_name }}' --name '{{ item.name_repo }}'
+#     {% if item.rel is defined %} --releasever '{{ item.rel }}' {% endif %}
+#     --basearch '{{ item.architecture}}'"
+#   with_items: "{{ satellite_repositories }}"
+#   ignore_errors: "yes"
+
+# - name: Get the enabled repo ids
+#   delegate_to: localhost
+#   uri:
+#     url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
+#     method: GET
+#     user: "{{ satellite_admin_username }}"
+#     password: "{{ satellite_admin_password }}"
+#     force_basic_auth: yes
+#     validate_certs: no
+#     status_code: 200
+#   register: api_result
+
+# - name: Set repo_ids fact
+#   set_fact:
+#     repo_ids: "{{ api_result.json.results | map(attribute='id') | list }}"
+
+# - debug:
+#     var: repo_ids
+#
+# - debug:
+#     msg: "ID = {{ item.id }}"
+#   with_items: "{{ repos }}"
+
+
+# TODO: Add EPEL as upstream repo
+
+# TODO: Create sync plan
+
+
 # This API call will start the sync in parallel - BUT we need a lot of extra tasks
 # to detect and wait for the taskid of each sync before continuing
 # - name: "Sync repos on satellite"

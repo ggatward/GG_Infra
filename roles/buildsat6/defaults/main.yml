@@ -65,10 +65,6 @@ dhcp_puppet_managed: true
 # DNS parameters
 dns_puppet_managed: true
 
-
-# Additional Foreman plugins
-foreman_plugin_templates: true
-
 # Email parameters
 configure_email: true
 email_smtp_address: localhost
@@ -80,6 +76,9 @@ email_subject_prefix: '[satellite6]'
 postfix_headers: false
 postfix_header_classification: UNCLASSIFIED
 
+# General satellite settings to tweak
+entries_per_page: 20
+errata_status_installable: 'No'
 
 # Location of manifest on satellite host
 satellite_manifest_dest_path: "/root/satellite_manifest.zip"
@@ -93,6 +92,19 @@ satellite_repositories:
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_version }} (for RHEL 7 Server) (RPMs)', architecture: 'x86_64', state: enable}
   - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64', state: enable}
+
+# Defaults for Provisioning Template sync
+foreman_plugin_templates: false
+template_sync_repo: https://github.com/ggatward/GG_Kickstart
+template_sync_branch: master
+template_sync_prefix: "{{ satellite_organization }}"
+template_sync_associate: always
+global_PXEGrub: "PXEGrub global default"
+global_PXEGrub2: "PXEGrub2 global default"
+global_PXELinux: "PXELinux global default"
+local_boot_PXEGrub: "PXEGrub default local boot"
+local_boot_PXEGrub2: "PXEGrub2 default local boot"
+local_boot_PXELinux: "PXELinux default local boot"
 
 # configure_capsules:
 #satellite_deployment_puppet_env: "production"

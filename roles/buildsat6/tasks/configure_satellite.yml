@@ -43,15 +43,28 @@
       name: sat6_scripts
       state: latest
 
-  # TODO: Configure sat6_scripts - maybe in another task file?
+#  - name: Create sat6_scripts API user in Satellite
+
+  # TODO: Configure sat6_scripts
 
 
 
   # Tasks for sync host
   - block:
-    # TODO: pulp export perms/contexts
-    #- name: Set permissions on pulp export directory
+    - name: Set SELinux fcontext on export directory
+      sefcontext:
+        target: "{{ export_dir }}(/.*)?"
+        setype: foreman_var_run_t
+        state: present
 
+    - name: Set permissions on pulp export directory
+      file:
+        path: "{{ export_dir }}"
+        state: directory
+        owner: foreman
+        group: foreman
+        mode: 0755
+        setype: foreman_var_run_t
 
     - name: Configure pulp export directory
       shell: "hammer settings set --name pulp_export_destination --value {{ export_dir }}"
@@ -59,6 +72,23 @@
 
   # Tasks for disconnected system
   - block:
+    - name: Set permissions on import directory
+      file:
+        path: "{{ import_dir }}"
+        state: directory
+        owner: foreman
+        group: foreman
+        mode: 0755
+
+    - name: Link import directory into web content
+      file:
+        path: /var/www/html/pub/.cdn
+        src: "{{ import_dir }}"
+        state: link
+
+#    - name: Set Satellite CDN path
+
+
     # In 6.4 we can set katello up to understand disconnected has no CDN connection.
     - name: Configure Satellite as disconnected (6.4+)
       shell: "hammer settings set --name content_disconnected --value true"
@@ -131,28 +161,104 @@
     when: postfix_headers
   when: configure_email
 
+- name: Configure General Satellite Settings
+  shell: "hammer settings set --name {{ item.param }} --value {{ item.value }}"
+  with_items:
+    - param: entries_per_page
+      value: "{{ entries_per_page }}"
+    - param: errata_status_installable
+      value: "{{ errata_status_installable }}"
 
+
+# Provisioning Template Sync
 - block:
-  - name: "Configure Template Sync (6.3+)"
+  - name: Enable Template Sync (6.3+)
     command: "{{ plugin_installer_cmd }} --enable-foreman-plugin-templates"
 
-    #- foreman ssh keys for git (/usr/share/foreman/.ssh)
+  - name: Configure SSH keys for foreman user (Git access)
+    file:
+      path: /usr/share/foreman/.ssh
+      state: directory
+      owner: foreman
+      group: foreman
+      mode: 0700
+      setype: ssh_home_t
 
-    #- template-sync params
+  - name: Deploy foreman SSH private key
+    copy:
+      content: "{{ vault_satellite_foreman_private_ssh_key }}"
+      dest: /usr/share/foreman/.ssh/id_rsa
+      owner: foreman
+      group: foreman
+      mode: 0600
 
-    #- perform template sync
-    # curl -H "Accept:application/json,version=2" -H "Content-Type:application/json" \
-    #   -u admin -k https://{{ ansible_fqdn }}/api/v2/templates/import -X POST
+  - name: Deploy foreman SSH public key
+    copy:
+      content: "{{ vault_satellite_foreman_public_ssh_key }}"
+      dest: /usr/share/foreman/.ssh/id_rsa.pub
+      owner: foreman
+      group: foreman
+      mode: 0644
+
+  - name: Configure Template Sync
+    shell: "hammer settings set --name {{ item.param }} --value {{ item.value }}"
+    with_items:
+      - param: template_sync_repo
+        value: "{{ template_sync_repo }}"
+      - param: template_sync_branch
+        value: "{{ template_sync_branch }}"
+      - param: template_sync_prefix
+        value: "{{ template_sync_prefix }}"
+      - param: template_sync_associate
+        value: "{{ template_sync_associate }}"
+
+  - name: Sync Provisioning Templates from Git
+    uri:
+      url: https://{{ ansible_fqdn }}/api/v2/templates/import
+      method: POST
+      body_format: json
+      user: admin
+      password: "{{ satellite_admin_password }}"
+      force_basic_auth: true
+      validate_certs: no
+
+  - name: Configure Global PXE templates
+    shell: "hammer settings set --name {{ item.param }} --value '{{ item.value }}'"
+    with_items:
+      - param: global_PXEGrub
+        value: "{{ global_PXEGrub }}"
+      - param: global_PXEGrub2
+        value: "{{ global_PXEGrub2 }}"
+      - param: global_PXELinux
+        value: "{{ global_PXELinux }}"
+      - param: local_boot_PXEGrub
+        value: "{{ local_boot_PXEGrub }}"
+      - param: local_boot_PXEGrub2
+        value: "{{ local_boot_PXEGrub2 }}"
+      - param: local_boot_PXELinux
+        value: "{{ local_boot_PXELinux }}"
+
+  # TODO: Associate OS with custom templates
+
+  # TODO: Need to build PXE defaults to push templates out to TFTP servers
+
   when: foreman_plugin_templates and satellite_version >= 6.3
 
 
 
 
 
+
+
 # TODO: Configure IdM user access (Only if host if IdM joined)
+# Use assert to check if we are IdM enrolled
+
+
+# Enable IPA in Satellite
 # kinit {{ idm_admin_user }}
 # ipa service-add HTTP/{{ ansible_fqdn }}
 # satellite-installer --foreman-ipa-authentication=true
+
 
 # TODO: Configure IdM Realm (Host must be IdM joined)
 # foreman-prepare-realm {{ idm_admin_user }} realm-capsule
@@ -168,66 +274,12 @@
 # service foreman-proxy restart
 
 
-############### Move below here to content_setup ? #########################
-
-# TODO: Need to sleep a bit here - initial sync can't start immediately
+# TODO: Configure AD Authentication
 
 
-
-# - name: Get the enabled repos
-#   delegate_to: localhost
-#   uri:
-#     url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
-#     method: GET
-#     user: "{{ satellite_admin_username }}"
-#     password: "{{ satellite_admin_password }}"
-#     force_basic_auth: yes
-#     validate_certs: no
-#     status_code: 200
-#   register: api_result
-
-# - set_fact:
-#     repos: "{{ api_result.json.results }}"
-
-# # TODO: Don't enable a repo if it is already enabled
-
-# # Enable repos on satellite (Fails if already enabled)
-# - name: "Enable repositories"
-#   shell: "hammer repository-set '{{ item.state }}' --organization
-#     '{{ satellite_organization }}'
-#     --product '{{ item.product_name }}' --name '{{ item.name_repo }}'
-#     {% if item.rel is defined %} --releasever '{{ item.rel }}' {% endif %}
-#     --basearch '{{ item.architecture}}'"
-#   with_items: "{{ satellite_repositories }}"
-#   ignore_errors: "yes"
-
-# - name: Get the enabled repo ids
-#   delegate_to: localhost
-#   uri:
-#     url: "{{ katello_api }}/repositories?organization_id=1&content_type=yum"
-#     method: GET
-#     user: "{{ satellite_admin_username }}"
-#     password: "{{ satellite_admin_password }}"
-#     force_basic_auth: yes
-#     validate_certs: no
-#     status_code: 200
-#   register: api_result
-
-# - name: Set repo_ids fact
-#   set_fact:
-#     repo_ids: "{{ api_result.json.results | map(attribute='id') | list }}"
-
-# - debug:
-#     var: repo_ids
-#
-# - debug:
-#     msg: "ID = {{ item.id }}"
-#   with_items: "{{ repos }}"
+# TODO: Configure LDAP Authentication
 
 
-# TODO: Add EPEL as upstream repo
-
-# TODO: Create sync plan
 
 # TODO: Add Tower svc account
 # Role:  Fact value -> view_facts -> Read Satellite Server facts
