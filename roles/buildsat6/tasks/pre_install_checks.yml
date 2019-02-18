@@ -1,0 +1,16 @@
+---
+# Assertions early in the play to cause failures if we know we are not going to succeed later.
+
+# Check that the host is correctly enrolled with IPA if we are going to use IPA authentication
+- block:
+  - name: Check if host OS is enrolled with IPA
+    stat:
+      path: /etc/ipa/default.conf
+    register: ipa_enrolled
+
+  - assert:
+      that:
+        - ipa_enrolled.stat.exists
+        - auth_idm_realm is defined
+      fail_msg: "Host does not appear to be enrolled in IPA realm."
+  when: auth_idm

@@ -35,6 +35,19 @@
   register: uploadstatus
   failed_when: "uploadstatus.rc != 0 and uploadstatus.rc != 70"
 
+# Retrieve currently installed plugins
+- name: Check installed plugins
+  uri:
+    url: https://{{ ansible_fqdn }}/api/v2/plugins
+    method: GET
+    body_format: json
+    user: admin
+    password: "{{ satellite_admin_password }}"
+    force_basic_auth: true
+    validate_certs: no
+  register: sat_plugins
+  changed_when: false
+
 # Tasks for sync-host and disco systems
 - block:
   # TODO: Install sat6_scripts
@@ -169,11 +182,18 @@
     - param: errata_status_installable
       value: "{{ errata_status_installable }}"
 
+# - debug:
+#     var: sat_plugins.json.results
+
+# - debug:
+#     msg: "TRUE"
+#   when: "'foreman_templates' not in sat_plugins.json.results | map(attribute='id') | list "
 
 # Provisioning Template Sync
 - block:
   - name: Enable Template Sync (6.3+)
     command: "{{ plugin_installer_cmd }} --enable-foreman-plugin-templates"
+    when: "'foreman_templates' not in sat_plugins.json.results | map(attribute='id') | list"
 
   - name: Configure SSH keys for foreman user (Git access)
     file:
@@ -246,32 +266,89 @@
 
 
 
+# Configure IdM user authentication
+- block:
+  - name: Find default IPA server
+    shell: "cat /etc/ipa/default.conf | grep ^server | awk '{ print $3 }'"
+    register: ipa_server
+    changed_when: false
+
+  - name: Create HTTP service keytab
+    ipa_service:
+      name: "HTTP/{{ ansible_fqdn }}"
+      state: present
+      ipa_host: "{{ ipa_server.stdout }}"
+      ipa_user: "{{ idm_admin_user }}"
+      ipa_pass: "{{ idm_admin_pass }}"
+
+  # TODO: Check if IPA auth is already enabled
+
+  - name: Enable IPA authentication in Satellite
+    command: "{{ plugin_installer_cmd }} --foreman-ipa-authentication=true"
+  when: auth_idm
 
 
+# # Enable IPA realm proxy for provisioning
+# # TODO: Configure IdM Realm (Host must be IdM joined)
+# - block:
+#   - name: Check if host OS is enrolled with IPA
+#     stat:
+#       path: /etc/ipa/default.conf
+#     register: ipa_enrolled
+#     failed_when: not ipa_enrolled.stat.isfile
+
+#   - assert:
+#       that:
+#         - ipa_enrolled.stat.isfile
+#         - idm_realm is defined
+#       fail_msg: "Host does not appear to be enrolled in IPA realm"
+
+# # foreman-prepare-realm {{ idm_admin_user }} realm-capsule
+
+# # mv /root/freeipa.keytab /etc/foreman-proxy/freeipa.keytab
+# # chown foreman-proxy:foreman-proxy /etc/foreman-proxy/freeipa.keytab
+#   - name: Make keytab available to foreman-proxy
+#     copy:
+#       src: /root/freeipa.keytab
+#       dest: /etc/foreman-proxy/freeipa.keytab
+#       remote_src: yes
+#       group: foreman-proxy
+#       owner: foreman-proxy
+#       mode: 0644
+
+# # satellite-installer --foreman-proxy-realm true \
+# # --foreman-proxy-realm-keytab /etc/foreman-proxy/freeipa.keytab \
+# # --foreman-proxy-realm-principal realm-capsule@{{ ipa_realm }} \
+# # --foreman-proxy-realm-provider freeipa
+#   - name: Enable IPA realm proxy
+#     command: |
+#       "{{ plugin_installer_cmd }} --foreman-proxy-realm true
+#       --foreman-proxy-realm-keytab /etc/foreman-proxy/freeipa.keytab
+#       --foreman-proxy-realm-principal realm-capsule@{{ ipa_realm }}
+#       --foreman-proxy-realm-provider freeipa"
+
+# # cp /etc/ipa/ca.crt /etc/pki/ca-trust/source/anchors/ipa.crt
+#   - name: Copy IPA CA Cert
+#     copy:
+#       src: /etc/ipa/ca.crt
+#       dest: /etc/pki/ca-trust/source/anchors/ipa.crt
+#       remote_src: yes
+#       group: root
+#       owner: root
+#       mode: 0644
+#     register: ca_updated
+
+# # update-ca-trust enable
+# # update-ca-trust
+#   - name: Trust IPA CA globally
+#     command: "update-ca-trust enable; update-ca-trust"
+#     when: ca_updated.changed
+
+# # service foreman-proxy restart
+
+#   when: ipa_proxy
 
 
-# TODO: Configure IdM user access (Only if host if IdM joined)
-# Use assert to check if we are IdM enrolled
-
-
-# Enable IPA in Satellite
-# kinit {{ idm_admin_user }}
-# ipa service-add HTTP/{{ ansible_fqdn }}
-# satellite-installer --foreman-ipa-authentication=true
-
-
-# TODO: Configure IdM Realm (Host must be IdM joined)
-# foreman-prepare-realm {{ idm_admin_user }} realm-capsule
-# mv /root/freeipa.keytab /etc/foreman-proxy
-# chown foreman-proxy:foreman-proxy /etc/foreman-proxy/freeipa.keytab
-# satellite-installer --foreman-proxy-realm true \
-# --foreman-proxy-realm-keytab /etc/foreman-proxy/freeipa.keytab \
-# --foreman-proxy-realm-principal realm-capsule@EXAMPLE.COM \
-# --foreman-proxy-realm-provider freeipa
-# cp /etc/ipa/ca.crt /etc/pki/ca-trust/source/anchors/ipa.crt
-# update-ca-trust enable
-# update-ca-trust
-# service foreman-proxy restart
 
 
 # TODO: Configure AD Authentication

@@ -1,5 +1,5 @@
 ---
-# check defaults/main.yml which vars you have to pass.
+# Vars relating to the Satellite installer
 
 satellite_installer_cmd: "/usr/sbin/satellite-installer --scenario satellite"
 plugin_installer_cmd: "/usr/sbin/satellite-installer"

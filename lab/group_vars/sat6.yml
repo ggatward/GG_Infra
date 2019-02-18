@@ -67,3 +67,9 @@ local_boot_PXELinux: "GatwardIT-PXELinux default local boot"
 # General settings to tweak
 entries_per_page: 50
 errata_status_installable: 'Yes'
+
+# Authentication
+auth_idm: true
+auth_idm_realm: IDM.HOME.GATWARDS.ORG
+idm_admin_user: admin
+idm_admin_pass: "{{ vault_idm_admin_pass }}"
