@@ -15,3 +15,6 @@ sandbox2.lab.home.gatwards.org
 
 [raspberry]
 rpi-usb1.core.home.gatwards.org
+
+[workstations]
+shack.core.home.gatwards.org

@@ -1,0 +1,8 @@
+---
+
+- block:
+  - name: Install auth packages
+    yum:
+      name: ipa-client
+      state: present
+  when: auth_idm

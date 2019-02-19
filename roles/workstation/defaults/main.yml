@@ -1,0 +1,12 @@
+---
+
+# Authentication options
+auth_idm: false
+auth_idm_realm: EXAMPLE.COM
+idm_admin_user: admin
+idm_admin_pass: "ChangeMe"
+
+auth_ad: false
+auth_ad_domain: EXAMPLE.COM
+
+auth_ldap: false
