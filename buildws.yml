@@ -1,7 +1,7 @@
 ---
 - name: Install Workstation
   remote_user: svc-ansible
-  hosts: workstations
+  hosts: workstation
   pre_tasks:
     - name: Include vault vars
       include_vars: vault_{{ sys_env|lower }}.yml

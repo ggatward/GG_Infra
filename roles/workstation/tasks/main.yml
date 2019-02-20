@@ -1,2 +1,43 @@
 ---
 - include: configure_auth.yml
+
+- name: Install workstation packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - git
+      # - terminator
+
+- name: Remove packages
+  yum:
+    name: "{{ packages }}"
+    state: absent
+  vars:
+    packages:
+      - gnome-initial-setup
+
+- name: Create skel directories
+  file:
+    path: /etc/skel/.bash/git-aware-prompt
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Copy git-aware-prompt to skel
+  copy:
+    src: "{{ item }}"
+    dest: /etc/skel/.bash/git-aware-prompt
+    # directory_mode: 0755
+    # mode: 0644
+  with_fileglob: "git-aware-prompt/*"
+
+- name: Deploy default bashrc to skel
+  copy:
+    src: bashrc
+    dest: /etc/skel/.bashrc
+    mode: 0644
+    owner: root
+    group: root

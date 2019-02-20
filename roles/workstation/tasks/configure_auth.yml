@@ -6,3 +6,5 @@
       name: ipa-client
       state: present
   when: auth_idm
+
+# Enrol with IPA - use DEVILHORN type client role ....  even for above ??
