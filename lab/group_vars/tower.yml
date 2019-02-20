@@ -1,4 +1,7 @@
 ---
+# MOTD vars
+role: Ansible Tower
+
 # Tower deployment vars
 tower_version: 3.4.0-2
 
