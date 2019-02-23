@@ -9,3 +9,8 @@
   service:
     name: postfix
     state: restarted
+
+- name: restart_cups
+  service:
+    name: cups
+    state: restarted
