@@ -5,58 +5,39 @@
     state: present
   vars:
     packages:
-      - python2-pip
+      - python-pip
+      - python-dns
+      - python-netaddr
       - git
       - sshpass
       - openldap-clients
 
-
-# Need to upgrade setuptools (and pip?) via pip before this will work
-#- name: install manageiq-client
-#  tags:
-#    - install
-#  pip:
-#    name: manageiq-client
-
-
 - name: install the last version of OpenSSL
   pip:
-    name: pyOpenSSL
-    state: latest
-
-# Tower-cli from pip is a later version than python2-ansible-tower-cli RPM
-- name: Install tower-cli from pip
-  pip:
-    name: ansible-tower-cli
-
-- name: Install pywinrm for connecting to windows hosts
-  pip:
     name: "{{ packages }}"
+    state: latest
+    umask: "0022"
   vars:
     packages:
-    - pywinrm>=0.2.2
-    - pywinrm[kerberos]
-    - pywinrm[credssp]
+      - f5-sdk
+      - f5-icontrol-rest
+      - pyOpenSSL
+      - ansible-tower-cli
+      - pywinrm>=0.2.2
+      - pywinrm[kerberos]
+      - pywinrm[credssp]
 
+- name: Configure firewall
+  firewalld:
+    service: https
+    immediate: true
+    permanent: true
+    state: enabled
 
-- name: Allow insecure git repos for self signed certificates
-  command: git config --global http.sslVerify "false"
+# - name: Allow insecure git repos for self signed certificates
+#   command: git config --global http.sslVerify "false"
 
-  #- name: Set git user
-  #  command: git config --global user.name "{{ user_prefix }}{{ inventory_hostname | regex_replace('\\D') }}"
-
-  #- name: Set git user email
-  #  command: git config --global user.email "{{ user_prefix }}{{ inventory_hostname | regex_replace('\\D') }}@{{ ansible_domain }}"
-
-  #- name: Set git to cache credentials
-  #  command: git config --global credential.helper cache
-
-  #- name: Update git to credential timeout after 1 day
-  #  command: git config --global credential.helper 'cache --timeout=86400'
-
-
-
-- name: check if we need to do installer things
+- name: check if we need to run the installer
   uri:
     url: https://localhost/api/v1/ping/
     method: GET
@@ -66,11 +47,10 @@
   register: checkout
   ignore_errors: True
 
-- name: set condtional if the above didn't error
+- name: set condtional if Tower is running
   set_fact:
     towerchk: "{{ checkout.json.version }}"
   when: checkout.json is defined
-
 
 - name: Download Ansible Tower bundle
   get_url:
@@ -140,19 +120,53 @@
     password: "{{ tower_pass }}"
     force_basic_auth: yes
     status_code: 200
-    body: "{{ tower_lic }}"
+    body: "{{ tower_license }}"
     body_format: json
+
+- name: Create Organisations
+  uri:
+    url: https://localhost/api/v2/organizations/
+    method: POST
+    validate_certs: no
+    user: admin
+    password: "{{ tower_pass }}"
+    force_basic_auth: yes
+    body: '{ "name": "{{ item.name }}", "description": "{{ item.desc }}" }'
+    body_format: json
+    status_code:
+      - 201
+      - 400
+  register: response
+  changed_when: resonse.status == 201
+  with_items: "{{ tower_orgs }}"
+
+- name: Create Teams
+  uri:
+    url: https://localhost/api/v2/organizations/{{ item.org }}/teams/
+    method: POST
+    validate_certs: no
+    user: admin
+    password: "{{ tower_pass }}"
+    force_basic_auth: yes
+    body: '{ "organization": "{{ item.org }}", "name": "{{ item.name }}", "description": "{{ item.desc }}" }'
+    body_format: json
+    status_code:
+      - 201
+      - 400
+  register: response
+  changed_when: resonse.status == 201
+  with_items: "{{ tower_teams }}"
 
 - name: Add LDAP Config
   uri:
     url: https://localhost/api/v2/settings/ldap/
     method: PATCH
+    validate_certs: no
     user: admin
     password: "{{ tower_pass }}"
+    force_basic_auth: yes
     body: "{{ lookup('template','ldap_conf.json.j2') }}"
     body_format: json
-    validate_certs: False
-    force_basic_auth: yes
 
 - name: Delete demo inventory
   uri:
@@ -226,6 +240,24 @@
   register: response
   changed_when: response.status == 204
 
+- name: Delete default organization
+  uri:
+    url:  https://localhost/api/v2/organizations/Default/
+    method: DELETE
+    user: admin
+    password: "{{ tower_pass }}"
+    validate_certs: False
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 201
+      - 202
+      - 204
+      - 400
+      - 404
+  register: response
+  changed_when: response.status == 204
+
 - name: Add win_shell/win_feature/win_reboot to allowed adhoc modules
   uri:
     url:  https://localhost/api/v2/settings/all/
@@ -238,12 +270,11 @@
     force_basic_auth: yes
     status_code:
       - 200
-      - 204
       - 400
   register: response
   changed_when: response.status == 200
 
-- name: Set Base URL of Tower to resolve issues with websocket
+- name: Set Base URL of Tower
   uri:
     url:  https://localhost/api/v2/settings/system/
     method: PATCH
@@ -262,8 +293,27 @@
 
   #https://github.com/mgmt-sa-tiger-team/skylight/blob/master/roles/ansible-tower/tasks/setup.yml#L55
 
+# Configure UI login parameters (Login warning text)
+- name: Configure UI login parameters
+  tower_settings:
+    name: CUSTOM_LOGIN_INFO
+    value: "{{ tower_login_banner }}"
 
-- name: Add Ansible service account
+# TODO: Add custom logo
+
+# Need to write SSH key to file for use in tower_credential
+- name: Stage SSH key to temp file
+  copy:
+    content: "{{ svc_ansible_private_ssh_key }}"
+    dest: /tmp/ssh.key
+
+- name: Stage Git SSH key to temp file
+  copy:
+    content: "{{ svc_git_private_ssh_key }}"
+    dest: /tmp/git.key
+
+# We need to associate creds with a user - we delete the user after creating the creds
+- name: Add service account 
   tower_user:
     username: "{{ svc_ansible_user }}"
     password: "{{ svc_ansible_password }}"
@@ -272,77 +322,72 @@
     last_name: Generic
     state: present
 
-
-# TODO: Add user to organization
-
-
-# Needed for tower_credential method
-- name: Stage SSH key to temp file
-  copy:
-    content: "{{ svc_ansible_private_ssh_key }}"
-    dest: /tmp/ssh.key
-
-- name: add Ansible user SSH key
+- name: Add service account SSH credentials
   tower_credential:
-    name: "{{ svc_ansible_user }} SSH key"
-    description: SSH key
-    organization: Default
-    state: present
-    username: "{{ svc_ansible_user }}"
-    user: "{{ svc_ansible_user }}"
     kind: ssh
-    ssh_key_data: /tmp/ssh.key
-
-- name: Stage SCM SSH key to temp file
-  copy:
-    content: "{{ svc_git_private_ssh_key }}"
-    dest: /tmp/ssh.key
-
-- name: add Ansible user git credentials
-  tower_credential:
-    name: "{{ svc_git_user }} SCM key"
-    description: "SCM key"
-    organization: Default
+    name: "{{ svc_ansible_user }} SSH"
+    description: SSH key
+    organization: ORG
+    team: TEAM
     state: present
-    username: "{{ svc_git_user }}"
     user: "{{ svc_ansible_user }}"
-    kind: scm
+    username: "{{ svc_ansible_user }}"
     ssh_key_data: /tmp/ssh.key
+    become_method: sudo
+    become_username: root
+    become_password: "{{ svc_ansible_password }}"
 
-- name: add Ansible Vault credentials
+- name: Add service account Git credentials
   tower_credential:
-    name: "vault credential"
-    description: vault
-    organization: Default
+    kind: scm
+    name: "{{ svc_ansible_user }} GIT"
+    description: Git Service account
+    organization: ORG
+    team: TEAM
     state: present
+    user: "{{ svc_ansible_user }}"
+    username: "{{ svc_ansible_user }}"
+    ssh_key_data: /tmp/git.key
+
+- name: Create vault credentials
+  tower_credential:
     kind: vault
-    vault_password: "{{ vault_password }}"
+    name: "{{ svc_ansible_user }} Vault"
+    description: Ansible Vault
+    organization: ORG
+    team: TEAM
+    state: present
+    vault_password: "{{ vault_vault_password }}"
 
-# Not currently working - https://github.com/ansible/ansible/issues/45172
-#- name: Create satellite 6 credentials
-#  tower_credential:
-#    name: "satellite 6"
-#    description: "Satellite 6"
-#    organization: Default
-#    state: present
-#    kind: satellite6
-#    username: "{{ sat6_tower_user }}"
-#    password: "{{ sat6_tower_pass }}"
-#    satellite_6_url: "{{ sat6_url }}"
+# We're done with the user account, delete it so it can't be used interactively
+- name: Remove service account user
+  tower_user:
+    username: "{{ svc_ansible_user }}"
+    email: "{{ svc_ansible_email }}"
+    state: absent
 
-
-# TODO: Give the ansible user permission to use each of the the credentials
-
+# Credentials for Foreman
+- name: Create Satellite 6 credentials
+  tower_credential:
+    name: "satellite 6"
+    description: "Satellite 6"
+    organization: ORG
+    team: TEAM
+    state: present
+    kind: satellite6
+    username: "{{ svc_sat6_user }}"
+    password: "{{ svc_sat6_pass }}"
+    host: "{{ sat6_url }}"
 
 # Add new inventory
 - name: Create Satellite inventory
   tower_inventory:
     name: "satellite 6"
     description: "Satellite 6"
-    organization: Default
+    organization: ORG
     state: present
 
-# Create Sat6 inventory source
+# Create Foreman inventory source
 - name: Setup Sat6 as an inventory source
   tower_inventory_source:
     name: "satellite 6"
@@ -351,10 +396,37 @@
     inventory: "satellite 6"
     credential: "satellite 6"
     overwrite: true
-    overwrite_vars: true
+    overwrite_vars: false
     source: satellite6
     update_cache_timeout: 0
-    update_on_launch: true
+    update_on_launch: false
+    source_vars: '{ ssl_verify: false }'
+
+# TODO: Give teams permission to read/adhoc/use/update the inventory
+
+
+
+####################  PROJECT  #############################
+
+
+# Needed for tower_credential method
+
+
+
+
+
+# Not currently working - https://github.com/ansible/ansible/issues/45172
+
+
+
+# TODO: Give the ansible user permission to use each of the the credentials
+
+
+# Add new inventory
+
+
+# Create Sat6 inventory source
+
 
 # TODO: Give the ansible user permission to use and update the inventory
 
