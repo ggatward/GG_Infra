@@ -1,4 +1,41 @@
 ---
+- name: Create SSH directory
+  become_user: geoff
+  file:
+    path: /home/geoff/.ssh
+    state: directory
+    owner: geoff
+    group: geoff
+
+
+- name: Deploy SSH keys
+  become_user: geoff
+  copy:
+    content: "{{ vault_geoff_private_ssh_key }}"
+    dest: /home/geoff/.ssh/id_rsa
+    owner: geoff
+    group: geoff
+    mode: 0600
+
+- name: Deploy SSH pubkey
+  become_user: geoff
+  copy:
+    content: "{{ vault_geoff_public_ssh_key }}"
+    dest: /home/geoff/.ssh/id_rsa.pub
+    owner: geoff
+    group: geoff
+    mode: 0644
+
+# Git profile
+#[user]
+#	name = Geoff
+#	email = geoff@gatwards.org
+#[push]
+#	default = simple
+#[color]
+#	ui = auto
+
+
 
 - name: Create network mountpoints
   become_user: geoff
@@ -14,12 +51,13 @@
 # - name: Deploy sudoers rule for mounting
 
 
-# - name: Add network mounts to bash profile
-#   lineinfile:
-#     path: /home/geoff/.bashrc
-#     line: "if [ $(mount | grep -c nas_home) -eq 0 ]; then sudo /usr/bin/mount nas1:/volume1/homes/geoff /home/geoff/nas_home; fi"
-#     state: present
-
+- name: Add network mounts to bash profile
+  blockinfile:
+    path: /home/geoff/.bashrc
+    block: |
+      if [ $(mount | grep -c nas_home) -eq 0 ]; then sudo /usr/bin/mount nas1:/volume1/homes/geoff /home/geoff/nas_home; fi
+      if [ $(mount | grep -c Multimedia) -eq 0 ]; then sudo /usr/bin/mount nas1:/volume1/Multimedia /home/geoff/nas_mounts/Multimedia; fi
+    insertafter: EOF
 
 # Create symlinks
 

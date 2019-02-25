@@ -26,6 +26,17 @@
       - code
       - rdesktop
 
+- name: Install extra repos and packages for Fedora
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-29.noarch.rpm"
+      - "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-29.noarch.rpm"
+      - vlc
+  when: ansible_distribution == 'Fedora'
+
 - name: Remove packages
   yum:
     name: "{{ packages }}"
