@@ -10,3 +10,9 @@ auth_ad: false
 auth_ad_domain: EXAMPLE.COM
 
 auth_ldap: false
+
+# Set up printing?
+configure_printer: false
+
+# Install VSCode on workstations?
+install_vscode: false

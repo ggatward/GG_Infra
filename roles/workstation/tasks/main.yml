@@ -1,6 +1,20 @@
 ---
 - include: configure_auth.yml
 
+- name: Import additional repo GPG keys
+  rpm_key:
+    key: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+    validate_certs: yes
+
+- name: Deploy additional repo configs
+  copy:
+    src: vscode.repo
+    dest: /etc/yum.repos.d/vscode.repo
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Install workstation packages
   yum:
     name: "{{ packages }}"
@@ -8,7 +22,9 @@
   vars:
     packages:
       - git
-      # - terminator
+      - terminator
+      - code
+      - rdesktop
 
 - name: Remove packages
   yum:
@@ -40,78 +56,25 @@
     owner: root
     group: root
 
-# Mount NAS homedir
+# Printer setup
+- block:
+  - name: Deploy printer PPD
+    copy:
+      src: FUJI-XEROX-DocuPrint-CM305-df.ppd
+      dest: /etc/cups/ppd/
+      owner: root
+      group: lp
+      mode: 0640
 
-# Create symlinks
+  - name: Configure printer
+    copy:
+      src: printers.conf
+      dest: /etc/cups/printers.conf
+      owner: root
+      group: lp
+      mode: 0600
+    notify: restart_cups
+  when: configure_printer
 
-- name: Import additional repo GPG keys
-  rpm_key:
-    key: https://packages.microsoft.com/keys/microsoft.asc
-    state: present
-    validate_certs: yes
-
-- name: Deploy additional repo configs
-  copy:
-    src: vscode.repo
-    dest: /etc/yum.repos.d/vscode.repo
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Install additional workstation packages
-  yum:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - code
-
-- name: Deploy printer PPD
-  copy:
-    src: FUJI-XEROX-DocuPrint-CM305-df.ppd
-    dest: /etc/cups/ppd/
-    owner: root
-    group: lp
-    mode: 0640
-
-- name: Configure printer
-  copy:
-    src: printers.conf
-    dest: /etc/cups/printers.conf
-    owner: root
-    group: lp
-    mode: 0600
-  notify: restart_cups
-
-- name: Install VSCode plugins
-  become_user: geoff
-  shell: "code --install-extension {{ item }}"
-  with_items:
-    - dhoeric.ansible-vault
-    - file-icons.file-icons
-    - gruntfuggly.todo-tree
-    - haaaad.ansible
-    - humao.rest-client
-    - jetmartin.bats
-    - jpogran.puppet-vscode
-    - ms-python.python
-    - openhab.openhab
-    - redhat.vscode-yaml
-    - skorfulose.splunk
-    - vscoss.vscode-ansible
-
-- name: Create VSCode config dir
-  become_user: geoff
-  file:
-    path: /home/geoff/.config/Code/User
-    state: directory
-    owner: geoff
-    group: geoff
-
-- name: Deploy VSCode config
-  become_user: geoff
-  copy:
-    src: settings.json
-    dest: /home/geoff/.config/Code/User/settings.json
-    owner: geoff
-    group: geoff
+# Include user specific setups
+- include: geoff.yml
