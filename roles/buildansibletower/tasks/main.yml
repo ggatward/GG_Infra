@@ -405,98 +405,77 @@
 # TODO: Give teams permission to read/adhoc/use/update the inventory
 
 
-
-####################  PROJECT  #############################
-
-
-# Needed for tower_credential method
-
-
-
-
-
-# Not currently working - https://github.com/ansible/ansible/issues/45172
-
-
-
-# TODO: Give the ansible user permission to use each of the the credentials
-
-
-# Add new inventory
-
-
-# Create Sat6 inventory source
-
-
-# TODO: Give the ansible user permission to use and update the inventory
-
 ################ PROJECT ###################################
 # Create project
 - name: Create project
   tower_project:
-    name: GG_Infra
-    organization: Default
+    name: "{{ item.name }}"
+    description: "{{ item.name }} {{ item.git_branch }}"
+    organization: ORG
+    state: present
     scm_type: git
-    scm_url: "{{ git_url }}"
-    scm_branch: "{{ git_branch }}"
+    scm_url: "{{ item.git_url }}"
+    scm_credential: "{{ svc_git_user }} GIT"
+    scm_branch: "{{ item.git_branch }}"
     scm_clean: true
-    scm_credential: "{{ svc_git_user }} SCM key"
+    scm_delete_on_launch: true
     scm_update_on_launch: true
+  with_items: "{{ git_projects }}"
 
-# Checkout Project (should happen on creation - need to wait for it to complete)
+# TODO: Give teams permission to read/use/update projects
 
-# Create project inventory
-- name: Create project inventory
+- name: Wait for project checkout
+  wait_for:
+    timeout: 10
+  delegate_to: localhost
+
+# Create project inventories
+- name: Create project inventories
   tower_inventory:
-    name: "GG_Infra (Lab)"
+    name: "{{ item.0.name }} {{ item.1.name }}"
     description: "Inventory from project"
-    organization: Default
+    organization: ORG
     state: present
+  with_subelements:
+    - "{{ git_projects }}"
+    - inventories
 
-- name: Create project inventory
-  tower_inventory:
-    name: "GG_Infra (Core)"
-    description: "Inventory from project"
-    organization: Default
-    state: present
+# TODO: Give teams permission to read/adhoc/use/update inventories
 
-- name: Setup Git repo as an inventory source
+# Set inventory source
+- name: Set inventory source from git repos
   tower_inventory_source:
-    name: "GG_Infra (Lab)"
-    description: "Inventory from project"
+    name: "{{ item.0.name }} {{ item.1.name }}"
+    description: "{{ item.1.name }} host inventory"
     state: present
-    inventory: "GG_Infra (Lab)"
+    inventory: "{{ item.0.name }} {{ item.1.name }}"
     overwrite: true
     overwrite_vars: true
     source: scm
-    source_project: GG_Infra
-    source_path: lab/hosts
+    source_project: "{{ item.0.name }}"
+    source_path: "{{ item.1.path }}"
     update_cache_timeout: 0
     update_on_project_update: true
-
-- name: Setup Git repo as an inventory source
-  tower_inventory_source:
-    name: "GG_Infra (Core)"
-    description: "Inventory from project"
-    state: present
-    inventory: "GG_Infra (Core)"
-    overwrite: true
-    overwrite_vars: true
-    source: scm
-    source_project: GG_Infra
-    source_path: core/hosts
-    update_cache_timeout: 0
-    update_on_project_update: true
+  with_subelements:
+    - "{{ git_projects }}"
+    - inventories
 
 # Create job templates from project
 - name: Create job template
   tower_job_template:
-    name: Generic Hardening
-    project: GG_Infra
-    playbook: generic.yml
-    job_type: run
+    name: "{{ item.1.name }}"
+    description: "{{ item.1.name }}"
     state: present
-    inventory: "satellite 6"
-    become_enabled: true
-    credential: "{{ svc_ansible_user }} SSH key"
-    vault_credential: "vault credential"
+    job_type: run
+    project: "{{ item.0.name }}"
+    playbook: "{{ item.1.playbook }}"
+    become_enabled: True
+    ask_credential: true
+    ask_inventory: "{{ item.1.ask_inventory }}"
+    ask_limit: true
+    inventory: "{{ item.0.name }} {{ item.1.inventory }}"
+#    credential: "{{ svc_ansible_user }} SSH"
+    vault_credential: "{{ item.1.vault }}"
+  with_subelements:
+    - "{{ git_projects }}"
+    - inventories

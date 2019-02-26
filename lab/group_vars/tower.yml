@@ -2,16 +2,47 @@
 # MOTD vars
 role: Ansible Tower
 
-# Tower deployment vars
-tower_version: 3.4.0-2
+tower_repo_url: "https://....../"
+tower_version: 3.4.1-1
 
+# Admin password
 tower_pass: "{{ vault_tower_pass }}"
-tower_lic: "{{ vault_tower_lic }}"
+
+# License file
+tower_license: "{{ vault_tower_license }}"
+
+# Ansible vault passwords
+team1_vault_password: "{{ vault_team_vault_password }}"
+team2_vault_password: "{{ vault_team_vault_password }}"
+
+# Organizations and Teams
+tower_orgs:
+  - name: MyOrg
+    desc: MyOrg
+
+tower_teams:
+  - name: "TEAM 1"
+    desc: "Team 1"
+    org: "MyOrg"
+  - name: "TEAM 2"
+    desc: "Team 2"
+    org: "MyOrg"
+
 
 # LDAP params for Tower
 tower_ldap_bind_user: uid=svc-tower,CN=sysaccounts,CN=etc,DC=gatwards,DC=org
 tower_ldap_bind_pass: "{{ vault_tower_ldap_bind_pass }}"
 tower_admins_group: 'CN=tower_admins,CN=groups,CN=accounts,DC=gatwards,DC=org'
+ldap_user_base: 'CN=users,CN=accounts,DC=gatwards,DC=org'
+ldap_user_filter: '(uid=%(user)s)'
+ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
+ldap_group_filter: '(objectClass=ipausergroup)'
+
+# UI Parameters
+tower_login_banner: |+
+  This is a test system.
+  You will be monitored.
+
 
 # Service accounts
 svc_ansible_user: svc-ansible
@@ -19,11 +50,29 @@ svc_ansible_password: "{{ vault_svc_ansible_password }}"
 svc_ansible_email: noreply@lab.gatwards.org
 svc_ansible_private_ssh_key: "{{ vault_svc_ansible_private_ssh_key }}"
 
+# Git credentials
 svc_git_user: svc-tower
 svc_git_private_ssh_key: "{{ vault_svc_ansible_private_ssh_key }}"
 
-# Git project
-git_url: "git@github.com:ggatward/GG_Infra.git"
-git_branch: development
+# Foreman/Satellite6 credentials
+foreman_url: https://sat6.core.home.gatwards.org
+svc_foreman_user: svc-tower
+svc_foreman_password: "{{ vault_svc_foreman_password }}"
 
-#enable_telemetry_basic_auth: "true"
+# Git projects
+git_projects:
+  - name: GENERIC
+    git_url: "git@github.com:ggatward/GG_Infra.git"
+    git_branch: development
+    inventories:
+      - name: Dummy
+        path: inventory/hosts
+    templates:
+      - name: Gather host facts
+        playbook: gather_facts.yml
+        vault: MyVault
+        inventory: Dummy
+        ask_inventory: true
+
+
+
