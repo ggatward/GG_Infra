@@ -20,8 +20,26 @@
 - name: Deploy SSH pubkey
   become_user: geoff
   copy:
-    content: "{{ vault_geoff_public_ssh_key }}"
+    src: id_rsa.pub
     dest: /home/geoff/.ssh/id_rsa.pub
+    owner: geoff
+    group: geoff
+    mode: 0644
+
+- name: Deploy Ansible SSH keys
+  become_user: geoff
+  copy:
+    content: "{{ vault_svc_ansible_private_ssh_key }}"
+    dest: /home/geoff/.ssh/id_rsa_ansible
+    owner: geoff
+    group: geoff
+    mode: 0600
+
+- name: Deploy Ansible SSH pubkey
+  become_user: geoff
+  copy:
+    src: id_rsa_ansible.pub
+    dest: /home/geoff/.ssh/id_rsa_ansible.pub
     owner: geoff
     group: geoff
     mode: 0644

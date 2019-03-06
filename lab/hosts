@@ -8,6 +8,7 @@ nagios.lab.home.gatwards.org
 sat62.lab.home.gatwards.org
 sat63.lab.home.gatwards.org
 sat64.lab.home.gatwards.org
+#sat65.lab.home.gatwards.org
 
 [test]
 sandbox1.lab.home.gatwards.org

@@ -1,12 +1,7 @@
 ---
 # Do all infra setups
 
-- name: Generic Infrastructure
-  hosts: all
-  tasks:
-
-  - include:
-    - generic.yml
-    - buildsat6.yml
-    - buildtower.yml
-    - buildnagios.yml
+- import_playbook: generic.yml
+- import_playbook: buildsat6.yml
+- import_playbook: buildtower.yml
+- import_playbook: buildnagios.yml

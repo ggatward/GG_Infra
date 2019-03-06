@@ -112,11 +112,11 @@
 
 # Experience shows that these should be immediate for reliable functionality - in ALL cases
 - name: Configure immediate download policy
-  shell: "hammer settings set --name {{ item }} --value immediate"
-  with_items:
-    - default_download_policy
-    - default_proxy_download_policy
+  shell: "hammer settings set --name default_download_policy --value immediate"
 
+- name: Configure capsule immediate download policy (6.3+)
+  shell: "hammer settings set --name default_proxy_download_policy --value immediate"
+  when: satellite_version >= 6.3
 
 # Email configurations
 - block:
@@ -142,9 +142,9 @@
     - name: Configure Satellite email
       shell: "hammer settings set --name {{ item.param }} --value {{ item.value }}"
       with_items:
-        - param: email_smtp_host
-          value: "{{ email_smtp_host }}"
-        - param: email_smtp_port
+        - param: smtp_address
+          value: "{{ email_smtp_address }}"
+        - param: smtp_port
           value: "{{ email_smtp_port }}"
     when: satellite_version >= 6.4
 

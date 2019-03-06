@@ -25,6 +25,7 @@
       - terminator
       - code
       - rdesktop
+      - ansible
 
 - name: Install extra repos and packages for Fedora
   yum:

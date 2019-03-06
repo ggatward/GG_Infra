@@ -1,9 +1,8 @@
 ---
-satellite_version: 6.4
-satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/manifest_sat64.zip
+satellite_version: 6.5
+satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/manifest_sat65.zip
 
 # CDN registration
-pool_id: 8a85f98260c27fc50160c32cc4365ccb
 redhat_repositories:
   - rhel-7-server-rpms
   - rhel-server-rhscl-7-rpms

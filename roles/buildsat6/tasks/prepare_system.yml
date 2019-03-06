@@ -62,6 +62,7 @@
     src: /var/lib/pulp/cache
     dest: /var/cache/pulp
     state: link
+    force: true
 
 - name: Enable Firewalld
   service:
