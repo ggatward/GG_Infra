@@ -18,6 +18,13 @@ auth_idm_realm: IDM.HOME.GATWARDS.ORG
 idm_admin_user: admin
 idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
+ipaclient_server: "auth1.idm.home.gatwards.org"
+ipaclient_domain: "{{ auth_idm_realm }}"
+ipaclient_enroll_user: "{{ idm_admin_user }}"
+ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
+ad_domain: AD.HOME.GATWARDS.ORG
+ad_via_ipa: true
+
 ldap_servers:
   - auth1.idm.home.gatwards.org
   - auth2.idm.home.gatwards.org

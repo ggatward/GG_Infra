@@ -1,6 +1,4 @@
 ---
-- include: configure_auth.yml
-
 - name: Import additional repo GPG keys
   rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
@@ -26,6 +24,7 @@
       - code
       - rdesktop
       - ansible
+      - virt-viewer
 
 - name: Install extra repos and packages for Fedora
   yum:

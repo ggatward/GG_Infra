@@ -288,21 +288,6 @@
   when: auth_idm
 
 
-# # Enable IPA realm proxy for provisioning
-# # TODO: Configure IdM Realm (Host must be IdM joined)
-# - block:
-#   - name: Check if host OS is enrolled with IPA
-#     stat:
-#       path: /etc/ipa/default.conf
-#     register: ipa_enrolled
-#     failed_when: not ipa_enrolled.stat.isfile
-
-#   - assert:
-#       that:
-#         - ipa_enrolled.stat.isfile
-#         - idm_realm is defined
-#       fail_msg: "Host does not appear to be enrolled in IPA realm"
-
 # # foreman-prepare-realm {{ idm_admin_user }} realm-capsule
 
 # # mv /root/freeipa.keytab /etc/foreman-proxy/freeipa.keytab

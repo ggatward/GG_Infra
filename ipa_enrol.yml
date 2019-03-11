@@ -1,0 +1,12 @@
+---
+- name: Enrol IPA client
+  remote_user: svc-ansible
+  become: true
+  hosts: all
+  pre_tasks:
+    - name: Include vault vars
+      include_vars: vault_{{ sys_env|lower }}.yml
+      no_log: true
+  tasks:
+    - include_role:
+        name: role_ipa_client
