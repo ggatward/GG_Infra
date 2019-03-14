@@ -1,0 +1,7 @@
+---
+
+ldap_bind_user: solarisproxy
+ldap_bind_pass: "{NS1}41fa88f3a945c41140"
+ldap_sudo_pass: Password1
+
+ipa_client_host_keytab: /etc/krb5/krb5.keytab

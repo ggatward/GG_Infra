@@ -1,0 +1,13 @@
+---
+
+# - name: clean rollback root
+#   file:
+#     state: absent
+#     path: "{{ ipaclient_rollback_path }}"
+#   when: not __recovery_in_effect
+
+# - name: enrollment failed
+#   fail:
+#     msg: >
+#      {{ ipaclient_hostname }} could be be attributed to any resource pools.
+#      {{ ipaclient_hostname }} has not been enrolled.

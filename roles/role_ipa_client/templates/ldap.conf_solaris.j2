@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+#
+uri            ldaps://{{ ipaclient_server }}
+bind_timelimit 15
+timelimit      15
+sudoers_base   ou=sudoers,{{ realm_dc }}
+sudoers_debug  0
+binddn         uid=sudo,cn=sysaccounts,cn=etc,{{ realm_dc }}
+bindpw         {{ ldap_sudo_pass }}
+tls_cacert     /etc/ldap-ca.pem
+tls_checkpeer  yes

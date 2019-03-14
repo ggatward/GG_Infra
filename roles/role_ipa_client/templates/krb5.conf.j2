@@ -1,0 +1,32 @@
+[libdefaults]
+	verify_ap_req_nofail = false
+	default_realm = {{ ipaclient_domain | upper }}
+	canonicalize = true
+	forwardable = true
+	dns_lookup_realm = true
+
+[realms]
+	{{ ipaclient_domain | upper }} = {
+		dns_lookup_kdc = true
+		kpasswd_protocol = SET_CHANGE
+	}
+
+[domain_realm]
+	{{ inventory_hostname }} = {{ ipaclient_domain | upper }}
+	{{ ansible_domain }} = {{ ipaclient_domain | upper }}
+	.{{ ansible_domain }} = {{ ipaclient_domain | upper }}
+
+[logging]
+  default = FILE:/var/krb5/kdc.log
+  kdc = FILE:/var/krb5/kdc.log
+  kdc_rotate = {
+  	period = 1d
+  	versions = 10
+  }
+
+[appdefaults]
+  kinit = {
+  	renewable = true
+  	forwardable = true
+  	no_addresses = true
+  }
