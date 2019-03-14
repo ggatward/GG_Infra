@@ -6,6 +6,6 @@ satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/manifest_sa
 redhat_repositories:
   - rhel-7-server-rpms
   - rhel-server-rhscl-7-rpms
-  - rhel-7-server-satellite-{{ satellite_version }}-rpms
+#  - rhel-7-server-satellite-{{ satellite_version }}-rpms
   - rhel-7-server-ansible-2.6-rpms
-  - rhel-7-server-satellite-maintenance-6-rpms
+#  - rhel-7-server-satellite-maintenance-6-rpms
