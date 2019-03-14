@@ -25,21 +25,6 @@ Role Variables
 * `ipaclient_automount_location`: Location of automounted homedirs. If not defined local homedirs will be used via oddjobd. (string)
 * `ipaclient_resource_pools`: Identity Parcel resource pool memberships. The resource pools must already exist. (array of strings, mandatory, minimum length 1)
 
-Roll back
----------
-This role does make an attempt to roll back existing authentication configuration and is not guaranteed to work. If the role fails to register the host to IPA it will
-trigger the recovery tasks. These tasks will deploy a local user
-account which sudo access.
-
-Any configuration file that was manipulated by the roll back plays will be available
-in `/tmp/{{ role_name }}/recovery`. On successful completion of the role the contents
-within `/tmp/{{ role_name }}` will be destroyed.
-
-
-The rollback capability provides several additional parameters:
-* `ipaclient_unsafe_migrate`: Whether this role should attempt to cleanly remove existing remote authentication services. (boolean, default: False)
-* `ipaclient_recovery_user`: Username to deploy in the case of failed role (string, default: ansible)
-* `ipaclient_recovery_pass`: Password of the recovery user, (string, default: ansible)
 
 Example Playbook
 ----------------
@@ -59,18 +44,6 @@ Example Playbook
            ipaclient_resource_pools:
              - webservers
 
-    ---
-    # meta/main.yml
-    # Role dependency workflow
-
-    dependencies:
-      - role: ipa-client-ansible,
-        ipaclient_server: ipaserver.example.com,
-        ipaclient_domain: EXAMPLE.COM,
-        ipaclient_enroll_user: my_service_principal,
-        ipaclient_enroll_pass: my_service_principal_secret,
-        ipaclient_resource_pools:
-          - webservers
 
 License
 -------
