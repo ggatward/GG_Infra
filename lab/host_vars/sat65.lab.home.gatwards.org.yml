@@ -2,6 +2,8 @@
 satellite_version: 6.5
 satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/manifest_sat65.zip
 
+satellite_device: /dev/sdb
+
 # CDN registration
 redhat_repositories:
   - rhel-7-server-rpms

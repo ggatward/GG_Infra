@@ -1,18 +1,19 @@
 ---
 - block:
-
-  - name: Cleanup any existing install
-    command: >
-      {{ ipaclient_install_command }} --uninstall --unattended
-    failed_when: false
-    changed_when: false
-
   - name: RedHat - Install required packages
     yum:
       name: "{{ item.key if ('version' not in item.value) else ('%s-%s' % (item.key, item.value['version'])) }}"
       state: "{{ item.value.state | default('present') }}"
     with_dict: "{{ ipaclient_packages }}"
     register: __ipaclient_installed_rh
+
+  # Local host thinks it is enrolled, IPA server doesn't agree...
+  - name: Cleanup any existing install
+    command: >
+      {{ ipaclient_install_command }} --uninstall --unattended
+    failed_when: false
+    changed_when: false
+    when: not __realm_enrolled
 
   - include: api/manageHost.yml
 
