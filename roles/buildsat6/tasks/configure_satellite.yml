@@ -258,6 +258,8 @@
       - param: local_boot_PXELinux
         value: "{{ local_boot_PXELinux }}"
 
+  # TODO: Associate templates with org/location
+
   # TODO: Associate OS with custom templates
 
   # TODO: Need to build PXE defaults to push templates out to TFTP servers
@@ -347,3 +349,8 @@
 # Role:  Fact value -> view_facts -> Read Satellite Server facts
 #        Host -> view hosts -> Read Satellite Server hosts
 #        Host group -> view_hostgroups -> View Satelltie server host groups
+
+
+# TODO: Associate 'production' puppet env with location/org
+
+# TODO: Associate satellite server with location/org

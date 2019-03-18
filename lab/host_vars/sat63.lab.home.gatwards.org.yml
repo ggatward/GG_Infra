@@ -1,6 +1,6 @@
 ---
 satellite_version: 6.3
-satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/manifest_sat63.zip
+satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/COE_Lab_Latest.zip
 
 # CDN registration
 redhat_repositories:
