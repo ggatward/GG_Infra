@@ -1,0 +1,51 @@
+satellite:
+  url: https://{{ ansible_fqdn }}
+  username: {{ api_user }}
+  password: {{ api_password }}
+  default_org: {{ satellite_organization }}
+  manifest: homesat6
+  disconnected: {% if is_disconnected %}True{% else %}False{% endif %}
+
+logging:
+  dir: /var/log/satellite
+  debug: False
+
+email:
+  mailout: True
+  mailfrom: Satellite 6 <{{ email_reply_address }}>
+  mailto:
+    - geoff@gatwards.org
+
+export:
+  dir: {{ export_dir }}
+
+import:
+  dir: {{ import_dir }}
+
+publish:
+  batch: 2
+  content_views:
+    - RHEL 7 Server
+
+promotion:
+  batch: 2
+  lifecycle1:
+    name: Quality
+    content_views:
+      - RHEL 7 Server
+  lifecycle2:
+    name: Production
+    content_views:
+      - RHEL 7 Server
+
+cleanup:
+  content_views:
+    - view: RHEL 7 Server
+      keep: 1
+
+puppet-forge-server:
+  servertype: puppet-forge-server
+  hostname: puppetforge.example.org
+  modulepath: /opt/puppet-forge/modules
+  username: puppetuser
+  token: Unused

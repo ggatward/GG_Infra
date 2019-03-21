@@ -22,6 +22,10 @@ is_sync_host: false
 export_dir: /var/sat-export
 import_dir: /var/sat-import
 
+# Username and password for API account for inter-satellite-sync scripts
+api_user: svc-api
+api_password: ChangeMe
+
 # Initial list of additional ports and services to enable
 # (will be dynamically built from the satellite_features defined)
 fw_ports: []

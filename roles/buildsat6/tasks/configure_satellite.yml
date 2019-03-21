@@ -50,17 +50,24 @@
 
 # Tasks for sync-host and disco systems
 - block:
-  # TODO: Install sat6_scripts
   - name: Install sat6_scripts (disconnected tools)
     yum:
       name: sat6_scripts
       state: latest
 
-#  - name: Create sat6_scripts API user in Satellite
+  - name: Create sat6_scripts API user in Satellite
+    shell: |
+      "hammer user create --login {{ api_user }} --firstname API --lastname User --password='{{ api_password }}'
+      --mail no-reply@example.org --auth-source-id 1 --organization-ids 1
+      --default-organization-id 1 --admin true"
 
-  # TODO: Configure sat6_scripts
-
-
+  - name: Deploy sat6_scripts configuration
+    template:
+      src: sat6_scripts_config.yml.j2
+      dest: /usr/local/etc/sat6_scripts/config.yml
+      owner: root
+      group: root
+      mode: 0644
 
   # Tasks for sync host
   - block:
@@ -81,6 +88,14 @@
 
     - name: Configure pulp export directory
       shell: "hammer settings set --name pulp_export_destination --value {{ export_dir }}"
+
+    - name: Deploy sat6_scripts export configuration
+      template:
+        src: sat6_scripts_exports.yml.j2
+        dest: /usr/local/etc/sat6_scripts/exports.yml
+        owner: root
+        group: root
+        mode: 0644
     when: is_sync_host
 
   # Tasks for disconnected system
