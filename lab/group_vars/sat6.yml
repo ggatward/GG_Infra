@@ -2,16 +2,6 @@
 # MOTD vars
 role: Dev Satellite {{ satellite_version }}
 
-# We need Satellite to register directly to CDN
-register_with_cdn: true
-cdn_product: Red Hat Satellite
-
-redhat_repositories:
-  - rhel-7-server-rpms
-  - rhel-7-server-optional-rpms
-  - rhel-server-rhscl-7-rpms
-  - rhel-7-server-satellite-{{ satellite_version }}-rpms
-
 enable_epel: no
 
 satellite_device: /dev/vdb
@@ -26,7 +16,7 @@ satellite_features:
   - tftp
 
 # Sat6 deployment vars
-satellite_fqdn: "{{ lookup('dig', ansible_nodename) }}"
+#satellite_fqdn: "{{ lookup('dig', ansible_nodename) }}"
 satellite_organization: "MyOrg"
 satellite_location: "Home"
 satellite_admin_password: "{{ vault_satellite_admin_password }}"

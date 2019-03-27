@@ -1,0 +1,17 @@
+---
+satellite_version: 6.5
+satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/COE_Lab_Latest.zip
+
+satellite_device: /dev/sdb
+
+is_sync_host: false
+is_disconnected: true
+
+# CDN registration
+redhat_repositories:
+  - rhel-7-server-rpms
+  - rhel-7-server-optional-rpms
+  - rhel-server-rhscl-7-rpms
+#  - rhel-7-server-satellite-{{ satellite_version }}-rpms
+  - rhel-7-server-ansible-2.6-rpms
+#  - rhel-7-server-satellite-maintenance-6-rpms

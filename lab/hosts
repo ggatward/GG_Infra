@@ -4,11 +4,18 @@ ansible.lab.home.gatwards.org
 [nagios]
 nagios.lab.home.gatwards.org
 
-[sat6]
+[sat6-sync]
 sat62.lab.home.gatwards.org
 sat63.lab.home.gatwards.org
 sat64.lab.home.gatwards.org
 sat65.lab.home.gatwards.org
+
+[sat6-disco]
+sat65.disco.home.gatwards.org
+
+[sat6:children]
+sat6-sync
+sat6-disco
 
 [test]
 sandbox1.lab.home.gatwards.org

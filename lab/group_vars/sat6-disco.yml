@@ -1,0 +1,16 @@
+---
+
+is_sync_host: false
+is_disconnected: true
+
+register_with_cdn: false
+satellite_fqdn: sat6.core.home.gatwards.org
+sat_user: admin
+sat_password:
+sat_env: Library
+
+redhat_repositories:
+  - rhel-7-server-rpms
+  - rhel-7-server-optional-rpms
+  - rhel-server-rhscl-7-rpms
+  - rhel-7-server-satellite-{{ satellite_version }}-rpms
