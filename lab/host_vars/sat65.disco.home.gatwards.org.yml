@@ -4,9 +4,6 @@ satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/COE_Lab_Lat
 
 satellite_device: /dev/sdb
 
-is_sync_host: false
-is_disconnected: true
-
 # CDN registration
 redhat_repositories:
   - rhel-7-server-rpms

@@ -2,6 +2,9 @@
 satellite_version: 6.3
 satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/COE_Lab_Latest.zip
 
+is_sync_host: false
+is_disconnected: false
+
 # CDN registration
 redhat_repositories:
   - rhel-7-server-rpms
