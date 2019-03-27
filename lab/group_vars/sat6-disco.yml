@@ -1,4 +1,6 @@
 ---
+# MOTD vars
+role: Dev DISCO Satellite {{ satellite_version }}
 
 is_sync_host: false
 is_disconnected: true
