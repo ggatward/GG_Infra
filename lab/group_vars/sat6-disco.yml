@@ -4,10 +4,10 @@ is_sync_host: false
 is_disconnected: true
 
 register_with_cdn: false
-satellite_fqdn: sat6.core.home.gatwards.org
-sat_user: admin
-sat_password:
-sat_env: Library
+sat_cdn_fqdn: sat6.core.home.gatwards.org
+sat_cdn_user: admin
+sat_cdn_password: "{{ vault_sat_cdn_password }}"
+sat_cdn_env: Library
 
 redhat_repositories:
   - rhel-7-server-rpms
