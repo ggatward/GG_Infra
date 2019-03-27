@@ -9,6 +9,8 @@ sat_cdn_user: admin
 sat_cdn_password: "{{ vault_sat_cdn_password }}"
 sat_cdn_env: Library
 
+install_katello_tools: false
+
 redhat_repositories:
   - rhel-7-server-rpms
   - rhel-7-server-optional-rpms
