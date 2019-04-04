@@ -2,6 +2,10 @@
 # MOTD vars
 role: Dev DISCO Satellite {{ satellite_version }}
 
+satellite_ssl_cert: wildcard.disco.home.gatwards.org.pem
+satellite_ssl_csr: wildcard.disco.home.gatwards.org.csr
+satellite_ssl_key: "{{ vault_satellite_disco_ssl_key }}"
+
 is_sync_host: false
 is_disconnected: true
 
@@ -18,3 +22,6 @@ redhat_repositories:
   - rhel-7-server-optional-rpms
   - rhel-server-rhscl-7-rpms
   - rhel-7-server-satellite-{{ satellite_version }}-rpms
+
+# Disco systems can't reach github - use an internal mirror
+template_sync_repo: https://nas1.core.home.gatwards.org/volume1/git/GG_Kickstart
