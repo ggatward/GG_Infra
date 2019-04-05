@@ -211,17 +211,13 @@
   with_items:
     - "--organization {{ satellite_organization }}"
     - "--location {{ satellite_location }}"
+  # TODO: Remove when bug resolved
+  when: satellite_version != '6.5'
 
 # TODO: Associate 'production' puppet env with location/org
 - name: Import default puppet environments
   shell: "hammer environment update --name production --locations {{ satellite_location }} --organizations {{ satellite_organization }}"
 
-# - debug:
-#     var: sat_plugins.json.results
-
-# - debug:
-#     msg: "TRUE"
-#   when: "'foreman_templates' not in sat_plugins.json.results | map(attribute='id') | list "
 
 # Provisioning Template Sync
 - block:
@@ -266,7 +262,6 @@
       - param: template_sync_associate
         value: "{{ template_sync_associate }}"
 
-  # TODO: Disco needs different git repo ##
   - name: Sync Provisioning Templates from Git
     uri:
       url: https://{{ ansible_fqdn }}/api/v2/templates/import
@@ -276,7 +271,6 @@
       password: "{{ satellite_admin_password }}"
       force_basic_auth: true
       validate_certs: no
-    when: not is_disconnected
 
   - name: Configure Global PXE templates
     shell: "hammer settings set --name {{ item.param }} --value '{{ item.value }}'"
@@ -301,7 +295,25 @@
 
   # TODO: Need to build PXE defaults to push templates out to TFTP servers
 
+
   when: foreman_plugin_templates and satellite_version >= 6.3
+
+# TODO: Ansible Roles ?
+# Need to clone roles to /etc/ansible/roles on satellite
+# Then:
+# for i in $(ls -1 /etc/ansible/roles) ;do hammer ansible roles import --organization MyOrg --proxy-id 1 --role-names $i; done
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -374,7 +386,6 @@
 
 
 
-
 # TODO: Configure AD Authentication
 
 
@@ -386,3 +397,16 @@
 # Role:  Fact value -> view_facts -> Read Satellite Server facts
 #        Host -> view hosts -> Read Satellite Server hosts
 #        Host group -> view_hostgroups -> View Satelltie server host groups
+
+
+
+# TODO: Domains  (Associate default domain with org)
+
+
+# TODO: Subnets  (Associate default subnet with org)
+
+
+
+# TODO: Compute resource
+
+# TODO: Compute Profile (basic pxe)

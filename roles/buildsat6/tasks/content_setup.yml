@@ -81,13 +81,13 @@
 
 
 # We use hammer here as it won't return until the sync is complete.
-- name: "Sync repos on satellite (This will take a long time...)"
-  shell: "hammer repository synchronize --id '{{ item.id }}' --organization
-    {{ satellite_organization }}"
-  with_items: "{{ repos }}"
-  register: "sync_repos_result"
-  retries: 3
-  until: "{{ sync_repos_result | success }}"
+# - name: "Sync repos on satellite (This will take a long time...)"
+#   shell: "hammer repository synchronize --id '{{ item.id }}' --organization
+#     {{ satellite_organization }}"
+#   with_items: "{{ repos }}"
+#   register: "sync_repos_result"
+#   retries: 3
+#   until: "{{ sync_repos_result | success }}"
 
 
 
