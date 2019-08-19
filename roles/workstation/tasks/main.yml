@@ -22,9 +22,9 @@
       - git
       - terminator
       - code
-      - rdesktop
-      - ansible
-      - virt-viewer
+        #      - rdesktop
+        #      - ansible
+        #      - virt-viewer
 
 - name: Install extra repos and packages for Fedora
   yum:

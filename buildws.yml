@@ -1,6 +1,7 @@
 ---
 - name: Install Workstation
   remote_user: svc-ansible
+  become: true
   hosts: workstation
   pre_tasks:
     - name: Include vault vars

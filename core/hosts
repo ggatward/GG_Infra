@@ -1,4 +1,4 @@
-[tower]
+[awx]
 ansible.core.home.gatwards.org
 
 [nagios]
@@ -12,3 +12,10 @@ rpi-usb1.core.home.gatwards.org
 
 [workstation]
 shack.core.home.gatwards.org
+
+[weather]
+weather.core.home.gatwards.org
+
+[automation]
+automation.core.home.gatwards.org
+zwave1.iot.home.gatwards.org
