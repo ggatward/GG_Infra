@@ -14,17 +14,17 @@ sat65.lab.home.gatwards.org
 sat6_sync
 #sat6_disco
 
-[test]
-sandbox1.lab.home.gatwards.org
-sandbox2.lab.home.gatwards.org
+#[test]
+#sandbox1.lab.home.gatwards.org
+#sandbox2.lab.home.gatwards.org
 
 #[raspberry]
 #rpi-usb1.core.home.gatwards.org
 
-[workstation]
+#[workstation]
 #shack.core.home.gatwards.org
 #jumphost.lab.home.gatwards.org
-vdi100.lab.home.gatwards.org
+#vdi100.lab.home.gatwards.org
 
 [tang]
 tang1.lab.home.gatwards.org
