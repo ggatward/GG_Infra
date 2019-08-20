@@ -1,12 +1,6 @@
 [awx]
 ansible.core.home.gatwards.org
 
-[nagios]
-nagios.core.home.gatwards.org
-
-[sat6]
-sat6.core.home.gatwards.org
-
 [raspberry]
 rpi-usb1.core.home.gatwards.org
 

@@ -10,14 +10,6 @@ ssh_MaxAuthTries: 4
 # Disable all repos before re-enabling them?
 reset_redhat_repos: no
 
-#domain: example.org
-#netmask: 255.255.255.0
-#network: 192.168.122.0
-#broadcast: 192.168.122.255
-#gateway: 192.168.122.1
-#root_password: "{{ vault_root_password }}"
-#cloud_pubkey: "{{ vault_cloud_pubkey }}"
-
 ntpservers:
  - ntp1.core.home.gatwards.org
  - ntp2.core.home.gatwards.org
