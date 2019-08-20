@@ -1,11 +1,15 @@
 ---
 # MOTD vars
 system: Home
-sys_env: LAB
 
 # Hardening overrides
-ssh_PermitRootLogin: 'yes'
 ssh_MaxAuthTries: 4
+
+# Red Hat CDN/Satellite params
+cdn_user: ggatward@redhat.com
+cdn_password: "{{ vault_satellite_cdn_password }}"
+reset_redhat_repos: no
+sat_epel_repo: GatwardIT_EPEL-7_epel-7-x86_64
 
 ntpservers:
  - ntp1.core.home.gatwards.org
@@ -14,11 +18,11 @@ ntpservers:
 
 # User Authentication via IPA
 auth_idm: true
-auth_idm_realm: IDM.HOME.GATWARDS.ORG
+auth_idm_realm: IPA.HOME.GATWARDS.ORG
 idm_admin_user: admin
 idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
-ipaclient_server: "auth1.idm.home.gatwards.org"
+ipaclient_server: "ipa1.ipa.home.gatwards.org"
 ipaclient_domain: "{{ auth_idm_realm }}"
 ipaclient_enroll_user: "{{ idm_admin_user }}"
 ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
@@ -27,20 +31,10 @@ ad_domain: AD.HOME.GATWARDS.ORG
 ad_via_ipa: true
 
 ldap_servers:
-  - auth1.idm.home.gatwards.org
-  - auth2.idm.home.gatwards.org
+  - ipa1.ipa.home.gatwards.org
+  - ipa2.ipa.home.gatwards.org
 
 ldap_user_base: 'CN=users,CN=accounts,DC=gatwards,DC=org'
 ldap_user_filter: '(uid=%(user)s)'
 ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
 ldap_group_filter: '(objectClass=ipausergroup)'
-
-# Generic vars
-cdn_user: ggatward@redhat.com
-cdn_password: "{{ vault_satellite_cdn_password }}"
-
-enable_epel: true
-sat_epel_repo: GatwardIT_EPEL-7_epel-7-x86_64
-
-sat6_tower_user: svc-tower-sat6
-sat6_tower_pass: "{{ vault_sat6_tower_pass }}"

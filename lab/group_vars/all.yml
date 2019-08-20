@@ -1,0 +1,12 @@
+---
+# MOTD vars
+sys_env: LAB
+
+# Hardening overrides
+ssh_PermitRootLogin: 'yes'
+
+# Generic vars
+enable_epel: true
+
+sat6_tower_user: svc-tower-sat6
+sat6_tower_pass: "{{ vault_sat6_tower_pass }}"
