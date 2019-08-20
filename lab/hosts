@@ -1,29 +1,31 @@
-[tower]
-ansible.lab.home.gatwards.org
+#[tower]
+#ansible.lab.home.gatwards.org
 
-[nagios]
-nagios.lab.home.gatwards.org
+#[nagios]
+#nagios.lab.home.gatwards.org
 
 [sat6_sync]
-sat63.lab.home.gatwards.org
-sat64.lab.home.gatwards.org
 sat65.lab.home.gatwards.org
 
-[sat6_disco]
-sat65.disco.home.gatwards.org
+#[sat6_disco]
+#sat65.disco.home.gatwards.org
 
 [sat6:children]
 sat6_sync
-sat6_disco
+#sat6_disco
 
 [test]
 sandbox1.lab.home.gatwards.org
 sandbox2.lab.home.gatwards.org
 
-[raspberry]
-rpi-usb1.core.home.gatwards.org
+#[raspberry]
+#rpi-usb1.core.home.gatwards.org
 
 [workstation]
-shack.core.home.gatwards.org
-jumphost.lab.home.gatwards.org
+#shack.core.home.gatwards.org
+#jumphost.lab.home.gatwards.org
 vdi100.lab.home.gatwards.org
+
+[tang]
+tang1.lab.home.gatwards.org
+tang2.lab.home.gatwards.org

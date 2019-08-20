@@ -1,11 +1,15 @@
 [awx]
 ansible.core.home.gatwards.org
 
+#[tang]
+#tang1.core.home.gatwards.org
+#tang2.core.home.gatwards.org
+
 [raspberry]
 rpi-usb1.core.home.gatwards.org
 
-[workstation]
-shack.core.home.gatwards.org
+#[workstation]
+#shack.core.home.gatwards.org
 
 [weather]
 weather.core.home.gatwards.org
