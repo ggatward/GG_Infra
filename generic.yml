@@ -12,5 +12,5 @@
         name: role_generic_os
 
     - include_role:
-        name: role_hardening
+        name: ansible-role-hardening
       when: skip_hardening is not defined

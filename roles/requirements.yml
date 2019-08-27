@@ -3,7 +3,7 @@
   scm: git
   version: development
 
-- src: https://github.com/ggatward/role_hardening.git
+- src: https://github.com/ggatward/ansible-role-hardening.git
   scm: git
   version: development
 
