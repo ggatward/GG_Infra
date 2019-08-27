@@ -3,6 +3,8 @@
 
 - import_playbook: generic.yml
 - import_playbook: ipa_enrol.yml
-- import_playbook: buildsat6.yml
-- import_playbook: buildtower.yml
-- import_playbook: buildnagios.yml
+- import_playbook: sat6.yml
+- import_playbook: ansibletower.yml
+- import_playbook: nagios.yml
+- import_playbook: weather.yml
+- import_playbook: workstation.yml

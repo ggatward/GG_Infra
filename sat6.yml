@@ -39,4 +39,4 @@
 
 
   - include_role:
-      name: buildsat6
+      name: role_gg_sat6

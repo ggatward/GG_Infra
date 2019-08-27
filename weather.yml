@@ -1,12 +1,12 @@
 ---
-- name: Install Tower
+- name: Install Weather Servers
   remote_user: svc-ansible
   become: true
-  hosts: tower
+  hosts: weather
   pre_tasks:
     - name: Include vault vars
       include_vars: vault_{{ sys_env|lower }}.yml
       no_log: true
   tasks:
   - include_role:
-      name: buildansibletower
+      name: role_gg_weewx
