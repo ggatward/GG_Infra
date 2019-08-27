@@ -1,4 +1,0 @@
----
-# handlers file for buildansibletower
-- name: restart_tower
-  command: ansible-tower-service restart

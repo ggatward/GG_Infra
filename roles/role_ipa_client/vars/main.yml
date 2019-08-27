@@ -1,7 +1,0 @@
----
-
-ipaclient_api_version: "2.228"
-
-# Path where backup artefacts exist
-# ipaclient_rollback_path: "/tmp/{{ role_name }}"
-# ipaclient_recovery_path: "{{ ipaclient_rollback_path }}/recovery"
