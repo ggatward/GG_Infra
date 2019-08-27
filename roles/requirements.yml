@@ -11,22 +11,22 @@
   scm: git
   version: development
 
-- src: https://github.com/ggatward/ansible-role-ansibletower
+- src: git@github.com:ggatward/ansible-role-ansibletower.git
   scm: git
   version: development
 
-- src: https://github.com/ggatward/ansible-role-sat6
+- src: git@github.com:ggatward/ansible-role-sat6.git
   scm: git
   version: development
 
-- src: https://github.com/ggatward/ansible-role-workstation
+- src: git@github.com:ggatward/ansible-role-workstation.git
   scm: git
   version: development
 
-- src: https://github.com/ggatward/ansible-role-nagiosxi
+- src: git@github.com:ggatward/ansible-role-nagiosxi.git
   scm: git
   version: development
 
-- src: https://github.com/ggatward/ansible-role-weewx
+- src: git@github.com:ggatward/ansible-role-weewx.git
   scm: git
   version: development
