@@ -9,4 +9,24 @@
 
 - src: https://github.com/ggatward/role_nagios_client.git
   scm: git
-  version: master
+  version: development
+
+- src: https://github.com/ggatward/ansible-role-ansibletower
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/ansible-role-sat6
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/ansible-role-workstation
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/ansible-role-nagiosxi
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/ansible-role-weewx
+  scm: git
+  version: development

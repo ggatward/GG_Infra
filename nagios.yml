@@ -9,4 +9,4 @@
       no_log: true
   tasks:
   - include_role:
-      name: role_gg_nagiosxi
+      name: ansible-role-nagiosxi
