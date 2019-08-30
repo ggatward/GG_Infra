@@ -15,14 +15,14 @@ weewx_vantage_tcp_port: 22222
 
 weewx_cwop_enable: 'true'
 weewx_cwop_station: VK2XJG
-weewx_cwop_passcode: {{ vault_weewx_cwop_passcode }}
+weewx_cwop_passcode: "{{ vault_weewx_cwop_passcode }}"
 
 weewx_wunderground_enable: 'true'
 weewx_wunderground_station: INEWSOUT867
-weewx_wunderground_password: {{ vault_weewx_wunderground_password }}
+weewx_wunderground_password: "{{ vault_weewx_wunderground_password }}"
 weewx_wunderground_rapidfire: 'True'
 
 weewx_mqtt_user: weather
-weewx_mqtt_pass: {{ vault_weewx_mqtt_pass }}
+weewx_mqtt_pass: "{{ vault_weewx_mqtt_pass }}"
 weewx_mqtt_url: "mqtt://{{ weewx_mqtt_user }}:{{ weewx_mqtt_pass }}@automation.core.home.gatwards.org:1883/"
 weewx_mqtt_topic: weather
