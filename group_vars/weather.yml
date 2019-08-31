@@ -22,7 +22,15 @@ weewx_wunderground_station: INEWSOUT867
 weewx_wunderground_password: "{{ vault_weewx_wunderground_password }}"
 weewx_wunderground_rapidfire: 'True'
 
-weewx_mqtt_user: weather
+weewx_use_mqtt: true
+weewx_mqtt_user: weewx
 weewx_mqtt_pass: "{{ vault_weewx_mqtt_pass }}"
-weewx_mqtt_url: "mqtt://{{ weewx_mqtt_user }}:{{ weewx_mqtt_pass }}@automation.core.home.gatwards.org:1883/"
-weewx_mqtt_topic: weather
+weewx_mqtt_url: "mqtt://{{ weewx_mqtt_user }}:{{ weewx_mqtt_pass }}@{{ mqtt_broker_fqdn }}:{{ mqtt_broker_port }}/"
+weewx_mqtt_topic: weewx
+
+# Custom scripting
+bomxml2mqtt: true
+bomxml2mqtt_bomuri: ftp://ftp.bom.gov.au/anon/gen/fwo/IDN11060.xml
+bomxml2mqtt_user: bomxml
+bomxml2mqtt_pass: "{{ vault_bomxml2mqtt_pass }}"
+bomxml2mqtt_topic: bomxml/
