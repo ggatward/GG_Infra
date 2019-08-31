@@ -29,7 +29,6 @@ weewx_mqtt_url: "mqtt://{{ weewx_mqtt_user }}:{{ weewx_mqtt_pass }}@{{ mqtt_brok
 weewx_mqtt_topic: weewx
 
 # Custom scripting
-bomxml2mqtt: true
 bomxml2mqtt_bomuri: ftp://ftp.bom.gov.au/anon/gen/fwo/IDN11060.xml
 bomxml2mqtt_user: bomxml
 bomxml2mqtt_pass: "{{ vault_bomxml2mqtt_pass }}"

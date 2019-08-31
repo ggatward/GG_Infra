@@ -10,3 +10,21 @@
   tasks:
   - include_role:
       name: ansible-role-weewx
+
+  - name: Deploy custom MQTT scripts
+    template:
+      src: bomxml2mqtt.py.j2
+      dest: /usr/local/bin/bomxml2mqtt.py
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Deploy custom cron
+    cron:
+      name: bomxml
+      cron_file: bomxml
+      hour: '0,3,6,9,12,15,18,21'
+      minute: '02'
+      job: '/usr/local/bin/bomxml2mqtt.py >/dev/null 2>&1'
+      state: present
+      user: root
