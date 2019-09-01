@@ -10,8 +10,8 @@ ssh_MaxAuthTries: 4
 ssh_PermitRootLogin: 'yes'
 
 # Red Hat CDN/Satellite params
-cdn_user: ggatward@redhat.com
-cdn_password: "{{ vault_satellite_cdn_password }}"
+cdn_user: geoff@gatwards.org
+cdn_password: "{{ vault_cdn_password }}"
 reset_redhat_repos: no
 sat_epel_repo: GatwardIT_EPEL-7_epel-7-x86_64
 

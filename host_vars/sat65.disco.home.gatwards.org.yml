@@ -2,7 +2,8 @@
 satellite_version: 6.5
 satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/COE_Lab_Latest.zip
 
-satellite_device: /dev/sdb
+satellite_ssl_cert: wildcard.disco.home.gatwards.org.pem
+satellite_ssl_csr: wildcard.disco.home.gatwards.org.csr
 
 # CDN registration
 redhat_repositories:

@@ -28,3 +28,7 @@
       job: '/usr/local/bin/bomxml2mqtt.py >/dev/null 2>&1'
       state: present
       user: root
+
+# TODO:
+# /var/www/html/stormvue for TS tracking (TAR bundle from Boltek)
+# Requires also vsftpd with stormvue user
