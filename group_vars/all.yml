@@ -2,8 +2,12 @@
 # MOTD vars
 system: Home
 
+# Generic vars
+enable_epel: true
+
 # Hardening overrides
 ssh_MaxAuthTries: 4
+ssh_PermitRootLogin: 'yes'
 
 # Red Hat CDN/Satellite params
 cdn_user: ggatward@redhat.com
@@ -12,9 +16,9 @@ reset_redhat_repos: no
 sat_epel_repo: GatwardIT_EPEL-7_epel-7-x86_64
 
 ntpservers:
- - ntp1.core.home.gatwards.org
- - ntp2.core.home.gatwards.org
- - ntp3.core.home.gatwards.org
+  - ntp1.core.home.gatwards.org
+  - ntp2.core.home.gatwards.org
+  - ntp3.core.home.gatwards.org
 
 # User Authentication via IPA
 auth_idm: true

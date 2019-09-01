@@ -5,7 +5,7 @@
   hosts: tower
   pre_tasks:
     - name: Include vault vars
-      include_vars: vault_{{ sys_env|lower }}.yml
+      include_vars: vault.yml
       no_log: true
   tasks:
   - include_role:

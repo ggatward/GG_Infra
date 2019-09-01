@@ -1,8 +1,0 @@
----
-# MOTD vars
-sys_env: Core
-
-# Hardening overrides
-ssh_PermitRootLogin: 'yes'
-
-enable_epel: true
