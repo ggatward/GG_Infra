@@ -69,5 +69,5 @@ idm_admin_user: admin
 idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
 # sat6_scripts configs
-api_user: svc-api
-api_password: "{{ vault_satellite_api_password }}"
+satellite_api_user: svc-api
+satellite_api_password: "{{ vault_satellite_api_password }}"

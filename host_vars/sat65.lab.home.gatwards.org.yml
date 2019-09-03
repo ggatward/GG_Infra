@@ -1,5 +1,5 @@
 ---
-satellite_version: 6.5
+satellite_version: '6.5'
 satellite_manifest_path: https://webshare.lab.home.gatwards.org/sat6/COE_Lab_Latest.zip
 
 satellite_ssl_cert: wildcard.lab.home.gatwards.org.pem
