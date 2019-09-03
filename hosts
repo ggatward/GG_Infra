@@ -9,10 +9,6 @@ ansible_core
 #ansible_lab
 
 
-[foreman]
-foreman.core.home.gatwards.org
-
-
 #[tang_core]
 #tang1.core.home.gatwards.org
 #tang2.core.home.gatwards.org
@@ -52,6 +48,10 @@ tang_lab
 #workstation_core
 #workstation_lab
 
+
+[foreman]
+foreman.core.home.gatwards.org
+
 [weather]
 weather.core.home.gatwards.org
 
@@ -60,40 +60,38 @@ automation.core.home.gatwards.org
 zwave1.iot.home.gatwards.org
 
 
+[sandbox]
+sandbox-rhel7.lab.home.gatwards.org
+sandbox-rhel8.lab.home.gatwards.org
+sandbox-cent7.lab.home.gatwards.org
+
 
 [core:children]
 ansible_core
+automation
+weather
+foreman
 #nagios_core
 #tang_core
 #workstation_core
-automation
-foreman
-weather
 #raspberry
 
 [lab:children]
 #ansible_lab
-#nagios_lab
 tang_lab
-sat6_lab
+sat6
+sandbox
+#nagios_lab
 #workstation_lab
 
 
-[sat6_sync_lab]
+
+[sat6_sync]
 sat65.lab.home.gatwards.org
 
-[sat6_sync:children]
-sat6_sync_lab
-
-#[sat6_disco_lab]
+#[sat6_disco]
 #sat65.disco.home.gatwards.org
 
-#[sat6_disco:children]
-#sat6_disco_lab
-
-[sat6_lab:children]
-sat6_sync_lab
-#sat6_disco_lab
-
 [sat6:children]
-sat6_lab
+sat6_sync
+#sat6_disco
