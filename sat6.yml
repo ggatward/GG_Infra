@@ -1,0 +1,42 @@
+---
+- name: Satellite Installation
+  remote_user: svc-ansible
+  become: true
+  hosts: sat6
+  pre_tasks:
+    - name: Include vault vars
+      include_vars: vault.yml
+      no_log: true
+  tasks:
+
+  - block:
+    - name: Stage certificates to Satellite
+      copy:
+        src: "certs/{{ item }}"
+        dest: "{{ satellite_ssl_cert_path }}/{{ item }}"
+      with_items:
+        - "{{ satellite_ssl_cert }}"
+        - "{{ satellite_ssl_csr }}"
+
+    - name: Stage CA certificate to Satellite
+      copy:
+        src: "certs/{{ satellite_ssl_ca }}"
+        dest: "{{ satellite_ssl_ca_path }}"
+
+    - name: Link CA cert into PKI directory
+      file:
+          path: "{{ satellite_ssl_cert_path }}/{{ satellite_ssl_ca }}"
+          src: "{{ satellite_ssl_ca_path }}/{{ satellite_ssl_ca }}"
+          state: link
+
+    - name: Deploy SSL key
+      copy:
+        content: "{{ satellite_ssl_key }}"
+        dest: "{{ satellite_ssl_key_path }}/satellite_ssl.key"
+        mode: 0600
+
+    when: satellite_use_custom_cert
+
+
+  - include_role:
+      name: ansible-role-sat6

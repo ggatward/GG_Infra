@@ -1,6 +1,0 @@
----
-- name: create tower
-  hosts: tower
-  remote_user: root
-  roles:
-    - { role: buildansibletower }

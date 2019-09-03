@@ -1,0 +1,12 @@
+---
+- name: create Nagios
+  remote_user: svc-ansible
+  become: true
+  hosts: nagios
+  pre_tasks:
+    - name: Include vault vars
+      include_vars: vault.yml
+      no_log: true
+  tasks:
+  - include_role:
+      name: ansible-role-nagiosxi

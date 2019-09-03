@@ -1,0 +1,16 @@
+---
+- name: Generic Infrastructure
+  remote_user: svc-ansible
+  become: true
+  hosts: all
+  pre_tasks:
+    - name: Include vault vars
+      include_vars: vault.yml
+      no_log: true
+  tasks:
+    - include_role:
+        name: role_generic_os
+
+    - include_role:
+        name: ansible-role-hardening
+      when: skip_hardening is not defined

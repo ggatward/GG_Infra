@@ -1,1 +1,32 @@
 ---
+- src: https://github.com/ggatward/role_generic_os.git
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/ansible-role-hardening.git
+  scm: git
+  version: development
+
+- src: https://github.com/ggatward/role_nagios_client.git
+  scm: git
+  version: development
+
+- src: git@github.com:ggatward/ansible-role-ansibletower.git
+  scm: git
+  version: development
+
+- src: git@github.com:ggatward/ansible-role-sat6.git
+  scm: git
+  version: development
+
+- src: git@github.com:ggatward/ansible-role-workstation.git
+  scm: git
+  version: development
+
+- src: git@github.com:ggatward/ansible-role-nagiosxi.git
+  scm: git
+  version: development
+
+- src: git@github.com:ggatward/ansible-role-weewx.git
+  scm: git
+  version: development

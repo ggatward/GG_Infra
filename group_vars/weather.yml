@@ -1,0 +1,35 @@
+---
+# MOTD vars
+role: Weather Station
+
+weewx_location: Bungendore, NSW
+weewx_latitude: -35.24798
+weewx_longitude: 149.44273
+weewx_altitude: 2300
+weewx_altitude_units: foot
+weewx_driver: Vantage
+
+weewx_vantage_iss_id: 4
+weewx_vantage_url: weatherlink.core.home.gatwards.org
+weewx_vantage_tcp_port: 22222
+
+weewx_cwop_enable: 'true'
+weewx_cwop_station: VK2XJG
+weewx_cwop_passcode: "{{ vault_weewx_cwop_passcode }}"
+
+weewx_wunderground_enable: 'true'
+weewx_wunderground_station: INEWSOUT867
+weewx_wunderground_password: "{{ vault_weewx_wunderground_password }}"
+weewx_wunderground_rapidfire: 'True'
+
+weewx_use_mqtt: true
+weewx_mqtt_user: weewx
+weewx_mqtt_pass: "{{ vault_weewx_mqtt_pass }}"
+weewx_mqtt_url: "mqtt://{{ weewx_mqtt_user }}:{{ weewx_mqtt_pass }}@{{ mqtt_broker_fqdn }}:{{ mqtt_broker_port }}/"
+weewx_mqtt_topic: weewx
+
+# Custom scripting
+bomxml2mqtt_bomuri: ftp://ftp.bom.gov.au/anon/gen/fwo/IDN11060.xml
+bomxml2mqtt_user: bomxml
+bomxml2mqtt_pass: "{{ vault_bomxml2mqtt_pass }}"
+bomxml2mqtt_topic: bomxml/
