@@ -1,5 +1,5 @@
 ---
-- src: https://github.com/ggatward/role_generic_os.git
+- src: https://github.com/ggatward/ansible-role-generic-os.git
   scm: git
   version: development
 
