@@ -30,3 +30,7 @@
 - src: git@github.com:ggatward/ansible-role-weewx.git
   scm: git
   version: development
+
+- src: git@github.com:ggatward/ansible-role-openhab.git
+  scm: git
+  version: development

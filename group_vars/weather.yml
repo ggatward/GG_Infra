@@ -3,8 +3,8 @@
 role: Weather Station
 
 weewx_location: Bungendore, NSW
-weewx_latitude: -35.24798
-weewx_longitude: 149.44273
+weewx_latitude: "{{ latitude }}"
+weewx_longitude: "{{ longitude }}"
 weewx_altitude: 2300
 weewx_altitude_units: foot
 weewx_driver: Vantage

@@ -55,9 +55,16 @@ foreman.core.home.gatwards.org
 [weather]
 weather.core.home.gatwards.org
 
-[automation]
+
+[openhab]
 automation.core.home.gatwards.org
+
+[zwave]
 zwave1.iot.home.gatwards.org
+
+[automation:children]
+openhab
+zwave
 
 
 [sandbox]

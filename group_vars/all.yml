@@ -44,5 +44,8 @@ ntpservers:
 # ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
 # ldap_group_filter: '(objectClass=ipausergroup)'
 
+latitude: "{{ vault_latitude }}"
+longitude: "{{ vault_longitude }}"
+
 mqtt_broker_fqdn: automation.core.home.gatwards.org
 mqtt_broker_port: 1883

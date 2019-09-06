@@ -9,7 +9,7 @@
       no_log: true
   tasks:
     - include_role:
-        name: role_generic_os
+        name: ansible-role-generic-os
 
     - include_role:
         name: ansible-role-hardening

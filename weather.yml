@@ -4,9 +4,9 @@
   become: true
   hosts: weather
   pre_tasks:
-    - name: Include vault vars
-      include_vars: vault.yml
-      no_log: true
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
   tasks:
   - include_role:
       name: ansible-role-weewx
