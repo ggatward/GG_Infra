@@ -6,6 +6,11 @@ openhab_db_host: 127.0.0.1
 postgresql_pgdata: /var/lib/pgsql/data
 
 # MQTT defaults
+mqtt_use_ssl: true
+mqtt_use_websockets: true
+mqtt_broker_tls_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+
 # mqtt_broker: broker
 # mqtt_host: localhost
 
@@ -16,7 +21,6 @@ mqtt_users:
     pass: "{{ vault_weewx_mqtt_pass }}"
   - user: bomxml
     pass: "{{ vault_bomxml2mqtt_pass }}"
-
 
 # # Get sensitive vars from the vault
 

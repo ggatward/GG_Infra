@@ -24,8 +24,8 @@ ntpservers:
 # User Authentication via IPA
 # auth_idm: true
 # auth_idm_realm: IPA.HOME.GATWARDS.ORG
-# idm_admin_user: admin
-# idm_admin_pass: "{{ vault_idm_admin_pass }}"
+idm_admin_user: admin
+idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
 # ipaclient_server: "ipa1.ipa.home.gatwards.org"
 # ipaclient_domain: "{{ auth_idm_realm }}"
@@ -48,4 +48,3 @@ latitude: "{{ vault_latitude }}"
 longitude: "{{ vault_longitude }}"
 
 mqtt_broker_fqdn: automation.core.home.gatwards.org
-mqtt_broker_port: 1883
