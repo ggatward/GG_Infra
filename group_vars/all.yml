@@ -47,4 +47,7 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 latitude: "{{ vault_latitude }}"
 longitude: "{{ vault_longitude }}"
 
+tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA_chain.pem
+
 mqtt_broker_fqdn: automation.core.home.gatwards.org
+mqtt_broker_port: '1883'

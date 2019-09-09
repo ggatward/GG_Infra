@@ -8,6 +8,7 @@ postgresql_pgdata: /var/lib/pgsql/data
 # MQTT defaults
 mqtt_use_ssl: true
 mqtt_use_websockets: true
+mqtt_broker_tls_cafile: "{{ tls_cafile }}"
 mqtt_broker_tls_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
 mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 
