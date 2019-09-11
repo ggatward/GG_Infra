@@ -18,8 +18,8 @@ mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 mqtt_users:
   - user: openhab2
     pass: "{{ vault_openhab_mqtt_password }}"
-  - user: weewx
-    pass: "{{ vault_weewx_mqtt_pass }}"
+  # - user: weewx
+  #   pass: "{{ vault_weewx_mqtt_pass }}"
   - user: bomxml
     pass: "{{ vault_bomxml2mqtt_pass }}"
 
