@@ -1,0 +1,25 @@
+Group       gAstro                  "Astromomic Data"                            <sun_clouds>       (Home)
+
+DateTime    Current_DateTime        "Date [%1$tA, %1$td.%1$tm.%1$tY]"                   <clock>     (gAstro) {channel="ntp:ntp:local:dateTime"}
+
+DateTime    Sunset_Time             "Sunset [%1$tH:%1$tM]"                              <sun>       (gAstro) {channel="astro:sun:local:set#start"}
+DateTime    Sunrise_Time            "Sunrise [%1$tH:%1$tM]"                             <sun>       (gAstro) {channel="astro:sun:local:daylight#start"}
+DateTime    PreDawn_Time            "Pre Dawn [%1$tH:%1$tM]"                            <sun>       (gAstro) {channel="astro:sun:local:astroDawn#start"}
+// Evening is using civilDusk#start with offset of -90
+DateTime    Evening_Time            "Evening [%1$tH:%1$tM]"                                         (gAstro) {channel="astro:sun:local:civilDusk#start"}
+String      Day_Phase               "Day Phase [MAP(astro.map):%s]"                                 (gAstro) {channel="astro:sun:local:phase#name"}
+String      Time_Of_Day             "Time of Day [MAP(astro.map):%s]"                               (gAstro)
+
+String      Season_Name             "Season [MAP(astro.map):%s]"                                    (gAstro) {channel="astro:sun:local:season#name"}
+String      Zodiac_Sign             "Zodiac [MAP(astro.map):%s]"                        <zodiac>    (gAstro) {channel="astro:sun:local:zodiac#sign"}
+Number      Sun_Elevation           "Sun Elevation [%.1f °]"                            <sun>       (gAstro) {channel="astro:sun:local:position#elevation"}
+DateTime    Sun_Next_Total_Eclipse  "Next Total Solar Eclipse"                          <sun>       (gAstro) {channel="astro:sun:local:eclipse#total"}
+DateTime    Sun_Next_Part_Eclipse   "Next Partial Solar Eclipse"                        <sun>       (gAstro) {channel="astro:sun:local:eclipse#partial"}
+
+Number      Moon_Elevation          "Moon Elevation [%.1f °]"                           <moon>      (gAstro) {channel="astro:moon:local:position#elevation"}
+String      Moon_Phase              "Moon Phase [MAP(astro.map):%s]"                    <moon>      (gAstro) {channel="astro:moon:local:phase#name"}
+DateTime    Moon_Next_Full          "Next Full Moon [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"   <moon>      (gAstro) {channel="astro:moon:local:phase#full"}
+DateTime    Moon_Next_New           "Next New Moon [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"    <moon>      (gAstro) {channel="astro:moon:local:phase#new"}
+DateTime    Moon_Next_Eclipse       "Next Total Lunar Eclipse"                          <moon>      (gAstro) {channel="astro:moon:local:eclipse#total"}
+
+Switch      Night_State             "Night"                                                         (gAstro)

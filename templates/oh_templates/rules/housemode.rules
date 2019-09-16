@@ -1,0 +1,36 @@
+//housemode.rules
+rule "Set Time of Day State"
+when
+  System started or
+  Channel "astro:sun:local:astroDawn#event" triggered START or
+  Channel "astro:sun:local:daylight#event" triggered START or
+  Channel "astro:sun:local:set#event" triggered START or
+  Time cron "0 0 * * * ?"
+then
+  logInfo("housemode.rules", "Checking time")
+  val long predawn_start = (PreDawn_Time.state as DateTimeType).getZonedDateTime.toInstant.toEpochMilli
+  val long day_start = (Sunrise_Time.state as DateTimeType).getZonedDateTime.toInstant.toEpochMilli
+  // astro:sun:local:set#start Thing has a -30 minute offset
+  val long evening_start = (Evening_Time.state as DateTimeType).getZonedDateTime.toInstant.toEpochMilli
+  val long dinner_start = now.withTimeAtStartOfDay.plusHours(18).millis
+  val long dinner_end = now.withTimeAtStartOfDay.plusHours(19).millis
+  val long night_start = now.withTimeAtStartOfDay.plusHours(22).millis
+  var curr = "Night"
+  switch now {
+    case now.isAfter(predawn_start) && now.isBefore(day_start):   curr = "PreDawn"
+    case now.isAfter(day_start) && now.isBefore(evening_start):   curr = "Day"
+    case now.isAfter(dinner_start) && now.isBefore(dinner_end):   curr = "Dinner"
+    case now.isAfter(evening_start) && now.isBefore(night_start): curr = "Evening"
+  }
+  logInfo("housemode.rules", "Setting TimeOfDay to " + curr)
+  TimeOfDay.postUpdate(curr)
+end
+
+rule "Set house mode"
+when
+  Item TimeOfDay changed
+then
+  //TO DO - add logic to incorporate away state of house
+  logInfo("housemode.rules", "Setting HouseMode to " + TimeOfDay.state)
+  HouseMode.postUpdate(TimeOfDay.state)
+end

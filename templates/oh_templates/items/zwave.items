@@ -1,0 +1,60 @@
+Group     gZwave             "Z-Wave"                    <sun_clouds>       (Home)                       ["ZWave"]
+
+// node002
+Switch    GF_Office_Test_Switch          "Test Switch"                              <switch>           (GF_Office, gZwave)                                                   {channel="zwave:device:ac423ee8:node2:switch_binary"}
+Number    GF_Office_Test_kWh             "Test kWh"                                 <energy>           (GF_Office, gZwave, gPower)                                                   {channel="zwave:device:ac423ee8:node2:meter_kwh"}
+Number    GF_Office_Test_Amps            "Test Amps"                                <energy>           (GF_Office, gZwave, gPower)                                                   {channel="zwave:device:ac423ee8:node2:meter_current"}
+Number    GF_Office_Test_Volts           "Test Volts"                               <energy>           (GF_Office, gZwave, gPower)                                                   {channel="zwave:device:ac423ee8:node2:meter_voltage"}
+Number    GF_Office_Test_Watts           "Test Watts"                               <energy>           (GF_Office, gZwave, gPower)                                                   {channel="zwave:device:ac423ee8:node2:meter_watts"}
+
+// node003
+Dimmer    GF_RumpusRoom_Light                 "Light"                               <light>            (gZwave, GF_RumpusRoom, gLight)     ["Lighting", "Switchable"]        {channel="zwave:device:ac423ee8:node3:switch_dimmer1"}
+Number    GF_RumpusRoom_Watts                 "Light Power"                         <energy>           (gPower)                                              {channel="zwave:device:ac423ee8:node3:meter_watts"}
+Number    GF_RumpusRoom_kWh                   "Light kWh"                           <energy>           (gPower)                                              {channel="zwave:device:ac423ee8:node3:meter_kwh"}
+Switch    GF_RumpusRoom_AlarmSystem           "Rumpus Alarm (Hardware Fail)"                           (gZwave)                                                              {channel="zwave:device:ac423ee8:node3:alarm_system"}
+Switch    GF_RumpusRoom_AlarmTemp             "Rumpus Alarm (Heat)"                                    (gZwave)                                                              {channel="zwave:device:ac423ee8:node3:alarm_heat"}
+
+// node004
+Dimmer    GF_LivingDining_Light3              "Lounge Lights"                       <light>            (gZwave, GF_LivingDining, gLight)   ["Lighting", "Switchable"]        {channel="zwave:device:ac423ee8:node4:switch_dimmer1"}
+Number    GF_LivingDining_Light3_Watts        "Light Power"                         <energy>           (gPower)                                            {channel="zwave:device:ac423ee8:node4:meter_watts"}
+Number    GF_LivingDining_Light3_kWh          "Light kWh"                           <energy>           (gPower)                                            {channel="zwave:device:ac423ee8:node4:meter_kwh"}
+Switch    GF_LivingDining_Light3_AlarmSystem  "Lounge Alarm (Hardware Fail)"                           (gZwave)                                                              {channel="zwave:device:ac423ee8:node4:alarm_system"}
+Switch    GF_LivingDining_Light3_AlarmTemp    "Lounge Alarm (Heat)"                                    (gZwave)                                                              {channel="zwave:device:ac423ee8:node4:alarm_heat"}
+
+// node005
+Dimmer    GF_Kitchen_Light                    "Lights"                              <light>            (gZwave, GF_Kitchen, gLight)        ["Lighting", "Switchable"]        {channel="zwave:device:ac423ee8:node5:switch_dimmer1"}
+Number    GF_Kitchen_Watts                    "Light Power"                         <energy>           (gPower)                                            {channel="zwave:device:ac423ee8:node5:meter_watts"}
+Number    GF_Kitchen_kWh                      "Light kWh"                           <energy>           (gPower)                                                {channel="zwave:device:ac423ee8:node5:meter_kwh"}
+Switch    GF_Kitchen_AlarmSystem              "Kitchen Alarm (Hardware Fail)"                          (gZwave)                                                              {channel="zwave:device:ac423ee8:node5:alarm_system"}
+Switch    GF_Kitchen_AlarmTemp                "Kitchen Alarm (Heat)"                                   (gZwave)                                                              {channel="zwave:device:ac423ee8:node5:alarm_heat"}
+
+// node006
+Dimmer    GF_LivingDining_Light1              "Dining Lights 1"                     <light>            (gZwave, GF_LivingDining, gLight)   ["Lighting", "Switchable"]        {channel="zwave:device:ac423ee8:node6:switch_dimmer1"}
+Number    GF_LivingDining_Light1_Watts        "Light Power"                         <energy>           (gPower)                                             {channel="zwave:device:ac423ee8:node6:meter_watts"}
+Number    GF_LivingDining_Light1_kWh          "Light kWh"                           <energy>           (gPower)                                             {channel="zwave:device:ac423ee8:node6:meter_kwh"}
+Switch    GF_LivingDining_Light1_AlarmSystem  "Dining 1 Alarm (Hardware Fail)"                         (gZwave)                                                              {channel="zwave:device:ac423ee8:node6:alarm_system"}
+Switch    GF_LivingDining_Light1_AlarmTemp    "Dining 1 Alarm (Heat)"                                  (gZwave)                                                              {channel="zwave:device:ac423ee8:node6:alarm_heat"}
+
+// node007
+Dimmer    GF_LivingDining_Light2              "Dining Lights 2"                     <light>            (gZwave, GF_LivingDining, gLight)   ["Lighting", "Switchable"]        {channel="zwave:device:ac423ee8:node7:switch_dimmer1"}
+Number    GF_LivingDining_Light2_Watts        "Dining 2 Light Power"                <energy>           (gPower)                                            {channel="zwave:device:ac423ee8:node7:meter_watts"}
+Number    GF_LivingDining_Light2_kWh          "Dining 2 Light kWh"                  <energy>           (gPower)                                            {channel="zwave:device:ac423ee8:node7:meter_kwh"}
+Switch    GF_LivingDining_Light2_AlarmSystem  "Dining 2 Alarm (Hardware Fail)"                         (gZwave)                                                              {channel="zwave:device:ac423ee8:node7:alarm_system"}
+Switch    GF_LivingDining_Light2_AlarmTemp    "Dining 2 Alarm (Heat)"                                  (gZwave)                                                              {channel="zwave:device:ac423ee8:node7:alarm_heat"}
+
+
+
+
+Switch    OU_Alfresco_Light              "Light"                                    <light>            (OU_Alfresco, gLight)              ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Bathroom_Light              "Light"                                    <light>            (GF_Bathroom, gLight)              ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Ensuite_Light               "Light"                                    <light>            (GF_Ensuite, gLight)               ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_MichaelsRoom_Light          "Light"                                    <light>            (GF_MichaelsRoom, gLight)          ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Wardrobe_Light              "Light"                                    <light>            (GF_Wardrobe, gLight)              ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Garage_Light                "Light"                                    <light>            (GF_Garage, gLight)                ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Hallway_Light               "Light"                                    <light>            (GF_Hallway, gLight)               ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_CaitlynsRoom_Light          "Light"                                    <light>            (GF_CaitlynsRoom, gLight)          ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Laundry_Light               "Light"                                    <light>            (GF_Laundry, gLight)               ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_MasterBedroom_Light         "Light"                                    <light>            (GF_MasterBedroom, gLight)         ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_MasterBedroom_Fan           "Fan"                                      <fan_ceiling>      (GF_MasterBedroom, gFan)           ["Switchable"]                     //{channel=""}
+Switch    GF_Office_Light                "Light"                                    <light>            (GF_Office, gLight)                ["Lighting", "Switchable"]         //{channel=""}
+Switch    GF_Toilet_Light                "Light"                                    <light>            (GF_Toilet, gLight)                ["Lighting", "Switchable"]         //{channel=""}

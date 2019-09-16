@@ -1,0 +1,39 @@
+Group     gELK               "Alarm System"          <alarm>      (Home)                        ["Alarm"]
+
+String ElkString "Elk String [%s]" {tcp=">[*:{{ elk_ip }}:{{ elk_port }}:default]"}
+
+Switch    ELK_Zone001      "Front Door [MAP(elk-door.map):%s]"        <frontdoor>        (GF_LivingDining, gDoor, gELK)     ["Door"]
+
+Switch    ELK_Zone002
+Switch    Garage_Motion_Sensor  "Garage Motion Sensor [MAP(elk-motion.map):%s]"   <motion>           (GF_Garage, gMotion, gELK)         ["MotionDetector", "Switchable"]
+
+Switch    ELK_Zone003
+Switch    Dining_Motion_Sensor  "Dining Motion Sensor [MAP(elk-motion.map):%s]"   <motion>  (GF_LivingDining, gMotion, gELK, LightMotionSensors)   ["MotionDetector", "Switchable"]
+
+Switch    ELK_Zone004
+Switch    Lounge_Motion_Sensor  "Lounge Motion Sensor [MAP(elk-motion.map):%s]"   <motion>  (GF_LivingDining, gMotion, gELK, LightMotionSensors)   ["MotionDetector", "Switchable"]
+//Switch    Kitchen_Motion_Sensor  "Kitchen Motion Sensor [MAP(elk-motion.map):%s]"   <motion>  (GF_Kitchen, gMotion, gELK, LightMotionSensors)   ["MotionDetector", "Switchable"]
+
+Switch    ELK_Zone005
+Switch    Bedroom1_Motion_Sensor  "Bedroom1 Motion Sensor [MAP(elk-motion.map):%s]"   <motion>           (GF_MasterBedroom, gMotion, gELK)  ["MotionDetector", "Switchable"]
+
+Switch    ELK_Zone006
+Switch    Hallway_Motion_Sensor "Hallway Motion Sensor [MAP(elk-motion.map):%s]"   <motion>           (GF_Hallway, gMotion, gELK)        ["MotionDetector", "Switchable"]
+
+
+Switch    ELK_Zone007      "Roller Door [MAP(elk-door.map):%s]"       <garagedoor>       (GF_Garage, gDoor, gELK)           ["Door"]
+Switch    ELK_Zone008      "Garage Door [MAP(elk-door.map):%s]"       <door>             (GF_Garage, gDoor, gELK)           ["Door"]
+
+
+Switch    ELK_Output063    "Roller Door"                              <switch>           (GF_Garage, gELK)                                                     {tcp=">[ON:{{ elk_ip }}:{{ elk_port }}:'0Ecn0630000100D0'], >[OFF:{{ elk_ip }}:{{ elk_port }}:'09cf06300D5']"}
+
+Switch    ELK_Output061    "Elk Conn Trouble"
+Switch    ELK_Output062    "Elk Mute"     {tcp=">[ON:{{ elk_ip }}:{{ elk_port }}:'0Ecn0620000000D2'], >[OFF:{{ elk_ip }}:{{ elk_port }}:'09cf06200D6']"}
+
+
+
+Contact   OU_Shed_Door                   "Door"                                     <door>             (OU_Shed, gDoor)                   ["Door"]                           //{channel=""}
+Contact   GF_MichaelsRoom_Window         "Window"                                   <window>           (GF_MichaelsRoom, gWindow)         ["Window"]                         //{channel=""}
+Contact   GF_RumpusRoom_Door             "Door"                                     <door>             (GF_RumpusRoom, gDoor)             ["Door"]                           //{channel=""}
+Contact   GF_CaitlynsRoom_Window         "Window"                                   <window>           (GF_CaitlynsRoom, gWindow)         ["Window"]                         //{channel=""}
+Contact   GF_Laundry_Door                "Door"                                     <door>             (GF_Laundry, gDoor)                ["Door"]                           //{channel=""}

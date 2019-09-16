@@ -1,0 +1,3 @@
+Thing sonos:PLAY1:anna "Sonos Play1 (Anna)" [ udn="{{ vault_sonos_annasroom }}", refresh=60, notificationVolume=25]
+Thing sonos:CONNECTAMP:livingroom "Sonos Connect Amp (Living Room)" [ udn="{{ vault_sonos_livingroom }}", refresh=60, notificationVolume=25]
+Thing sonos:CONNECTAMP:alfresco "Sonos Connect Amp (Alfresco)" [ udn="{{ vault_sonos_alfresco }}", refresh=60, notificationVolume=15]

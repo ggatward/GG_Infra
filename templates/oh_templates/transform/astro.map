@@ -1,0 +1,55 @@
+//
+ARIES=Aries
+TAURUS=Taurus
+GEMINI=Gemini
+CANCER=Cancer
+LEO=Leo
+VIRGO=Virgo
+LIBRA=Libra
+SCORPIO=Scorpio
+SAGITTARIUS=Sagittarius
+CAPRICORN=Capricorn
+AQUARIUS=Aquarius
+PISCES=Pisces
+
+//
+SPRING=Spring
+SUMMER=Summer
+AUTUMN=Autumn
+WINTER=Winter
+
+//
+SUN_RISE=Sunrise
+ASTRO_DAWN=Astronomical Dawn
+NAUTIC_DAWN=Nautical Dawn
+CIVIL_DAWN=Civil Dawn
+CIVIL_DUSK=Civil Twilight
+NAUTIC_DUSK=Nautical Twilight
+ASTRO_DUSK=Astronomical Twilight
+SUN_SET=Sunset
+DAYLIGHT=Day
+NOON=Afternoon
+NIGHT=Night
+
+//
+MORNING=Morning
+DAY=Daytime
+AFTERNOON=Afternoon
+EVENING=Evening
+NIGHT=Night
+BED=Bedtime
+
+//
+NEW=New
+WAXING_CRESCENT=Waxing Crescent
+FIRST_QUARTER=First Quarter
+WAXING_GIBBOUS=Waxing Gibbous
+FULL=Full
+WANING_GIBBOUS=Waning Gibbous
+THIRD_QUARTER=Third Quarter
+WANING_CRESCENT=Waning Crescent
+
+//
+NULL=-
+UNDEF=-
+-=-

@@ -1,0 +1,208 @@
+import java.util.Map
+
+val Map<String, Timer> timers = newHashMap // because you will want one timer per room
+val Map<String, Timer> ctrlTimers = newHashMap
+
+rule "Motion detected"
+when
+    Member of LightMotionSensors received update ON // members are named Room_Motion_Sensor
+then
+    logInfo("openhab", "...MotionLighting Triggered...")
+    if(triggeringItem.state == NULL) return; // we don't care about NULL
+
+    val room = triggeringItem.name.split("_").get(0)
+    val control = LightMotionControls.members.findFirst[ ctrl | ctrl.name == room + "_Motion_Control" ]
+    if(control.state == OFF) return; // ignore the update if control is OFF
+
+    // Get the values and associated Items
+    val timer = timers.get(triggeringItem.name)
+    val level = LightMotionLevels.members.findFirst[ ll | ll.name == room + "_" + HouseMode.state + "_Level" ].state as Number
+    val timeoutMins = (LightMotionTimeouts.members.findFirst[ t | t.name == room + "_" + HouseMode.state + "_Timeout" ].state as Number).intValue
+    val virtual = MotionLightsVirtual.members.findFirst[ v | v.name == room + "_Light_Virtual" ]
+    val dimLevel = LightMotionDims.members.findFirst[ dim | dim.name == room + "_" + HouseMode.state + "_Dim" ].state as Number
+
+    // Timer is already running
+    if(timer !== null) {
+        virtual.sendCommand(level) // undo the dim if necessary
+        timers.get(triggeringItem.name).reschedule(now.plusMinutes(timeoutMins)) // goes off timeoutMins minutes after the last time the motion sensor detects motion
+    }
+    // No Timer was running
+    else {
+        logInfo("rules", "...Turn on light to " + level + "...")
+        virtual.sendCommand(level) // turn on the light
+
+        // Create a timer to dimm then turn off the light
+        timers.put(triggeringItem.name, createTimer(now.plusMinutes(timeoutMins), [ |
+
+            // if already off...
+
+
+            // if already dimmed then turn off
+            if(virtual.state == dimLevel) {
+                logInfo("rules", "...Turn off light...")
+                virtual.sendCommand(OFF)
+                timers.put(triggeringItem.name, null) // clear the timer
+            }
+
+            // dim the light and reset the timer for another minute
+            else {
+                logInfo("rules", "...Dim light to " + dimLevel + "...")
+                virtual.sendCommand(dimLevel)
+                timers.get(triggeringItem.name).reschedule(now.plusMinutes(1))
+            }
+        ]))
+    }
+end
+
+rule "Disable motion control if light changed by switch"
+when
+    Member of gLight changed
+then
+    // Map physical devices to the names used in the motion script
+    var trigger = switch triggeringItem.name {
+        case "GF_LivingDining_Light3":     "Lounge_Light_Virtual"
+        case "GF_LivingDining_Light2":     "Dining_Light_Virtual"
+        case "GF_LivingDining_Light1":     "Dining_Light_Virtual"
+        case "GF_Kitchen_Light":           "Kitchen_Light_Virtual"
+    }
+
+    val room = trigger.split("_").get(0)
+    val virtual = MotionLightsVirtual.members.findFirst[ v | v.name == room + "_Light_Virtual" ]
+    val control = LightMotionControls.members.findFirst[ ctrl | ctrl.name == room + "_Motion_Control" ]
+
+    if(triggeringItem.state != virtual.state) {
+        virtual.postUpdate(triggeringItem.state) // we don't want this to be treated as a new command
+        control.sendCommand(OFF) // disable the motion sensor control of the light
+        val int disabledTime = if(triggeringItem.state == 0) 5 else 60
+        val timer = ctrlTimers.get(triggeringItem.name)
+        logInfo("rules", "...Disable motion control of " + control + " for " + disabledTime + "...")
+
+        if(timer !== null){
+            timer.reschedule(now.plusMinutes(disabledTime))
+        }
+        else {
+            ctrlTimers.put(triggeringItem.name, createTimer(now.plusMinutes(disabledTime), [ |
+                control.sendCommand(ON)
+                logInfo("rules", "...Enable motion control of " + room + "...(Timer expiry)...")
+                ctrlTimers.put(triggeringItem.name, null)
+            ]))
+        }
+    }
+end
+
+rule "Motion control resumed"
+when
+    Member of LightMotionControls received command ON
+then
+    val room = triggeringItem.name.split("_").get(0)
+    val motion = LightMotionSensors.members.findFirst[ m | m.name == room + "_Motion_Sensor" ]
+    val light = Lights.members.findFirst[ l | l.name == room + "_Motion_Light" ]
+    val dimLevel = LightMotionDims.members.findFirst[ dim | dim.name == room + "_Dim" ].state as Number
+    val virtual = MotionLightsVirtual.members.findFirst[ v | v.name == room + "_Light_Virtual" ]
+
+    if(timers.get(motion.name) !== null || light.state == 0) return; // a timer is already set to handle the light or the light is already off
+
+    if(light.state == dimLevel) return; // Light is already at the dim level
+
+    timers.put(motion.name, createTimer(now.plusMinutes(1), [ |
+        if(triggeringItem.state == OFF) virtual.sendCommand(OFF)
+        logInfo("rules", "...Enable motion control of " + room + "...")
+        timers.put(motion.name, null)
+    ]))
+end
+
+
+// Set initial values for devices
+rule "Motion initial value set"
+when
+    System started
+then
+//    Lounge_Motion_Control.postUpdate(ON)
+    Lounge_Day_Dim.postUpdate(0)
+    Lounge_Day_Level.postUpdate(0)
+    Lounge_Day_Timeout.postUpdate(5)
+    Lounge_Evening_Dim.postUpdate(50)
+    Lounge_Evening_Level.postUpdate(100)
+    Lounge_Evening_Timeout.postUpdate(60)
+    Lounge_Night_Dim.postUpdate(20)
+    Lounge_Night_Level.postUpdate(30)
+    Lounge_Night_Timeout.postUpdate(2)
+    Lounge_PreDawn_Dim.postUpdate(20)
+    Lounge_PreDawn_Level.postUpdate(30)
+    Lounge_PreDawn_Timeout.postUpdate(15)
+    Lounge_Dinner_Dim.postUpdate(50)
+    Lounge_Dinner_Level.postUpdate(100)
+    Lounge_Dinner_Timeout.postUpdate(60)
+
+//    Dining_Motion_Control.postUpdate(ON)
+    Dining_Day_Dim.postUpdate(0)
+    Dining_Day_Level.postUpdate(0)
+    Dining_Day_Timeout.postUpdate(5)
+    Dining_Evening_Dim.postUpdate(0)
+    Dining_Evening_Level.postUpdate(0)
+    Dining_Evening_Timeout.postUpdate(5)
+    Dining_Night_Dim.postUpdate(0)
+    Dining_Night_Level.postUpdate(0)
+    Dining_Night_Timeout.postUpdate(2)
+    Dining_PreDawn_Dim.postUpdate(0)
+    Dining_PreDawn_Level.postUpdate(0)
+    Dining_PreDawn_Timeout.postUpdate(2)
+    Dining_Dinner_Dim.postUpdate(50)
+    Dining_Dinner_Level.postUpdate(100)
+    Dining_Dinner_Timeout.postUpdate(30)
+
+//    Kitchen_Motion_Control.postUpdate(ON)
+    Kitchen_Day_Dim.postUpdate(0)
+    Kitchen_Day_Level.postUpdate(0)
+    Kitchen_Day_Timeout.postUpdate(5)
+    Kitchen_Evening_Dim.postUpdate(0)
+    Kitchen_Evening_Level.postUpdate(0)
+    Kitchen_Evening_Timeout.postUpdate(5)
+    Kitchen_Night_Dim.postUpdate(20)
+    Kitchen_Night_Level.postUpdate(20)
+    Kitchen_Night_Timeout.postUpdate(1)
+    Kitchen_PreDawn_Dim.postUpdate(20)
+    Kitchen_PreDawn_Level.postUpdate(20)
+    Kitchen_PreDawn_Timeout.postUpdate(5)
+    Kitchen_Dinner_Dim.postUpdate(50)
+    Kitchen_Dinner_Level.postUpdate(100)
+    Kitchen_Dinner_Timeout.postUpdate(10)
+end
+
+
+rule "Lounge motion light linking"
+when
+  Item Lounge_Light_Virtual received update
+then
+  var Number percent = Lounge_Light_Virtual.state
+  var current = GF_LivingDining_Light3.state
+  if (percent != current) {
+    GF_LivingDining_Light3.sendCommand(percent.toString)
+  }
+end
+
+rule "Kitchen motion light linking"
+when
+  Item Kitchen_Light_Virtual received update
+then
+  var Number percent = Kitchen_Light_Virtual.state
+  var current = GF_Kitchen_Light.state
+  if (percent != current) {
+    GF_Kitchen_Light.sendCommand(percent.toString)
+  }
+end
+
+rule "Dining motion light linking"
+when
+  Item Dining_Light_Virtual received update
+then
+  var Number percent = Dining_Light_Virtual.state
+  var current1 = GF_LivingDining_Light1.state
+  var current2 = GF_LivingDining_Light2.state
+  if (percent != current1) {
+    GF_LivingDining_Light1.sendCommand(percent.toString)
+  }
+  if (percent != current2) {
+    GF_LivingDining_Light2.sendCommand(percent.toString)
+  }
+end

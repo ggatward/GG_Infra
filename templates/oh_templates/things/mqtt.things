@@ -1,0 +1,32 @@
+Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, clientid="openhab", username="openhab2", password="{{ vault_openhab_mqtt_password }}" ]
+{
+    Thing topic weewx "WeeWX" {
+	    Channels:
+        Type number : outTemp "Outside Temperature" [ stateTopic="weather/weewx/outTemp_C", commandTopic="" ]
+        Type number : windDir "Wind Direction" [ stateTopic="weather/weewx/windDir", commandTopic="" ]
+        Type number : windGust "Wind Gust" [ stateTopic="weather/weewx/windGust_kph", commandTopic="" ]
+        Type number : windSpeed "Wind Speed" [ stateTopic="weather/weewx/windSpeed_kph", commandTopic="" ]
+        Type number : outHumidity "Humidity" [ stateTopic="weather/weewx/outHumidity", commandTopic="" ]
+        Type number : pressure "Pressure" [ stateTopic="weather/weewx/barometer_mbar", commandTopic="" ]
+        Type number : dayRain "Rain Today" [ stateTopic="weather/weewx/dayRain_cm", commandTopic="" ]
+        Type number : hourRain "Rain Last Hour" [ stateTopic="weather/weewx/hourRain_cm", commandTopic="" ]
+        Type number : inTemp  "Kitchen Temperature" [ stateTopic="weather/weewx/inTemp_C", commandTopic="" ]
+    }
+    Thing topic bomxml "BoM Forecasts" {
+        Channels:
+        Type string : forecast_today "" [ stateTopic="weather/bomxml/forecast_today", commandTopic="" ]
+        Type string : forecast_tomorrow "" [ stateTopic="weather/bomxml/forecast_tomorrow", commandTopic="" ]
+        Type number : forecast_today_max "" [ stateTopic="weather/bomxml/forecast_today_max", commandTopic="" ]
+        Type number : forecast_tomorrow_max "" [ stateTopic="weather/bomxml/forecast_tomorrow_max", commandTopic="" ]
+        Type number : forecast_tonight_min "" [ stateTopic="weather/bomxml/forecast_tonight_min", commandTopic="" ]
+    }
+
+
+//    Thing topic rgbw2 "Ambient Light 2" {
+//	    Channels:
+//		Type switch : state "OnOff" [ stateTopic="openhab/RGBWController2/relay/0", commandTopic="openhab/RGBWController2/relay/0/set" ]
+//		Type number : brightness "Brightness" [ stateTopic="openhab/RGBWController2/brightness", commandTopic="openhab/RGBWController2/brightness/set" ]
+//		Type number : white "White" [ stateTopic="openhab/RGBWController2/channel/3", commandTopic="openhab/RGBWController2/channel/3/set" ]
+//		Type colorRGB  : rgb "Color" [ stateTopic="openhab/RGBWController2/rgb", commandTopic="openhab/RGBWController2/rgb/set" ]
+//  }
+}

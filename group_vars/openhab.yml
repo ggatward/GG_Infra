@@ -7,36 +7,65 @@ postgresql_pgdata: /var/lib/pgsql/data
 
 # MQTT defaults
 mqtt_use_ssl: true
-mqtt_use_websockets: true
+mqtt_broker_owntracks: true
 mqtt_broker_tls_cafile: "{{ tls_cafile }}"
 mqtt_broker_tls_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
 mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 
-# mqtt_broker: broker
-# mqtt_host: localhost
-
 mqtt_users:
   - user: openhab2
     pass: "{{ vault_openhab_mqtt_password }}"
-  # - user: weewx
-  #   pass: "{{ vault_weewx_mqtt_pass }}"
   - user: bomxml
     pass: "{{ vault_bomxml2mqtt_pass }}"
 
 # # Get sensitive vars from the vault
 
-# #weewx_latitude: "{{ latitude }}"
-# #weewx_longitude: "{{ longitude }}"
+# mqtt_broker: broker
+# mqtt_host: localhost
 
+openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
+openhab_latlon: "{{ latitude }},{{ longitude }}"
 
-# openhab_voicerss_api_key: "{{ vault_oh2_voicerss_api_key }}"
-# openhab_latlon: "{{ vault_oh2_latlon }}"
+sonos_ids:
+  livingroom: "{{ vault_sonos_livingroom }}"
+  alfresco: "{{ vault_sonos_alfresco }}"
+  annasroom: "{{ vault_sonos_annasroom }}"
+  office: "{{ vault_sonos_office }}"
 
-# sonos_ids:
-#   livingroom: "{{ vault_sonos_livingroom }}"
-#   alfresco: "{{ vault_sonos_alfresco }}"
-#   annasroom: "{{ vault_sonos_annasroom }}"
-#   office: "{{ vault_sonos_office }}"
+# Parameters for alarm panel
+elk_ip: 172.22.2.10
+elk_port: 2101
 
-# elk_ip: 172.22.2.10
-# elk_port: 2101
+# OpenHAB Base configuration - addons.cfg
+openhab_bindings:
+  - astro
+  - mqtt
+  - network
+  - ntp
+  - sonos
+  - tcp1
+  - zwave
+
+openhab_ui:
+  - basic
+  - paper
+  - habmin
+  - habpanel
+  - homebuilder
+
+openhab_action: []
+
+openhab_persistence:
+  - jdbc-postgresql
+  - rrd4j
+
+openhab_transformation:
+  - javascript
+  - map
+  - regex
+
+openhab_voice:
+  - voicerss
+
+openhab_misc:
+  - market

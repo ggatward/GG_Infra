@@ -1,0 +1,200 @@
+/*
+Sonos Grouping configuration from:
+https://community.openhab.org/t/sonos-grouping-rules-and-ui-visibility-bidirectional/20154
+*/
+
+Group gSonos            "Sonos"                     <sonos_control>         (Home)
+
+Group gSonosAlfresco    "Alfresco"                  <sonos_control>         (gSonos)
+//Group gSonosOffice      "Office"                    <sonos_control>         (gSonos)
+Group gSonosAnna        "Anna's room"               <sonos_control>         (gSonos)
+Group gSonosLiving      "Living room"               <sonos_control>         (gSonos)
+
+Group gSonosVolu "Volume"  <soundvolume>
+Group gSonosMute "Mute"    <sonos_mute>
+Group gSonosStop "Stop"    <sonos_stop> {autoupdate="false"}
+
+/* Items to define Groups */
+String SonosGroupID_Alfresco	"Alfresco group [%s]"
+//String SonosGroupID_Office	    "Office group [%s]"
+String SonosGroupID_Anna	    "Annas room group [%s]"
+String SonosGroupID_Living	    "Living room group [%s]"
+
+Number Sonos_Group1_Number      "Players in group 1 [%.1f]"
+Number Sonos_Group2_Number      "Players in group 2 [%.1f]"
+Number Sonos_Group3_Number      "Players in group 3 [%.1f]"
+
+String Sonos_Group1_Visibility  "Group 1 visibility [%s]"
+String Sonos_Group2_Visibility  "Group 2 visibility [%s]"
+String Sonos_Group3_Visibility  "Group 3 visibility [%s]"
+
+
+/* Alfresco */
+String OU_Alfresco_Sonos_Add                     "Add [%s]"                  <sonos_add>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:add"}
+Switch OU_Alfresco_Sonos_SetAlarm                "Set Alarm"                 <sonos_alarm>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:alarm"}
+String OU_Alfresco_Sonos_AlarmProperties         "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:alarmproperties"}
+Switch OU_Alfresco_Sonos_AlarmIsrunning          "Alarm is running"          <sonso_alarm_run>    (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:alarmrunning"}
+Player OU_Alfresco_Sonos_Control                 "Control"                   <sonos_control>      (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:control"}
+String OU_Alfresco_Sonos_CurrentAlbum            "Album [%s]"                <sonos_album>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currentalbum"}
+String OU_Alfresco_Sonos_CurrentArtist           "Artist [%s]"               <sonos_artist>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currentartist"}
+String OU_Alfresco_Sonos_CurrentTitle            "Title [%s]"                <sonos_title>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttitle"}
+String OU_Alfresco_Sonos_CurrentTrack            "Track [%s]"                <sonos_track>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttrack"}
+Image  GF_Alfresco_Sonos_Current_CoverArt        "Cover"                                          (gSonosLiving)              {channel="sonos:CONNECTAMP:alfresco:currentalbumart"}
+Switch OU_Alfresco_Sonos_Shuffle                 "Shuffle"                   <sonos_shuffle>      (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:shuffle"}
+String OU_Alfresco_Sonos_Repeat                  "Repeat [%s]"               <sonos_repeat>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:repeat"}
+String OU_Alfresco_Sonos_Favorite                "Favorite [%s]"             <sonos_favorite>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:favorite"}
+Switch OU_Alfresco_Sonos_Led                     "Led"                       <sonos_led>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:led"}
+Switch OU_Alfresco_Sonos_LocalCoordinator        "Local Coordinator"         <sonos_coordinator>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:localcoordinator"}
+Switch OU_Alfresco_Sonos_Mute                    "Mute"                      <sonos_mute>         (gSonosAlfresco,gSonosMute) {channel="sonos:CONNECTAMP:alfresco:mute"}
+String OU_Alfresco_Sonos_NotificationSound       "Notification Sound [%s]"   <sonos_notification> (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:notificationsound"}
+Dimmer OU_Alfresco_Sonos_Notificationsoundvolume "Notification Sound Volume" <soundvolume>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:notificationvolume"}
+String OU_Alfresco_Sonos_PlayPlaylist            "Play Playlist [%s]"        <sonos_playlist>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playlist"}
+Switch OU_Alfresco_Sonos_PlayQueue               "Play Queue"                <sonos_que>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playqueue"}
+Number OU_Alfresco_Sonos_PlayTrack               "Play Track"                <sonos_play_track>   (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playtrack"}
+String OU_Alfresco_Sonos_PlayURI                 "Play URI [%s]"             <sonos_play_uri>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playuri"}
+Switch OU_Alfresco_Sonos_PublicAddress           "Public Address"            <sonos_publiv>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:publicaddress"}
+String OU_Alfresco_Sonos_Radio                   "Radio [%s]"                <sonos_radio>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:radio"}
+String OU_Alfresco_Sonos_Remove                  "Remove [%s]"               <sonos_remove>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:remove"}
+Switch OU_Alfresco_Sonos_Restore                 "Restore"                   <sonos_restore>      (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:restore"}
+Switch OU_Alfresco_Sonos_RestoreAll              "Restore All"               <sonos_restore_all>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:restoreall"}
+Switch OU_Alfresco_Sonos_Save                    "Save"                      <sonos_save>         (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:save"}
+Switch OU_Alfresco_Sonos_SaveAll                 "Save All"                  <sonos_save_all>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:saveall"}
+Number OU_Alfresco_Sonos_Snooze                  "Snooze"                    <sonos_snooze>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:snooze"}
+Switch OU_Alfresco_Sonos_StandAlone              "Stand Alone"               <sonos_stand_alone>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:standalone"}
+String OU_Alfresco_Sonos_State                   "State [%s]"                <sonos_state>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:state"}
+Switch OU_Alfresco_Sonos_Stop                    "Stop"                      <sonos_stop>         (gSonosAlfresco,gSonosStop) {channel="sonos:CONNECTAMP:alfresco:stop", autoupdate="false"}
+Dimmer OU_Alfresco_Sonos_Volume                  "Alfresco"                  <soundvolume>        (gSonosAlfresco,gSonosVolu) {channel="sonos:CONNECTAMP:alfresco:volume"}
+String OU_Alfresco_Sonos_ZoneGroupID             "Zone Group ID [%s]"        <sonos_zone>         (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:zonegroupid"}
+String OU_Alfresco_Sonos_ZoneName                "Zone Name [%s]"            <sonos_zone>         (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:zonename"}
+String OU_Alfresco_Sonos_Coordinator             "Coordinator [%s]"          <sonos_coordinator>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:coordinator"}
+Number OU_Alfresco_Sonos_SleepTimer              "Sleep Timer"               <sonos_sleep_timer>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:sleeptimer"}
+String OU_Alfresco_Sonos_CurrentAVtransportURI   "AV transport URI [%s]"     <sonos_uri>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttransporturi"}
+String OU_Alfresco_Sonos_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttrackuri"}
+
+
+/* LivingRoom */
+String GF_LivingRoom_Sonos_Add                     "Add [%s]"                  <sonos_add>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:add"}
+Switch GF_LivingRoom_Sonos_SetAlarm                "Set Alarm"                 <sonos_alarm>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:alarm"}
+String GF_LivingRoom_Sonos_AlarmProperties         "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:alarmproperties"}
+Switch GF_LivingRoom_Sonos_AlarmIsrunning          "Alarm is running"          <sonso_alarm_run>    (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:alarmrunning"}
+Player GF_LivingRoom_Sonos_Control                 "Control"                   <sonos_control>      (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:control"}
+String GF_LivingRoom_Sonos_CurrentAlbum            "Album [%s]"                <sonos_album>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currentalbum"}
+String GF_LivingRoom_Sonos_CurrentArtist           "Artist [%s]"               <sonos_artist>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currentartist"}
+String GF_LivingRoom_Sonos_CurrentTitle            "Title [%s]"                <sonos_title>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttitle"}
+String GF_LivingRoom_Sonos_CurrentTrack            "Track [%s]"                <sonos_track>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttrack"}
+Image  GF_LivingRoom_Sonos_Current_CoverArt        "Cover"                                          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currentalbumart"}
+Switch GF_LivingRoom_Sonos_Shuffle                 "Shuffle"                   <sonos_shuffle>      (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:shuffle"}
+String GF_LivingRoom_Sonos_Repeat                  "Repeat [%s]"               <sonos_repeat>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:repeat"}
+String GF_LivingRoom_Sonos_Favorite                "Favorite [%s]"             <sonos_favorite>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:favorite"}
+Switch GF_LivingRoom_Sonos_Led                     "Led"                       <sonos_led>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:led"}
+Switch GF_LivingRoom_Sonos_LocalCoordinator        "Local Coordinator"         <sonos_coordinator>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:localcoordinator"}
+Switch GF_LivingRoom_Sonos_Mute                    "Mute"                      <sonos_mute>         (gSonosLiving,gSonosMute) {channel="sonos:CONNECTAMP:livingroom:mute"}
+String GF_LivingRoom_Sonos_NotificationSound       "Notification Sound [%s]"   <sonos_notification> (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:notificationsound"}
+Dimmer GF_LivingRoom_Sonos_Notificationsoundvolume "Notification Sound Volume" <soundvolume>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:notificationvolume"}
+String GF_LivingRoom_Sonos_PlayPlaylist            "Play Playlist [%s]"        <sonos_playlist>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playlist"}
+Switch GF_LivingRoom_Sonos_PlayQueue               "Play Queue"                <sonos_que>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playqueue"}
+Number GF_LivingRoom_Sonos_PlayTrack               "Play Track"                <sonos_play_track>   (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playtrack"}
+String GF_LivingRoom_Sonos_PlayURI                 "Play URI [%s]"             <sonos_play_uri>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playuri"}
+Switch GF_LivingRoom_Sonos_PublicAddress           "Public Address"            <sonos_publiv>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:publicaddress"}
+String GF_LivingRoom_Sonos_Radio                   "Radio [%s]"                <sonos_radio>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:radio"}
+String GF_LivingRoom_Sonos_Remove                  "Remove [%s]"               <sonos_remove>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:remove"}
+Switch GF_LivingRoom_Sonos_Restore                 "Restore"                   <sonos_restore>      (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:restore"}
+Switch GF_LivingRoom_Sonos_RestoreAll              "Restore All"               <sonos_restore_all>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:restoreall"}
+Switch GF_LivingRoom_Sonos_Save                    "Save"                      <sonos_save>         (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:save"}
+Switch GF_LivingRoom_Sonos_SaveAll                 "Save All"                  <sonos_save_all>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:saveall"}
+Number GF_LivingRoom_Sonos_Snooze                  "Snooze"                    <sonos_snooze>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:snooze"}
+Switch GF_LivingRoom_Sonos_StandAlone              "Stand Alone"               <sonos_stand_alone>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:standalone"}
+String GF_LivingRoom_Sonos_State                   "State [%s]"                <sonos_state>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:state"}
+Switch GF_LivingRoom_Sonos_Stop                    "Stop"                      <sonos_stop>         (gSonosLiving,gSonosStop) {channel="sonos:CONNECTAMP:livingroom:stop", autoupdate="false"}
+Dimmer GF_LivingRoom_Sonos_Volume                  "Living Room"               <soundvolume>        (gSonosLiving,gSonosVolu) {channel="sonos:CONNECTAMP:livingroom:volume"}
+String GF_LivingRoom_Sonos_ZoneGroupID             "Zone Group ID [%s]"        <sonos_zone>         (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:zonegroupid"}
+String GF_LivingRoom_Sonos_ZoneName                "Zone Name [%s]"            <sonos_zone>         (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:zonename"}
+String GF_LivingRoom_Sonos_Coordinator             "Coordinator [%s]"          <sonos_coordinator>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:coordinator"}
+Number GF_LivingRoom_Sonos_SleepTimer              "Sleep Timer"               <sonos_sleep_timer>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:sleeptimer"}
+String GF_LivingRoom_Sonos_CurrentAVtransportURI   "AV transport URI [%s]"     <sonos_uri>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttransporturi"}
+String GF_LivingRoom_Sonos_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttrackuri"}
+
+
+/* AnnasRoom */
+String GF_AnnasRoom_Sonos_Add                     "Add [%s]"                  <sonos_add>          (gSonosAnna)            {channel="sonos:PLAY1:anna:add"}
+Switch GF_AnnasRoom_Sonos_SetAlarm                "Set Alarm"                 <sonos_alarm>        (gSonosAnna)            {channel="sonos:PLAY1:anna:alarm"}
+String GF_AnnasRoom_Sonos_AlarmProperties         "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosAnna)            {channel="sonos:PLAY1:anna:alarmproperties"}
+Switch GF_AnnasRoom_Sonos_AlarmIsrunning          "Alarm is running"          <sonso_alarm_run>    (gSonosAnna)            {channel="sonos:PLAY1:anna:alarmrunning"}
+Player GF_AnnasRoom_Sonos_Control                 "Control"                   <sonos_control>      (gSonosAnna)            {channel="sonos:PLAY1:anna:control"}
+String GF_AnnasRoom_Sonos_CurrentAlbum            "Album [%s]"                <sonos_album>        (gSonosAnna)            {channel="sonos:PLAY1:anna:currentalbum"}
+String GF_AnnasRoom_Sonos_CurrentArtist           "Artist [%s]"               <sonos_artist>       (gSonosAnna)            {channel="sonos:PLAY1:anna:currentartist"}
+String GF_AnnasRoom_Sonos_CurrentTitle            "Title [%s]"                <sonos_title>        (gSonosAnna)            {channel="sonos:PLAY1:anna:currenttitle"}
+String GF_AnnasRoom_Sonos_CurrentTrack            "Track [%s]"                <sonos_track>        (gSonosAnna)            {channel="sonos:PLAY1:anna:currenttrack"}
+Image  GF_AnnasRoom_Sonos_Current_CoverArt        "Cover"                                          (gSonosLiving)          {channel="sonos:PLAY1:anna:currentalbumart"}
+Switch GF_AnnasRoom_Sonos_Shuffle                 "Shuffle"                   <sonos_shuffle>      (gSonosAnna)            {channel="sonos:PLAY1:anna:shuffle"}
+String GF_AnnasRoom_Sonos_Repeat                  "Repeat [%s]"               <sonos_repeat>       (gSonosAnna)            {channel="sonos:PLAY1:anna:repeat"}
+String GF_AnnasRoom_Sonos_Favorite                "Favorite [%s]"             <sonos_favorite>     (gSonosAnna)            {channel="sonos:PLAY1:anna:favorite"}
+Switch GF_AnnasRoom_Sonos_Led                     "Led"                       <sonos_led>          (gSonosAnna)            {channel="sonos:PLAY1:anna:led"}
+Switch GF_AnnasRoom_Sonos_LocalCoordinator        "Local Coordinator"         <sonos_coordinator>  (gSonosAnna)            {channel="sonos:PLAY1:anna:localcoordinator"}
+Switch GF_AnnasRoom_Sonos_Mute                    "Mute"                      <sonos_mute>         (gSonosAnna,gSonosMute) {channel="sonos:PLAY1:anna:mute"}
+String GF_AnnasRoom_Sonos_NotificationSound       "Notification Sound [%s]"   <sonos_notification> (gSonosAnna)            {channel="sonos:PLAY1:anna:notificationsound"}
+Dimmer GF_AnnasRoom_Sonos_Notificationsoundvolume "Notification Sound Volume" <soundvolume>        (gSonosAnna)            {channel="sonos:PLAY1:anna:notificationvolume"}
+String GF_AnnasRoom_Sonos_PlayPlaylist            "Play Playlist [%s]"        <sonos_playlist>     (gSonosAnna)            {channel="sonos:PLAY1:anna:playlist"}
+Switch GF_AnnasRoom_Sonos_PlayQueue               "Play Queue"                <sonos_que>          (gSonosAnna)            {channel="sonos:PLAY1:anna:playqueue"}
+Number GF_AnnasRoom_Sonos_PlayTrack               "Play Track"                <sonos_play_track>   (gSonosAnna)            {channel="sonos:PLAY1:anna:playtrack"}
+String GF_AnnasRoom_Sonos_PlayURI                 "Play URI [%s]"             <sonos_play_uri>     (gSonosAnna)            {channel="sonos:PLAY1:anna:playuri"}
+Switch GF_AnnasRoom_Sonos_PublicAddress           "Public Address"            <sonos_publiv>       (gSonosAnna)            {channel="sonos:PLAY1:anna:publicaddress"}
+String GF_AnnasRoom_Sonos_Radio                   "Radio [%s]"                <sonos_radio>        (gSonosAnna)            {channel="sonos:PLAY1:anna:radio"}
+String GF_AnnasRoom_Sonos_Remove                  "Remove [%s]"               <sonos_remove>       (gSonosAnna)            {channel="sonos:PLAY1:anna:remove"}
+Switch GF_AnnasRoom_Sonos_Restore                 "Restore"                   <sonos_restore>      (gSonosAnna)            {channel="sonos:PLAY1:anna:restore"}
+Switch GF_AnnasRoom_Sonos_RestoreAll              "Restore All"               <sonos_restore_all>  (gSonosAnna)            {channel="sonos:PLAY1:anna:restoreall"}
+Switch GF_AnnasRoom_Sonos_Save                    "Save"                      <sonos_save>         (gSonosAnna)            {channel="sonos:PLAY1:anna:save"}
+Switch GF_AnnasRoom_Sonos_SaveAll                 "Save All"                  <sonos_save_all>     (gSonosAnna)            {channel="sonos:PLAY1:anna:saveall"}
+Number GF_AnnasRoom_Sonos_Snooze                  "Snooze"                    <sonos_snooze>       (gSonosAnna)            {channel="sonos:PLAY1:anna:snooze"}
+Switch GF_AnnasRoom_Sonos_StandAlone              "Stand Alone"               <sonos_stand_alone>  (gSonosAnna)            {channel="sonos:PLAY1:anna:standalone"}
+String GF_AnnasRoom_Sonos_State                   "State [%s]"                <sonos_state>        (gSonosAnna)            {channel="sonos:PLAY1:anna:state"}
+Switch GF_AnnasRoom_Sonos_Stop                    "Stop"                      <sonos_stop>         (gSonosAnna,gSonosStop) {channel="sonos:PLAY1:anna:stop", autoupdate="false"}
+Dimmer GF_AnnasRoom_Sonos_Volume                  "Annas Room"                <soundvolume>        (gSonosAnna,gSonosVolu) {channel="sonos:PLAY1:anna:volume"}
+String GF_AnnasRoom_Sonos_ZoneGroupID             "Zone Group ID [%s]"        <sonos_zone>         (gSonosAnna)            {channel="sonos:PLAY1:anna:zonegroupid"}
+String GF_AnnasRoom_Sonos_ZoneName                "Zone Name [%s]"            <sonos_zone>         (gSonosAnna)            {channel="sonos:PLAY1:anna:zonename"}
+String GF_AnnasRoom_Sonos_Coordinator             "Coordinator [%s]"          <sonos_coordinator>  (gSonosAnna)            {channel="sonos:PLAY1:anna:coordinator"}
+Number GF_AnnasRoom_Sonos_SleepTimer              "Sleep Timer"               <sonos_sleep_timer>  (gSonosAnna)            {channel="sonos:PLAY1:anna:sleeptimer"}
+String GF_AnnasRoom_Sonos_CurrentAVtransportURI   "AV transport URI [%s]"     <sonos_uri>          (gSonosAnna)            {channel="sonos:PLAY1:anna:currenttransporturi"}
+String GF_AnnasRoom_Sonos_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosAnna)            {channel="sonos:PLAY1:anna:currenttrackuri"}
+
+
+/* Office */
+// String GF_Office_Sonos_Add                        "Add [%s]"                  <sonos_add>          (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:add"}
+// Switch GF_Office_Sonos_SetAlarm                   "Set Alarm"                 <sonos_alarm>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:alarm"}
+// String GF_Office_Sonos_AlarmProperties            "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:alarmproperties"}
+// Switch GF_Office_Sonos_AlarmIsrunning             "Alarm is running"          <sonso_alarm_run>    (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:alarmrunning"}
+// Player GF_Office_Sonos_Control                    "Control"                   <sonos_control>      (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:control"}
+// String GF_Office_Sonos_CurrentAlbum               "Album [%s]"                <sonos_album>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:currentalbum"}
+// String GF_Office_Sonos_CurrentArtist              "Artist [%s]"               <sonos_artist>       (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:currentartist"}
+// String GF_Office_Sonos_CurrentTitle               "Title [%s]"                <sonos_title>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:currenttitle"}
+// String GF_Office_Sonos_CurrentTrack               "Track [%s]"                <sonos_track>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:currenttrack"}
+// Switch GF_Office_Sonos_Shuffle                    "Shuffle"                   <sonos_shuffle>      (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:shuffle"}
+// String GF_Office_Sonos_Repeat                     "Repeat [%s]"               <sonos_repeat>       (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:repeat"}
+// String GF_Office_Sonos_Favorite                   "Favorite [%s]"             <sonos_favorite>     (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:favorite"}
+// Switch GF_Office_Sonos_Led                        "Led"                       <sonos_led>          (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:led"}
+// Switch GF_Office_Sonos_LocalCoordinator           "Local Coordinator"         <sonos_coordinator>  (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:localcoordinator"}
+// Switch GF_Office_Sonos_Mute                       "Mute"                      <sonos_mute>         (gSonosOffice,gSonosMute) {channel="sonos:PLAY1:{{ vault_sonos_office }}:mute"}
+// String GF_Office_Sonos_NotificationSound          "Notification Sound [%s]"   <sonos_notification> (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:notificationsound"}
+// Dimmer GF_Office_Sonos_Notificationsoundvolume    "Notification Sound Volume" <soundvolume>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:notificationvolume"}
+// String GF_Office_Sonos_PlayPlaylist               "Play Playlist [%s]"        <sonos_playlist>     (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:playlist"}
+// Switch GF_Office_Sonos_PlayQueue                  "Play Queue"                <sonos_que>          (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:playqueue"}
+// Number GF_Office_Sonos_PlayTrack                  "Play Track"                <sonos_play_track>   (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:playtrack"}
+// String GF_Office_Sonos_PlayURI                    "Play URI [%s]"             <sonos_play_uri>     (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:playuri"}
+// Switch GF_Office_Sonos_PublicAddress              "Public Address"            <sonos_publiv>       (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:publicaddress"}
+// String GF_Office_Sonos_Radio                      "Radio [%s]"                <sonos_radio>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:radio"}
+// String GF_Office_Sonos_Remove                     "Remove [%s]"               <sonos_remove>       (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:remove"}
+// Switch GF_Office_Sonos_Restore                    "Restore"                   <sonos_restore>      (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:restore"}
+// Switch GF_Office_Sonos_RestoreAll                 "Restore All"               <sonos_restore_all>  (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:restoreall"}
+// Switch GF_Office_Sonos_Save                       "Save"                      <sonos_save>         (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:save"}
+// Switch GF_Office_Sonos_SaveAll                    "Save All"                  <sonos_save_all>     (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:saveall"}
+// Number GF_Office_Sonos_Snooze                     "Snooze"                    <sonos_snooze>       (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:snooze"}
+// Switch GF_Office_Sonos_StandAlone                 "Stand Alone"               <sonos_stand_alone>  (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:standalone"}
+// String GF_Office_Sonos_State                      "State [%s]"                <sonos_state>        (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:state"}
+// Switch GF_Office_Sonos_Stop                       "Stop"                      <sonos_stop>         (gSonosOffice,gSonosStop) {channel="sonos:PLAY1:{{ vault_sonos_office }}:stop", autoupdate="false"}
+// Dimmer GF_Office_Sonos_Volume                     "Annas Room"                <soundvolume>        (gSonosOffice,gSonosVolu) {channel="sonos:PLAY1:{{ vault_sonos_office }}:volume"}
+// String GF_Office_Sonos_ZoneGroupID                "Zone Group ID [%s]"        <sonos_zone>         (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:zonegroupid"}
+// String GF_Office_Sonos_ZoneName                   "Zone Name [%s]"            <sonos_zone>         (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:zonename"}
+// String GF_Office_Sonos_Coordinator                "Coordinator [%s]"          <sonos_coordinator>  (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:coordinator"}
+// Number GF_Office_Sonos_SleepTimer                 "Sleep Timer"               <sonos_sleep_timer>  (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:sleeptimer"}
+// String GF_Office_Sonos_CurrentAVtransportURI      "AV transport URI [%s]"     <sonos_uri>          (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:currenttransporturi"}
+// String GF_Office_Sonos_CurrenttrackURI            "track URI [%s]"            <sonos_uri>          (gSonosOffice)            {channel="sonos:PLAY1:{{ vault_sonos_office }}:currenttrackuri"}

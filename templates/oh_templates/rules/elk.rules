@@ -1,0 +1,164 @@
+rule "Elk Parser"
+when
+  Item ElkString changed
+then
+  //logInfo("Elk Parser","Elk status string: " + ElkString.state.toString)
+
+  // Zone status change (ZC)
+  if (ElkString.state.toString.substring(2,4).equals("ZC")) {
+    val status = ElkString.state.toString.substring(7,8)
+    val zone = ElkString.state.toString.substring(4,7)
+    if ((status.equals("9")) || (status.equals("A")) || (status.equals("B"))) {
+      logInfo("Elk Parser","ELK_Zone " + zone + " violated.")
+      sendCommand("ELK_Zone" + zone, ON.toString)
+    } else if ((status.equals("1")) || (status.equals("2")) || (status.equals("3"))) {
+      logInfo("Elk Parser","ELK_Zone " + zone + " normal.")
+      sendCommand("ELK_Zone" + zone, OFF.toString)
+    }
+  }
+
+  // Output status change (CC)
+  if (ElkString.state.toString.substring(2,4).equals("CC")) {
+    val status = ElkString.state.toString.substring(7,8)
+    val output = ElkString.state.toString.substring(4,7)
+    if (status.equals("0")) {
+      logInfo("Elk Parser","ELK_Output " + output + " OFF.")
+      sendCommand("ELK_Output" + output, OFF.toString)
+    } else if (status.equals("1")) {
+      logInfo("Elk Parser","ELK_Output " + output + " ON.")
+      sendCommand("ELK_Output" + output, ON.toString)
+    }
+  }
+end
+
+//---------------
+
+rule "Zone002 Command"
+when
+  Item ELK_Zone002 received command
+then
+  if(receivedCommand == ON) {
+      Garage_Motion_Sensor.sendCommand(ON)
+  }
+  else {
+      Garage_Motion_Sensor.sendCommand(OFF)
+  }
+end
+
+rule "Zone002 Update"
+when
+  Item ELK_Zone002 received update
+then
+  if(ELK_Zone002.state == ON) {
+      Garage_Motion_Sensor.postUpdate(ON)
+  }
+  else {
+      Garage_Motion_Sensor.postUpdate(OFF)
+  }
+end
+
+//---------------
+
+rule "Zone003 Command"
+when
+  Item ELK_Zone003 received command
+then
+  if(receivedCommand == ON) {
+      Dining_Motion_Sensor.sendCommand(ON)
+  }
+  else {
+      Dining_Motion_Sensor.sendCommand(OFF)
+  }
+end
+
+rule "Zone003 Update"
+when
+  Item ELK_Zone003 received update
+then
+  if(ELK_Zone003.state == ON) {
+      Dining_Motion_Sensor.postUpdate(ON)
+  }
+  else {
+      Dining_Motion_Sensor.postUpdate(OFF)
+  }
+end
+
+//---------------
+
+rule "Zone004 Command"
+when
+  Item ELK_Zone004 received command
+then
+  if(receivedCommand == ON) {
+      Lounge_Motion_Sensor.sendCommand(ON)
+  }
+  else {
+      Lounge_Motion_Sensor.sendCommand(OFF)
+  }
+end
+
+rule "Zone004 Update"
+when
+  Item ELK_Zone004 received update
+then
+  if(ELK_Zone004.state == ON) {
+      Lounge_Motion_Sensor.postUpdate(ON)
+  }
+  else {
+      Lounge_Motion_Sensor.postUpdate(OFF)
+  }
+end
+
+//---------------
+
+rule "Zone005 Command"
+when
+  Item ELK_Zone005 received command
+then
+  if(receivedCommand == ON) {
+      Bedroom1_Motion_Sensor.sendCommand(ON)
+  }
+  else {
+      Bedroom1_Motion_Sensor.sendCommand(OFF)
+  }
+end
+
+rule "Zone005 Update"
+when
+  Item ELK_Zone005 received update
+then
+  if(ELK_Zone005.state == ON) {
+      Bedroom1_Motion_Sensor.postUpdate(ON)
+  }
+  else {
+      Bedroom1_Motion_Sensor.postUpdate(OFF)
+  }
+end
+
+//---------------
+
+rule "Zone006 Command"
+when
+  Item ELK_Zone006 received command
+then
+  if(receivedCommand == ON) {
+      Hallway_Motion_Sensor.sendCommand(ON)
+  }
+  else {
+      Hallway_Motion_Sensor.sendCommand(OFF)
+  }
+end
+
+rule "Zone006 Update"
+when
+  Item ELK_Zone006 received update
+then
+  if(ELK_Zone006.state == ON) {
+      Hallway_Motion_Sensor.postUpdate(ON)
+  }
+  else {
+      Hallway_Motion_Sensor.postUpdate(OFF)
+  }
+end
+
+//---------------

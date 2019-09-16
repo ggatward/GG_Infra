@@ -1,0 +1,73 @@
+rule "Morning Announce Trigger"
+when
+  Time cron "0 30 6 ? * MON-FRI *" or
+  Time cron "0 20 7 ? * SAT,SUN *"
+then
+  logInfo("openhab", "--> Setting MorningTrigger")
+  VIR_MorningTrigger.postUpdate(ON)
+end
+
+
+// Good Morning Announcement
+rule "Good Morning Announcement"
+when
+  Item ELK_Zone004 changed from OFF to ON
+then
+  if (VIR_MorningTrigger.state == ON) {
+    VIR_MorningTrigger.postUpdate(OFF)
+    var Today = ""
+    switch now.getDayOfWeek{
+      case 1: Today = "Monday"
+      case 2: Today = "Tuesday"
+      case 3: Today = "Wednesday"
+      case 4: Today = "Thursday"
+      case 5: Today = "Friday"
+      case 6: Today = "Saturday"
+      case 7: Today = "Sunday"
+    }
+    var Month = ""
+    switch now.getMonthOfYear{
+      case 1: Month = "January"
+      case 2: Month = "February"
+      case 3: Month = "March"
+      case 4: Month = "April"
+      case 5: Month = "May"
+      case 6: Month = "June"
+      case 7: Month = "July"
+      case 8: Month = "August"
+      case 9: Month = "September"
+      case 10: Month = "October"
+      case 11: Month = "November"
+      case 12: Month = "December"
+    }
+
+    val current_temp = String::format("%.0f", (HomeWx_outTemp.state as DecimalType).floatValue)
+    var string tmp = "Good Morning, It is " + Today + ", " + Month + " " + now.getDayOfMonth + ". " +
+                    "The forecast for today is " + BoMWx_forecast_today.state + " with a high of " + BoMWx_forecast_today_max.state + ". " +
+                    "It is currently " + current_temp
+
+    logInfo("Testing", tmp)
+    say(tmp)
+
+    // Turn on the radio
+    LivingRoom_Radio.postUpdate(ON)
+
+  }
+end
+
+
+// Rollerdoor announcements
+rule "Rollerdoor Open"
+when
+  Item ELK_Zone007 changed from OFF to ON
+then
+  say("The roller door is opening")
+end
+
+// Rollerdoor announcements
+rule "Rollerdoor Closed"
+when
+  Item ELK_Zone007 changed from ON to OFF
+then
+  say("The roller door is closed")
+end

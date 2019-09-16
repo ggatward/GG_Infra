@@ -7,6 +7,10 @@
   - name: Include vault vars
     include_vars: vault.yml
     no_log: true
+    tags:
+    - openhab
+    - configuration
+    - mqtt
 
   tasks:
   - name: Create HTTP service in IPA
@@ -15,17 +19,26 @@
       ipa_pass: "{{ idm_admin_pass }}"
       krbcanonicalname: HTTP/{{ ansible_fqdn }}
       state: present
+    tags:
+    - openhab
+    - mqtt
 
   - name: Check if SSL certs already exist
     stat:
       path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
     register: sslcerts
     changed_when: false
+    tags:
+    - openhab
+    - mqtt
 
   # We create 2048bit key here as IoT firmwares only support this due to memory constraints
   - name: Request new SSL certs from IPA
     command: ipa-getcert request -r -g 2048 -f /etc/pki/tls/certs/{{ ansible_fqdn }}.pem -k /etc/pki/tls/private/{{ ansible_fqdn }}.key -N CN={{ ansible_fqdn }} -K HTTP/{{ ansible_fqdn }}
     when: not sslcerts.stat.exists
+    tags:
+    - openhab
+    - mqtt
 
   - name: Deploy script to create client certs in IPA
     copy:
@@ -34,9 +47,16 @@
       owner: root
       group: root
       mode: 0755
+    tags:
+    - mqtt
 
   - include_role:
       name: ansible-role-openhab
+    tags:
+    - openhab
+    - configuration
+    - mqtt
+    - zwave
 
   - name: Add rich-rule to allow Sonos uPNP
     firewalld:
@@ -44,82 +64,187 @@
       immediate: yes
       permanent: yes
       state: enabled
+    tags:
+    - openhab
+
+###############################################
 
 
-#   - include: deploy_config.yml
+- name: Install ZWave RPi
+  remote_user: svc-ansible
+  become: true
+  hosts: zwave
+  pre_tasks:
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
+    tags:
+    - zwave
 
-# - name: Install ZWave RPi
-#   remote_user: svc-ansible
-#   become: true
-#   hosts: zwave
-#   pre_tasks:
-#   - name: Include vault vars
-#     include_vars: vault.yml
-#     no_log: true
+  tasks:
+  - name: Install packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - ser2net
+    tags:
+    - zwave
 
-#   tasks:
-#   - name: Install packages
-#     package:
-#       name: "{{ item }}"
-#       state: present
-#     with_items:
-#       - ser2net
+  - name: Deploy ser2net config
+    template:
+      src: ser2net.conf.j2
+      dest: /etc/ser2net.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: Restart ser2net
+    tags:
+    - zwave
 
-#   - name: Deploy ser2net config
-#     template:
-#       src: ser2net.conf.j2
-#       dest: /etc/ser2net.conf
-#       owner: root
-#       group: root
-#       mode: 0644
-#     notify: Restart ser2net
+  - name: Install ser2net script
+    copy:
+      content: |
+        #!/bin/sh
+        /usr/sbin/ser2net -c /etc/ser2net.conf -P /run/ser2net.pid
+      dest: /usr/local/bin/ser2net.sh
+      owner: root
+      group: root
+      mode: 0755
+    notify: Restart ser2net
+    tags:
+    - zwave
 
-#   - name: Install ser2net script
-#     copy:
-#       content: |
-#         #!/bin/sh
-#         /usr/sbin/ser2net -c /etc/ser2net.conf -P /run/ser2net.pid
-#       dest: /usr/local/bin/ser2net.sh
-#       owner: root
-#       group: root
-#       mode: 0755
-#     notify: Restart ser2net
+  - name: Remove default ser2net init script
+    file:
+      path: /etc/init.d/ser2net
+      state: absent
+    tags:
+    - zwave
 
-#   - name: Remove default ser2net init script
-#     file:
-#       path: /etc/init.d/ser2net
-#       state: absent
+  - name: Install ser2net service
+    copy:
+      src: automation/ser2net.service
+      dest: /etc/systemd/system/ser2net.service
+      owner: root
+      group: root
+      mode: 0755
+    tags:
+    - zwave
 
-#   - name: Install ser2net service
-#     template:
-#       src: ser2net.service.j2
-#       dest: /etc/systemd/system/ser2net.service
-#       owner: root
-#       group: root
-#       mode: 0755
+  - name: Enable services
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+      daemon_reload: true
+    with_items:
+    - ser2net
+    tags:
+    - zwave
 
-#   - name: Enable services
-#     service:
-#       name: "{{ item }}"
-#       state: started
-#       enabled: true
-#       daemon_reload: true
-#     with_items:
-#       - ser2net
+  - name: Install Z-Wave udev restart script
+    copy:
+      content: |
+        #!/bin/sh
+        systemctl restart ser2net
+      dest: /usr/local/bin/restart-zwave-replug
+      owner: root
+      group: root
+      mode: 0755
+    tags:
+    - zwave
 
-#   - name: Install Z-Wave udev restart script
-#     copy:
-#       content: |
-#         #!/bin/sh
-#         systemctl restart ser2net
-#       dest: /usr/local/bin/restart-zwave-replug
-#       owner: root
-#       group: root
-#       mode: 0755
+  - name: Install Z-Wave udev rules
+    copy:
+      content: "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0658\", ATTRS{idProduct}==\"0200\", SYMLINK+=\"zwave\", GROUP=\"dialout\", MODE=\"0666\", RUN+=\"/usr/local/bin/restart-zwave-replug\""
+      dest: /etc/udev/rules.d/99-zwave-stick.rules
+      owner: root
+      group: root
+    tags:
+    - zwave
 
-#   - name: Install Z-Wave udev rules
-#     copy:
-#       content: "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0658\", ATTRS{idProduct}==\"0200\", SYMLINK+=\"zwave\", GROUP=\"dialout\", MODE=\"0666\", RUN+=\"/usr/local/bin/restart-zwave-replug\""
-#       dest: /etc/udev/rules.d/99-zwave-stick.rules
-#       owner: root
-#       group: root
+###############################################
+- name: Configure OpenHAB
+  remote_user: svc-ansible
+  become: true
+  hosts: openhab
+  pre_tasks:
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
+    tags:
+    - configuration
+
+  handlers:
+  - name: Restart Openhab
+    service:
+      name: openhab2
+      state: restarted
+
+  tasks:
+  - name: Deploy transform config files
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/transform
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/transform/*
+    tags:
+    - configuration
+
+  - name: Deploy things config
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/things
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/things/*
+    tags:
+    - configuration
+
+  - name: Deploy items config
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/items
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/items/*
+    tags:
+    - configuration
+
+  # - name: Deploy sitemaps config
+  #   template:
+  #     src: "{{ item }}"
+  #     dest: /etc/openhab2/sitemaps
+  #     owner: openhab
+  #     group: openhab
+  #   with_fileglob:
+  #   - templates/oh_templates/sitemaps/*
+  #   tags:
+  #   - configuration
+
+  # - name: Deploy rules config
+  #   template:
+  #     src: "{{ item }}"
+  #     dest: /etc/openhab2/rules
+  #     owner: openhab
+  #     group: openhab
+  #   with_fileglob:
+  #   - templates/oh_templates/rules/*
+    # tags:
+    # - configuration
+
+
+
+
+
+
+
+
+
+
+##############################################################

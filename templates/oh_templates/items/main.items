@@ -1,0 +1,43 @@
+Group     Home                           "Our Home"         <house>                                         ["Building"]
+
+Group     OU                             "Outside"          <garden>           (Home)                       ["Outdoor"]
+Group     OU_Alfresco                    "Alfresco"         <terrace>          (Home, OU)                   ["Outside"]
+Group     OU_Backyard                    "Backyard"         <lawnmower>        (Home, OU)                   ["Garden"]
+Group     OU_Deck                        "Deck"                                (Home, OU)                   ["Terrace"]
+Group     OU_Driveway                    "Driveway"                            (Home, OU)                   ["Outdoor"]
+Group     OU_FrontYard                   "Front Yard"       <lawnmower>        (Home, OU)                   ["Garden"]
+Group     OU_Shed                        "Shed"             <greenhouse>       (Home, OU)                   ["Garage"]
+
+Group     GF                             "Ground Floor"     <groundfloor>      (Home)                       ["GroundFloor"]
+Group     GF_Bathroom                    "Bathroom"         <bath>             (Home, GF)                   ["Bathroom"]
+Group     GF_Ensuite                     "Ensuite"          <bath>             (Home, GF)                   ["Bathroom"]
+Group     GF_Wardrobe                    "Wardrobe"         <wardrobe>         (Home, GF)
+Group     GF_LivingDining                "Living and Dining" <sofa>            (Home, GF)                   ["Room"]
+Group     GF_RumpusRoom                  "Family Room"      <parents_2_4>      (Home, GF)                   ["Room"]
+Group     GF_Garage                      "Garage"           <garage>           (Home, GF)                   ["Garage"]
+Group     GF_Hallway                     "Hallway"          <corridor>         (Home, GF)                   ["Corridor"]
+Group     GF_MichaelsRoom                "Michaels Bedroom" <bedroom_blue>     (Home, GF)                   ["Bedroom"]
+Group     GF_CaitlynsRoom                "Caitlyns Bedroom" <bedroom_red>      (Home, GF)                   ["Room"]
+Group     GF_AnnasRoom                   "Sewing Room"      <girl_3>           (Home, GF)                   ["Room"]
+Group     GF_Kitchen                     "Kitchen"          <kitchen>          (Home, GF)                   ["Kitchen"]
+Group     GF_Laundry                     "Laundry"          <washingmachine>   (Home, GF)                   ["Room"]
+Group     GF_MasterBedroom               "Master Bedroom"   <bedroom_orange>   (Home, GF)                   ["Bedroom"]
+Group     GF_Office                      "Office"           <office>           (Home, GF)                   ["Room"]
+Group     GF_Toilet                      "Toilet"           <toilet>           (Home, GF)                   ["Bathroom"]
+
+
+/* Weather Groups */
+Group     gWeather             "Weather"                    <sun_clouds>       (Home)                       ["Weather"]
+Group     gHomeWeather         "Data from Weather Station"                     (gWeather)
+Group     gBoMWeather          "Data from BoM"                                 (gWeather)
+
+/* Power and Energy */
+Group     gPower               "Power Consumption"          <energy>           (Home)
+
+/* Aggregation Groups */
+Group:Contact:OR(OPEN, CLOSED)   gDoor          "Door"            <door>          (Home)   ["Door"]
+Group:Switch:OR(ON, OFF)         gLight         "Light"           <light>         (Home)   ["Lighting", "Switchable"]
+Group:Number:AVG                 gTemperature   "Temperature"     <temperature>   (Home)   ["Temperature"]
+Group:Contact:OR(OPEN, CLOSED)   gWindow        "Window"          <window>        (Home)   ["Window"]
+Group:Switch:OR(ON, OFF)         gMotion        "Motion Sensor"   <motion>        (Home)   ["MotionDetector", "Switchable"]
+Group:Switch:OR(ON, OFF)         gFan           "Fan"             <fan_ceiling>   (Home)   ["Switchable"]

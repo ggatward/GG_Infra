@@ -1,0 +1,451 @@
+sitemap ourhouse label="Our Home" {
+  Frame label="Ground Floor" icon="groundfloor" {
+    Group item=GF_LivingDining
+    Group item=GF_Kitchen
+    Group item=GF_Hallway
+    Group item=GF_MasterBedroom
+    Group item=GF_Wardrobe
+    Group item=GF_Ensuite
+    Group item=GF_MichaelsRoom
+    Group item=GF_CaitlynsRoom
+    Group item=GF_Bathroom
+    Group item=GF_Toilet
+    Group item=GF_Office
+    Group item=GF_RumpusRoom
+    Group item=GF_Garage
+    Group item=GF_Laundry
+  }
+
+  Frame label="Outside" icon="garden" {
+    Group item=OU_Alfresco
+    Group item=OU_Deck
+    Group item=OU_Backyard
+    Group item=OU_FrontYard
+    Group item=OU_Driveway
+    Group item=OU_Shed
+  }
+
+  Frame label="Sonos" {
+    Text label="Sonos" icon="sonos_control" {
+      Frame label="Global controls" {
+    		Slider  item=gSonosVolu label="Volume all"
+    		Switch  item=gSonosStop label="Stop all"	mappings=[OFF="Stop"]
+    		Switch  item=gSonosMute label="Mute all"	mappings=[ON="Mute", OFF="Unmute"]
+    	}
+
+    	Frame visibility=[Sonos_Group1_Visibility!="Hide"]{
+    		Text label="Group 1"
+    		icon="sonos_control" {
+
+    			Frame visibility=[Sonos_Group1_Visibility=="Alfresco"]{
+    				Default item=OU_Alfresco_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group1_Visibility=="Office"]{
+    				Default item=GF_Office_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group1_Visibility=="Annas room"]{
+    				Default item=GF_AnnasRoom_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group1_Visibility=="Living room"]{
+    				Default item=GF_LivingRoom_Sonos_Control
+    			}
+
+    			Slider item=OU_Alfresco_Sonos_Volume visibility=[SonosGroupID_Alfresco=="1"]
+    			Slider item=GF_Office_Sonos_Volume visibility=[SonosGroupID_Office=="1"]
+    			Slider item=GF_AnnasRoom_Sonos_Volume visibility=[SonosGroupID_Anna=="1"]
+    			Slider item=GF_LivingRoom_Sonos_Volume visibility=[SonosGroupID_Living=="1"]
+
+    			Switch item=OU_Alfresco_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Switch item=GF_Office_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Office"]
+    			Switch item=GF_AnnasRoom_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Switch item=GF_LivingRoom_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Living room"]
+
+    			Switch item=OU_Alfresco_Sonos_Shuffle visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Switch item=GF_Office_Sonos_Shuffle visibility=[Sonos_Group1_Visibility=="Office"]
+    			Switch item=GF_AnnasRoom_Sonos_Shuffle visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Switch item=GF_LivingRoom_Sonos_Shuffle visibility=[Sonos_Group1_Visibility=="Living room"]
+
+    			Switch item=OU_Alfresco_Sonos_Repeat visibility=[Sonos_Group1_Visibility=="Alfresco"]     mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_Office_Sonos_Repeat visibility=[Sonos_Group1_Visibility=="Office"]  mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_AnnasRoom_Sonos_Repeat visibility=[Sonos_Group1_Visibility=="Annas room"]    mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_LivingRoom_Sonos_Repeat visibility=[Sonos_Group1_Visibility=="Living room"] mappings=[ALL="All", ONE="One", OFF="Off"]
+
+    			Selection item=Sonos_RadioStation_Alfresco_Number visibility=[Sonos_Group1_Visibility=="Alfresco"]     mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_Office_Number visibility=[Sonos_Group1_Visibility=="Office"]  mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_AnnasRoom_Number visibility=[Sonos_Group1_Visibility=="Annas room"]    mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_LivingRoom_Number visibility=[Sonos_Group1_Visibility=="Living room"] mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+
+    			Selection item=Sonos_Playlist_Alfresco_Number visibility=[Sonos_Group1_Visibility=="Alfresco"]     mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_Office_Number visibility=[Sonos_Group1_Visibility=="Office"]  mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_AnnasRoom_Number visibility=[Sonos_Group1_Visibility=="Annas room"]    mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_LivingRoom_Number visibility=[Sonos_Group1_Visibility=="Living room"] mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentArtist visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentArtist visibility=[Sonos_Group1_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentArtist visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentArtist visibility=[Sonos_Group1_Visibility=="Living room"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentAlbum visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentAlbum visibility=[Sonos_Group1_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentAlbum visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentAlbum visibility=[Sonos_Group1_Visibility=="Living room"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentTitle visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentTitle visibility=[Sonos_Group1_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentTitle visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentTitle visibility=[Sonos_Group1_Visibility=="Living room"]
+    		}
+    	}
+
+    	Frame visibility=[Sonos_Group2_Visibility!="Hide"]{
+    		Text label="Group 2"
+    		icon="sonos_control" {
+    			Frame visibility=[Sonos_Group2_Visibility=="Alfresco"]{
+    				Default item=OU_Alfresco_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group2_Visibility=="Office"]{
+    				Default item=GF_Office_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group2_Visibility=="Annas room"]{
+    				Default item=GF_AnnasRoom_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group2_Visibility=="Living room"]{
+    				Default item=GF_LivingRoom_Sonos_Control
+    			}
+    			Slider item=OU_Alfresco_Sonos_Volume visibility=[SonosGroupID_Alfresco=="2"]
+    			Slider item=GF_Office_Sonos_Volume visibility=[SonosGroupID_Office=="2"]
+    			Slider item=GF_AnnasRoom_Sonos_Volume visibility=[SonosGroupID_Anna=="2"]
+    			Slider item=GF_LivingRoom_Sonos_Volume visibility=[SonosGroupID_Living=="2"]
+
+    			Switch item=OU_Alfresco_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Switch item=GF_Office_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Office"]
+    			Switch item=GF_AnnasRoom_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Switch item=GF_LivingRoom_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Living room"]
+
+    			Switch item=OU_Alfresco_Sonos_Shuffle visibility=[Sonos_Group2_Visibility=="Alfresco"]
+    			Switch item=GF_Office_Sonos_Shuffle visibility=[Sonos_Group2_Visibility=="Office"]
+    			Switch item=GF_AnnasRoom_Sonos_Shuffle visibility=[Sonos_Group2_Visibility=="Annas room"]
+    			Switch item=GF_LivingRoom_Sonos_Shuffle visibility=[Sonos_Group2_Visibility=="Living room"]
+
+    			Switch item=OU_Alfresco_Sonos_Repeat visibility=[Sonos_Group2_Visibility=="Alfresco"]     mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_Office_Sonos_Repeat visibility=[Sonos_Group2_Visibility=="Office"]  mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_AnnasRoom_Sonos_Repeat visibility=[Sonos_Group2_Visibility=="Annas room"]    mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_LivingRoom_Sonos_Repeat visibility=[Sonos_Group2_Visibility=="Living room"] mappings=[ALL="All", ONE="One", OFF="Off"]
+
+    			Selection item=Sonos_RadioStation_Alfresco_Number visibility=[Sonos_Group2_Visibility=="Alfresco"]     mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_Office_Number visibility=[Sonos_Group2_Visibility=="Office"]  mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_AnnasRoom_Number visibility=[Sonos_Group2_Visibility=="Annas room"]    mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_LivingRoom_Number visibility=[Sonos_Group2_Visibility=="Living room"] mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+
+    			Selection item=Sonos_Playlist_Alfresco_Number visibility=[Sonos_Group2_Visibility=="Alfresco"]     mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_Office_Number visibility=[Sonos_Group2_Visibility=="Office"]  mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_AnnasRoom_Number visibility=[Sonos_Group2_Visibility=="Annas room"]    mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_LivingRoom_Number visibility=[Sonos_Group2_Visibility=="Living room"] mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentArtist visibility=[Sonos_Group2_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentArtist visibility=[Sonos_Group2_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentArtist visibility=[Sonos_Group2_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentArtist visibility=[Sonos_Group2_Visibility=="Living room"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentAlbum visibility=[Sonos_Group2_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentAlbum visibility=[Sonos_Group2_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentAlbum visibility=[Sonos_Group2_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentAlbum visibility=[Sonos_Group2_Visibility=="Living room"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentTitle visibility=[Sonos_Group2_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentTitle visibility=[Sonos_Group2_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentTitle visibility=[Sonos_Group2_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentTitle visibility=[Sonos_Group2_Visibility=="Living room"]
+    		}
+    	}
+
+    	Frame visibility=[Sonos_Group3_Visibility!="Hide"]{
+    		Text label="Group 3"
+    		icon="sonos_control" {
+    			Frame visibility=[Sonos_Group3_Visibility=="Alfresco"]{
+    				Default item=OU_Alfresco_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group3_Visibility=="Office"]{
+    				Default item=GF_Office_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group3_Visibility=="Annas room"]{
+    				Default item=GF_AnnasRoom_Sonos_Control
+    			}
+    			Frame visibility=[Sonos_Group3_Visibility=="Living room"]{
+    				Default item=GF_LivingRoom_Sonos_Control
+    			}
+    			Slider item=OU_Alfresco_Sonos_Volume visibility=[SonosGroupID_Alfresco=="3"]
+    			Slider item=GF_Office_Sonos_Volume visibility=[SonosGroupID_Office=="3"]
+    			Slider item=GF_AnnasRoom_Sonos_Volume visibility=[SonosGroupID_Anna=="3"]
+    			Slider item=GF_LivingRoom_Sonos_Volume visibility=[SonosGroupID_Living=="3"]
+
+    			Switch item=OU_Alfresco_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Alfresco"]
+    			Switch item=GF_Office_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Office"]
+    			Switch item=GF_AnnasRoom_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Annas room"]
+    			Switch item=GF_LivingRoom_Sonos_Mute visibility=[Sonos_Group1_Visibility=="Living room"]
+
+    			Switch item=OU_Alfresco_Sonos_Shuffle visibility=[Sonos_Group3_Visibility=="Alfresco"]
+    			Switch item=GF_Office_Sonos_Shuffle visibility=[Sonos_Group3_Visibility=="Office"]
+    			Switch item=GF_AnnasRoom_Sonos_Shuffle visibility=[Sonos_Group3_Visibility=="Annas room"]
+    			Switch item=GF_LivingRoom_Sonos_Shuffle visibility=[Sonos_Group3_Visibility=="Living room"]
+
+    			Switch item=OU_Alfresco_Sonos_Repeat visibility=[Sonos_Group3_Visibility=="Alfresco"]     mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_Office_Sonos_Repeat visibility=[Sonos_Group3_Visibility=="Office"]  mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_AnnasRoom_Sonos_Repeat visibility=[Sonos_Group3_Visibility=="Annas room"]    mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Switch item=GF_LivingRoom_Sonos_Repeat visibility=[Sonos_Group3_Visibility=="Living room"] mappings=[ALL="All", ONE="One", OFF="Off"]
+
+    			Selection item=Sonos_RadioStation_Alfresco_Number visibility=[Sonos_Group3_Visibility=="Alfresco"]     mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_Office_Number visibility=[Sonos_Group3_Visibility=="Office"]  mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_AnnasRoom_Number visibility=[Sonos_Group3_Visibility=="Annas room"]    mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_RadioStation_LivingRoom_Number visibility=[Sonos_Group3_Visibility=="Living room"] mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+
+    			Selection item=Sonos_Playlist_Alfresco_Number visibility=[Sonos_Group3_Visibility=="Alfresco"]     mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_Office_Number visibility=[Sonos_Group3_Visibility=="Office"]  mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_AnnasRoom_Number visibility=[Sonos_Group3_Visibility=="Annas room"]    mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Selection item=Sonos_Playlist_LivingRoom_Number visibility=[Sonos_Group3_Visibility=="Living room"] mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentArtist visibility=[Sonos_Group3_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentArtist visibility=[Sonos_Group3_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentArtist visibility=[Sonos_Group3_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentArtist visibility=[Sonos_Group3_Visibility=="Living room"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentAlbum visibility=[Sonos_Group3_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentAlbum visibility=[Sonos_Group3_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentAlbum visibility=[Sonos_Group3_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentAlbum visibility=[Sonos_Group3_Visibility=="Living room"]
+
+    			Text item=OU_Alfresco_Sonos_CurrentTitle visibility=[Sonos_Group3_Visibility=="Alfresco"]
+    			Text item=GF_Office_Sonos_CurrentTitle visibility=[Sonos_Group3_Visibility=="Office"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentTitle visibility=[Sonos_Group3_Visibility=="Annas room"]
+    			Text item=GF_LivingRoom_Sonos_CurrentTitle visibility=[Sonos_Group3_Visibility=="Living room"]
+    		}
+    	}
+
+    	Frame visibility=[SonosGroupID_Alfresco=="0"]{
+    		Text label="Alfresco"
+    		icon="sonos_control" {
+    			Default item=OU_Alfresco_Sonos_Control
+    			Slider item=OU_Alfresco_Sonos_Volume
+    			Switch item=OU_Alfresco_Sonos_Mute
+    			Switch item=OU_Alfresco_Sonos_Shuffle
+    			Switch item=OU_Alfresco_Sonos_Repeat mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Selection item=Sonos_RadioStation_Alfresco_Number mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_Playlist_Alfresco_Number mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Text item=OU_Alfresco_Sonos_CurrentArtist
+    			Text item=OU_Alfresco_Sonos_CurrentAlbum
+    			Text item=OU_Alfresco_Sonos_CurrentTitle
+    		}
+    	}
+
+    	Frame visibility=[SonosGroupID_Office=="0"]{
+    		Text label="Office"
+    		icon="sonos_control" {
+    			Default item=GF_Office_Sonos_Control
+    			Slider item=GF_Office_Sonos_Volume
+    			Switch item=GF_Office_Sonos_Mute
+    			Switch item=GF_Office_Sonos_Shuffle
+    			Switch item=GF_Office_Sonos_Repeat mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Selection item=Sonos_RadioStation_Office_Number mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_Playlist_Office_Number mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Text item=GF_Office_Sonos_CurrentArtist
+    			Text item=GF_Office_Sonos_CurrentAlbum
+    			Text item=GF_Office_Sonos_CurrentTitle
+    		}
+    	}
+
+    	Frame visibility=[SonosGroupID_Anna=="0"]{
+    		Text label="Annas room"
+    		icon="sonos_control" {
+    			Default item=GF_AnnasRoom_Sonos_Control
+    			Slider item=GF_AnnasRoom_Sonos_Volume
+    			Switch item=GF_AnnasRoom_Sonos_Mute
+    			Switch item=GF_AnnasRoom_Sonos_Shuffle
+    			Switch item=GF_AnnasRoom_Sonos_Repeat mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Selection item=Sonos_RadioStation_AnnasRoom_Number mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_Playlist_AnnasRoom_Number mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Text item=GF_AnnasRoom_Sonos_CurrentArtist
+    			Text item=GF_AnnasRoom_Sonos_CurrentAlbum
+    			Text item=GF_AnnasRoom_Sonos_CurrentTitle
+    		}
+    	}
+
+    	Frame visibility=[SonosGroupID_Living=="0"]{
+    		Text label="Living room"
+    		icon="sonos_control" {
+    			Default item=GF_LivingRoom_Sonos_Control
+    			Slider item=GF_LivingRoom_Sonos_Volume
+    			Switch item=GF_LivingRoom_Sonos_Mute
+    			Switch item=GF_LivingRoom_Sonos_Shuffle
+    			Switch item=GF_LivingRoom_Sonos_Repeat mappings=[ALL="All", ONE="One", OFF="Off"]
+    			Selection item=Sonos_RadioStation_LivingRoom_Number mappings=[0="None", 1="Mix 106.3", 2="NRK P2", 3="NRK P3", 4="NRK Alltid Nyheter", 5="NRK Klassisk", 6="NRK Jazz", 7="NRK MP3", 8="P4 Radio Norge", 9="Radio Norge"]
+    			Selection item=Sonos_Playlist_LivingRoom_Number mappings=[0="None", 1="Peiskos", 2="Rolig jazz", 3="Rolig Musikk", 4="All Work And No Play", 5="Schlagere"]
+    			Text item=GF_LivingRoom_Sonos_CurrentArtist
+    			Text item=GF_LivingRoom_Sonos_CurrentAlbum
+    			Text item=GF_LivingRoom_Sonos_CurrentTitle
+    		}
+    	}
+
+    	Selection item=SonosGroupID_Anna icon="sonos_coordinator" mappings=[0=Single, 1="Group 1", 2="Group 2", 3="Group 3"]
+    	Selection item=SonosGroupID_Office icon="sonos_coordinator" mappings=[0=Single, 1="Group 1", 2="Group 2", 3="Group 3"]
+    	Selection item=SonosGroupID_Alfresco icon="sonos_coordinator" mappings=[0=Single, 1="Group 1", 2="Group 2", 3="Group 3"]
+    	Selection item=SonosGroupID_Living icon="sonos_coordinator" mappings=[0=Single, 1="Group 1", 2="Group 2", 3="Group 3"]
+    }
+  }
+
+
+  Frame label="Device Groups" {
+
+    Text label="Doors" icon="door" {
+      Default item=OU_Shed_Door label="Shed"
+      Default item=ELK_Zone001 label="Front Door"
+      Default item=GF_RumpusRoom_Door label="Rumpus Room"
+      Default item=ELK_Zone007 label="Roller Door"
+      Default item=ELK_Zone008 label="Garage"
+      Default item=GF_Laundry_Door label="Laundry"
+    }
+
+    Text label="Lights" icon="light" {
+      Default item=OU_Alfresco_Light label="Alfresco"
+      Default item=GF_Wardrobe_Light label="Wardrobe"
+      Default item=GF_LivingDining_Light1 label="Dining"
+      Default item=GF_LivingDining_Light2 label="Dining 2"
+      Default item=GF_LivingDining_Light3 label="Lounge"
+      Default item=GF_RumpusRoom_Light label="Rumpus Room"
+      Default item=GF_Garage_Light label="Garage"
+      Default item=GF_Hallway_Light label="Hallway"
+      Default item=GF_CaitlynsRoom_Light label="Caitlyns Bedroom"
+      Default item=GF_MichaelsRoom_Light label="Michaels Bedroom"
+      Default item=GF_Kitchen_Light label="Kitchen"
+      Default item=GF_Laundry_Light label="Laundry"
+      Default item=GF_MasterBedroom_Light label="Master Bedroom"
+      Default item=GF_Office_Light label="Office"
+      Default item=GF_Bathroom_Light label="Bathroom"
+      Default item=GF_Toilet_Light label="Toilet"
+    }
+
+    Text label="Temperature" icon="temperature" {
+      Default item=GF_MichaelsRoom_Temperature label="Michaels Bedroom"
+      Default item=GF_RumpusRoom_Temperature label="Rumpus Room"
+      Default item=GF_Garage_Temperature label="Garage"
+      Default item=GF_CaitlynsRoom_Temperature label="Caitlyns Bedroom"
+      Default item=GF_Kitchen_Temperature label="Kitchen"
+      Default item=GF_MasterBedroom_Temperature label="Master Bedroom"
+      Default item=GF_Office_Temperature label="Office"
+    }
+
+    Text label="Windows" icon="window" {
+      Default item=GF_MichaelsRoom_Window label="Michaels Bedroom"
+      Default item=GF_CaitlynsRoom_Window label="Caitlyns Bedroom"
+    }
+
+    Text label="Motion Sensors" icon="motion" {
+      Default item=ELK_Zone003 label="Dining"
+      Default item=ELK_Zone002 label="Garage"
+      Default item=ELK_Zone006 label="Hallway"
+      Default item=ELK_Zone004 label="Living Room"
+      Default item=ELK_Zone005 label="Master Bedroom"
+    }
+
+    Text label="Fans" icon="fan_ceiling" {
+      Default item=GF_MasterBedroom_Fan label="Master Bedroom"
+    }
+  }
+
+  Frame label="Weather and Astro" {
+    Text label="Weather and Astro" icon="sun_clouds" {
+      Frame label="Current Weather" {
+        Text item=HomeWx_outTemp
+        Text item=HomeWx_windDir
+        Text item=HomeWx_windGust
+        Text item=HomeWx_windSpeed
+        Text item=HomeWx_outHumidity
+        Text item=HomeWx_pressure
+        Text item=HomeWx_dayRain
+        Text item=HomeWx_hourRain
+      }
+      Frame label="Forecast" {
+        Text item=BoMWx_forecast_today
+        Text item=BoMWx_forecast_today_max
+        Text item=BoMWx_forecast_tomorrow
+        Text item=BoMWx_forecast_tomorrow_max
+        Text item=BoMWx_forecast_tonight_min
+      }
+
+      Frame label="Astro" {
+      //Switch item=Night_State label="Daytime" mappings=[OFF="Day", ON="Night"]
+      Text item=Day_Phase icon=sunmoon
+      Text item=Season_Name
+      Text item=Sunrise_Time icon="sunrise" visibility=[Night_State == ON]
+      Text item=Sunset_Time icon="sunset" visibility=[Night_State == OFF]
+      Text item=Sun_Elevation icon="sunmoon" visibility=[Sun_Elevation > 0]
+      Text item=Moon_Elevation icon="sunmoon" visibility=[Moon_Elevation > 0]
+      Text item=Zodiac_Sign icon="zodiac"
+      Text item=Moon_Phase
+      Text item=Moon_Next_Full icon="fullmoon"
+        visibility=[Moon_Phase == WAXING_CRESCENT,
+                    Moon_Phase == FIRST_QUARTER,
+                    Moon_Phase == WAXING_GIBBOUS,
+                    Moon_Phase == FULL]
+      Text item=Moon_Next_New icon="fullmoon"
+        visibility=[Moon_Phase == WANING_GIBBOUS,
+                    Moon_Phase == THIRD_QUARTER,
+                    Moon_Phase == WANING_CRESCENT,
+                    Moon_Phase == NEW]
+      }
+    }
+  }
+
+  Frame label="Network and Presence" icon="network"{
+    Text label="Network and Presence"{
+      Frame label="Presence" {
+        Text item=Net_Geoffs_Phone icon="oneplus3" label="Geoffs Phone [MAP(presence.map):%s]"
+        Text item=Net_Annas_Phone icon="oneplus3" label="Annas Phone [MAP(presence.map):%s]"
+      }
+
+      Frame label="SpeedTest" {
+        Text item=SpeedtestSummary {
+          Frame label="Results" {
+            Text item=Speedtest_ResultDown
+            Text item=Speedtest_ResultUp
+            Text item=Speedtest_ResultPing
+          }
+          // Global Controls
+          Frame label="Controls" icon="settings" {
+            Text item=Speedtest_ResultDate
+            Text item=Speedtest_Running label="Speedtest [%s]" visibility=[Speedtest_Running != "-"]
+            Switch item=Speedtest_Rerun mappings=[ON="Start"]
+          }
+          Frame label="Statistics" icon="chart" {
+            //TODO dokumentieren: icon wird nicht angezeigt
+            Text label="" icon="speedtest_analytics8"
+            //Image label="Speedtest" refresh=60000
+            //    url="http://192.168.11.230:3000/render/dashboard-solo/db/w66a?panelId=5&width=700&height=350&from=now-48h&to=now"
+          }
+        }
+      }
+    }
+  }
+
+  Frame label="Admin" icon="settings" {
+    Group item=Home label="All Devices" icon="house"
+    Group item=gVirtual label="Virtual Devices" icon="settings"
+    Group item=gELK label="ELK Alarm Devices" icon="alarm"
+    Group item=gZwave label="ZWave Devices" icon="energy"
+  }
+
+
+
+//  Frame label="Admin" {
+//    Text label="Status" icon="chart" {
+//      Group item=Heating_ValveSettings valuecolor=[0="green"]
+//      Group item=Windows valuecolor=[0="green"]
+//      Group item=Bat_Binary valuecolor=[0="green"]
+//      Group item=Bat_Volts valuecolor=[0="green"]
+//      Group item=Bat_Percent valuecolor=[0="green"]
+//      Switch item=Sonoff_Action mappings=[restart="Restart", queryFW="Query FW", upgradeFW="Upgrade FW"]
+//      Switch item=Whg_Wartung_Trigger label="Wartungsroutinen" icon="pantry" mappings=[ON="Starten"]
+//    }
+//  }
+
+
+}
