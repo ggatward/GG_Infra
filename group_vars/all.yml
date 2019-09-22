@@ -46,6 +46,7 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
 latitude: "{{ vault_latitude }}"
 longitude: "{{ vault_longitude }}"
+altitude: '698'
 
 tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
 

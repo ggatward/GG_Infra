@@ -17,8 +17,8 @@ Number    HomeWx_windGust              "Wind Gust [%d kph ]"                   <
 Number    HomeWx_windSpeed             "Wind Speed [%d kph]"                   <wind>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:windSpeed"}
 Number    HomeWx_outHumidity           "Humidity [%d%%]"                       <humidity>      (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:outHumidity"}
 Number    HomeWx_pressure              "Pressure [%.1f hPa]"                                   (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:pressure"}
-Number    HomeWx_dayRain               "Rain Today [JS(cm-to-mm.js):%s]"       <rain>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:dayRain"}
-Number    HomeWx_hourRain              "Rain last hour [JS(cm-to-mm.js):%s]"   <rain>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:hourRain"}
+Number    HomeWx_dayRain               "Rain Today [%.1f mm]"                  <rain>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:dayRain"}
+Number    HomeWx_hourRain              "Rain last hour [%.1f mm]"              <rain>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:hourRain"}
 Number    GF_Kitchen_Temperature       "Temperature [%.1f °C]"                 <temperature>   (gMQTT, GF_Kitchen, gTemperature)               {channel="mqtt:topic:mosquitto:weewx:inTemp"}
 
 //BoM Forecasts & Warnings

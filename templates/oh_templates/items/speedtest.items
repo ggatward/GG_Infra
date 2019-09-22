@@ -1,9 +1,9 @@
-Group       gSpeedtest               "Internet"              <network-icon>     (Home)                             ["Internet"]
+// Group       gSpeedtest               "Internet"              <network-icon>     (Home)                             ["Internet"]
 
-String      Speedtest_Summary        "Speedtest [%s]"                             <speedtest_network>       (gSpeedtest)
-Number      Speedtest_ResultPing     "Ping [%.3f ms]"                             <speedtest_next5>         (gSpeedtest)
-Number      Speedtest_ResultDown     "Downlink [%.2f Mbit/s]"                     <speedtest_download>      (gSpeedtest)
-Number      Speedtest_ResultUp       "Uplink [%.2f Mbit/s]"                       <speedtest_upload>        (gSpeedtest)
-String      Speedtest_Running        "Speedtest running ... [%s]"                 <speedtest_new>           (gSpeedtest)
-Switch      Speedtest_Rerun          "Manual start"                               <speedtest_reload2>       (gSpeedtest)
-DateTime    Speedtest_ResultDate     "Last Run [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"  <speedtest_problem4>      (gSpeedtest)
+// String      Speedtest_Summary        "Speedtest [%s]"                             <speedtest_network>       (gSpeedtest)
+// Number      Speedtest_ResultPing     "Ping [%.3f ms]"                             <speedtest_next5>         (gSpeedtest)
+// Number      Speedtest_ResultDown     "Downlink [%.2f Mbit/s]"                     <speedtest_download>      (gSpeedtest)
+// Number      Speedtest_ResultUp       "Uplink [%.2f Mbit/s]"                       <speedtest_upload>        (gSpeedtest)
+// String      Speedtest_Running        "Speedtest running ... [%s]"                 <speedtest_new>           (gSpeedtest)
+// Switch      Speedtest_Rerun          "Manual start"                               <speedtest_reload2>       (gSpeedtest)
+// DateTime    Speedtest_ResultDate     "Last Run [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"  <speedtest_problem4>      (gSpeedtest)

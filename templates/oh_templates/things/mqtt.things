@@ -2,23 +2,23 @@ Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, client
 {
     Thing topic weewx "WeeWX" {
 	    Channels:
-        Type number : outTemp "Outside Temperature" [ stateTopic="weather/weewx/outTemp_C", commandTopic="" ]
-        Type number : windDir "Wind Direction" [ stateTopic="weather/weewx/windDir", commandTopic="" ]
-        Type number : windGust "Wind Gust" [ stateTopic="weather/weewx/windGust_kph", commandTopic="" ]
-        Type number : windSpeed "Wind Speed" [ stateTopic="weather/weewx/windSpeed_kph", commandTopic="" ]
-        Type number : outHumidity "Humidity" [ stateTopic="weather/weewx/outHumidity", commandTopic="" ]
-        Type number : pressure "Pressure" [ stateTopic="weather/weewx/barometer_mbar", commandTopic="" ]
-        Type number : dayRain "Rain Today" [ stateTopic="weather/weewx/dayRain_cm", commandTopic="" ]
-        Type number : hourRain "Rain Last Hour" [ stateTopic="weather/weewx/hourRain_cm", commandTopic="" ]
-        Type number : inTemp  "Kitchen Temperature" [ stateTopic="weather/weewx/inTemp_C", commandTopic="" ]
+        Type number : outTemp [ stateTopic="weather/weewx/outTemp_C", commandTopic="" ]
+        Type number : windDir [ stateTopic="weather/weewx/windDir", commandTopic="" ]
+        Type number : windGust [ stateTopic="weather/weewx/windGust_kph", commandTopic="" ]
+        Type number : windSpeed [ stateTopic="weather/weewx/windSpeed_kph", commandTopic="" ]
+        Type number : outHumidity [ stateTopic="weather/weewx/outHumidity", commandTopic="" ]
+        Type number : pressure[ stateTopic="weather/weewx/barometer_mbar", commandTopic="" ]
+        Type number : dayRain [ stateTopic="weather/weewx/dayRain_cm", commandTopic="", transformationPattern="JS:cm-to-mm.js" ]
+        Type number : hourRain [ stateTopic="weather/weewx/hourRain_cm", commandTopic="", transformationPattern="JS:cm-to-mm.js" ]
+        Type number : inTemp  [ stateTopic="weather/weewx/inTemp_C", commandTopic="" ]
     }
     Thing topic bomxml "BoM Forecasts" {
         Channels:
-        Type string : forecast_today "" [ stateTopic="weather/bomxml/forecast_today", commandTopic="" ]
-        Type string : forecast_tomorrow "" [ stateTopic="weather/bomxml/forecast_tomorrow", commandTopic="" ]
-        Type number : forecast_today_max "" [ stateTopic="weather/bomxml/forecast_today_max", commandTopic="" ]
-        Type number : forecast_tomorrow_max "" [ stateTopic="weather/bomxml/forecast_tomorrow_max", commandTopic="" ]
-        Type number : forecast_tonight_min "" [ stateTopic="weather/bomxml/forecast_tonight_min", commandTopic="" ]
+        Type string : forecast_today [ stateTopic="weather/bomxml/forecast_today", commandTopic="" ]
+        Type string : forecast_tomorrow [ stateTopic="weather/bomxml/forecast_tomorrow", commandTopic="" ]
+        Type number : forecast_today_max [ stateTopic="weather/bomxml/forecast_today_max", commandTopic="" ]
+        Type number : forecast_tomorrow_max [ stateTopic="weather/bomxml/forecast_tomorrow_max", commandTopic="" ]
+        Type number : forecast_tonight_min [ stateTopic="weather/bomxml/forecast_tonight_min", commandTopic="" ]
     }
 
 

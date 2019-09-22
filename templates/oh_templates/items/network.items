@@ -1,5 +1,5 @@
-Group     gPresence            "Presence Detection"                            (Home, gVirtual)              ["Presence"]
-Group     gNetwork             "Network Devices"                               (Home, gVirtual)              ["Network"]
+// Group     gPresence            "Presence Detection"                            (Home, gVirtual)              ["Presence"]
+// Group     gNetwork             "Network Devices"                               (Home, gVirtual)              ["Network"]
 
 // Presence Detection
 //Switch    Net_Geoffs_Phone          "Geoffs Phone [MAP(presence.map):%s]"                       <man_2>           (gNetwork, gPresence) {channel="network:pingdevice:Net_Geoffs_Phone:online"}

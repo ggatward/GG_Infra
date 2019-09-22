@@ -33,7 +33,8 @@ tang_lab
 #nagios_lab
 
 
-#[raspberry]
+[raspberry]
+zwave1.iot.home.gatwards.org
 #rpi-usb1.core.home.gatwards.org
 
 

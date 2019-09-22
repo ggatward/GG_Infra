@@ -37,7 +37,7 @@ Group     gPower               "Power Consumption"          <energy>           (
 /* Aggregation Groups */
 Group:Contact:OR(OPEN, CLOSED)   gDoor          "Door"            <door>          (Home)   ["Door"]
 Group:Switch:OR(ON, OFF)         gLight         "Light"           <light>         (Home)   ["Lighting", "Switchable"]
-Group:Number:AVG                 gTemperature   "Temperature"     <temperature>   (Home)   ["Temperature"]
+//Group:Number:AVG                 gTemperature   "Temperature"     <temperature>   (Home)   ["Temperature"]
 Group:Contact:OR(OPEN, CLOSED)   gWindow        "Window"          <window>        (Home)   ["Window"]
 Group:Switch:OR(ON, OFF)         gMotion        "Motion Sensor"   <motion>        (Home)   ["MotionDetector", "Switchable"]
 Group:Switch:OR(ON, OFF)         gFan           "Fan"             <fan_ceiling>   (Home)   ["Switchable"]

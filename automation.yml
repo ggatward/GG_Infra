@@ -143,6 +143,15 @@
     tags:
     - zwave
 
+  - name: Configure firewall
+    firewalld:
+      port: 7676/tcp
+      immediate: yes
+      permanent: yes
+      state: enabled
+    tags:
+    - zwave
+
   - name: Install Z-Wave udev restart script
     copy:
       content: |
@@ -216,27 +225,27 @@
     tags:
     - configuration
 
-  # - name: Deploy sitemaps config
-  #   template:
-  #     src: "{{ item }}"
-  #     dest: /etc/openhab2/sitemaps
-  #     owner: openhab
-  #     group: openhab
-  #   with_fileglob:
-  #   - templates/oh_templates/sitemaps/*
-  #   tags:
-  #   - configuration
+  - name: Deploy sitemaps config
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/sitemaps
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/sitemaps/*
+    tags:
+    - configuration
 
-  # - name: Deploy rules config
-  #   template:
-  #     src: "{{ item }}"
-  #     dest: /etc/openhab2/rules
-  #     owner: openhab
-  #     group: openhab
-  #   with_fileglob:
-  #   - templates/oh_templates/rules/*
-    # tags:
-    # - configuration
+  - name: Deploy rules config
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/rules
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/rules/*
+    tags:
+    - configuration
 
 
 

@@ -26,17 +26,22 @@ mqtt_users:
 openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
 openhab_latlon: "{{ latitude }},{{ longitude }}"
 
+openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
+
 sonos_ids:
   livingroom: "{{ vault_sonos_livingroom }}"
   alfresco: "{{ vault_sonos_alfresco }}"
-  annasroom: "{{ vault_sonos_annasroom }}"
-  office: "{{ vault_sonos_office }}"
+  portable1: "{{ vault_sonos_portable1 }}"
+
+openhab_audio_sink: "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
 
 # Parameters for alarm panel
 elk_ip: 172.22.2.10
 elk_port: 2101
 
 # OpenHAB Base configuration - addons.cfg
+openhab_package: expert
+
 openhab_bindings:
   - astro
   - mqtt
