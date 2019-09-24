@@ -1,5 +1,5 @@
-ON=Open
-OFF=Closed
+OPEN=Open
+CLOSED=Closed
 -=-
 undefined=-
 uninitialized=-

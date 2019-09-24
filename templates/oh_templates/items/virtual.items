@@ -1,4 +1,14 @@
-Group     gVirtual             "Virtual Devices"            <sun_clouds>       (Home)                        ["Virtual"]
+Group    gVirtual      "Virtual Devices"          <sun_clouds>      (Home)
+
+Group    gAstro        "Astro Data"               <sun_clouds>      (gVirtual)
+
+String   vTimeOfDay    "Current Time of Day [MAP(astro.map):%s]" <tod>      (gAstro)
+DateTime vMorning_Time "Morning [%1$tH:%1$tM]"    <sunrise>         (gAstro)
+DateTime vSunrise_Time "Day [%1$tH:%1$tM]"        <sun>             (gAstro)    {channel="astro:sun:local:rise#start"}
+DateTime vSunset_Time  "Evening [%1$tH:%1$tM]"    <sunset>          (gAstro)    {channel="astro:sun:local:set#start"}
+DateTime vNight_Time   "Night [%1$tH:%1$tM]"      <moon>            (gAstro)
+DateTime vBed_Time     "Bed [%1$tH:%1$tM]"        <bedroom_blue>    (gAstro)
+DateTime vEvening_Time "Afternoon [ %1$tH:%1$tM]" <sunset>          (gAstro)    {channel="astro:sun:minus90:set#start"}
 
 
 // System devices
@@ -10,76 +20,3 @@ Group     gVirtual             "Virtual Devices"            <sun_clouds>       (
 // Z-wave state detection devices
 // Switch    VIR_Dryer                 "Dryer Status [MAP(onoff.map):%s]"                                      (gVirtual)
 // Switch    VIR_Washer                "Washing Machine Status [MAP(onoff.map):%s]"                            (gVirtual)
-
-
-// Virtual device to turn on radio
-Switch    LivingRoom_Radio          "LivingRoom Radio"                                                      (gVirtual)
-Switch    LivingRoom_Alfresco_Link  "Link LivingRoom and Alfresco Audio"                                    (gVirtual)
-
-
-// General Time of Day and Mode
-// String HouseMode "House mode [%s]"                   (gVirtual)
-// String TimeOfDay "Current time of day [%s]"          (gVirtual)
-
-
-// Virtual devices to enable/disable motion lighting
-// Group   gLightingControls "Lighting Controls"               (gVirtual)
-// Group   LightMotionControls   "Motion Enable States"        (gLightingControls)
-// Group   LightMotionLevels     "Motion Brightness Levels"    (gLightingControls)
-// Group   LightMotionTimeouts   "Motion Timeouts"             (gLightingControls)
-// Group   MotionLightsVirtual   "Current Lighting Levels"     (gLightingControls)
-// Group   LightMotionDims       "Motion Timeout Dim Levels"   (gLightingControls)
-
-// Switch  Lounge_Motion_Control  "Lounge Motion Lighting"  (LightMotionControls)
-// Dimmer  Lounge_Light_Virtual "Lounge Lights" (MotionLightsVirtual)
-// Number  Lounge_Day_Dim "Lounge Day Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Lounge_Day_Level "Lounge Day Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Lounge_Day_Timeout "Lounge Day Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Lounge_Evening_Dim "Lounge Evening Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Lounge_Evening_Level "Lounge Evening Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Lounge_Evening_Timeout "Lounge Evening Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Lounge_Night_Dim "Lounge Night Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Lounge_Night_Level "Lounge Night Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Lounge_Night_Timeout "Lounge Night Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Lounge_PreDawn_Dim "Lounge Pre-Dawn Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Lounge_PreDawn_Level "Lounge Pre-Dawn Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Lounge_PreDawn_Timeout "Lounge Pre-Dawn Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Lounge_Dinner_Dim "Lounge Dinner Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Lounge_Dinner_Level "Lounge Dinner Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Lounge_Dinner_Timeout "Lounge Dinner Timeout [%.0f Mins]" (LightMotionTimeouts)
-
-// Switch  Kitchen_Motion_Control  "Kitchen Motion Lighting"  (LightMotionControls)
-// Dimmer  Kitchen_Light_Virtual "Kitchen Lights" (MotionLightsVirtual)
-// Number  Kitchen_Day_Dim "Kitchen Day Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Kitchen_Day_Level "Kitchen Day Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Kitchen_Day_Timeout "Kitchen Day Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Kitchen_Evening_Dim "Kitchen Evening Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Kitchen_Evening_Level "Kitchen Evening Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Kitchen_Evening_Timeout "Kitchen Evening Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Kitchen_Night_Dim "Kitchen Night Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Kitchen_Night_Level "Kitchen Night Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Kitchen_Night_Timeout "Kitchen Night Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Kitchen_PreDawn_Dim "Kitchen Pre-Dawn Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Kitchen_PreDawn_Level "Kitchen Pre-Dawn Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Kitchen_PreDawn_Timeout "Kitchen Pre-Dawn Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Kitchen_Dinner_Dim "Kitchen Dinner Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Kitchen_Dinner_Level "Kitchen Dinner Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Kitchen_Dinner_Timeout "Kitchen Dinner Timeout [%.0f Mins]" (LightMotionTimeouts)
-
-// Switch  Dining_Motion_Control  "Dining Motion Lighting"  (LightMotionControls)
-// Dimmer  Dining_Light_Virtual "Dining Lights" (MotionLightsVirtual)
-// Number  Dining_Day_Dim "Dining Day Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Dining_Day_Level "Dining Day Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Dining_Day_Timeout "Dining Day Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Dining_Evening_Dim "Dining Evening Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Dining_Evening_Level "Dining Evening Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Dining_Evening_Timeout "Dining Evening Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Dining_Night_Dim "Dining Night Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Dining_Night_Level "Dining Night Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Dining_Night_Timeout "Dining Night Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Dining_PreDawn_Dim "Dining Pre-Dawn Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Dining_PreDawn_Level "Dining Pre-Dawn Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Dining_PreDawn_Timeout "Dining Pre-Dawn Timeout [%.0f Mins]" (LightMotionTimeouts)
-// Number  Dining_Dinner_Dim "Dining Dinner Dim Level [%.0f%%]" (LightMotionDims)
-// Number  Dining_Dinner_Level "Dining Dinner Brightness [%.0f%%]" (LightMotionLevels)
-// Number  Dining_Dinner_Timeout "Dining Dinner Timeout [%.0f Mins]" (LightMotionTimeouts)

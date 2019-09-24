@@ -19,7 +19,7 @@ Number    HomeWx_outHumidity           "Humidity [%d%%]"                       <
 Number    HomeWx_pressure              "Pressure [%.1f hPa]"                                   (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:pressure"}
 Number    HomeWx_dayRain               "Rain Today [%.1f mm]"                  <rain>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:dayRain"}
 Number    HomeWx_hourRain              "Rain last hour [%.1f mm]"              <rain>          (gMQTT, gHomeWeather, gWeather)                 {channel="mqtt:topic:mosquitto:weewx:hourRain"}
-Number    GF_Kitchen_Temperature       "Temperature [%.1f °C]"                 <temperature>   (gMQTT, GF_Kitchen, gTemperature)               {channel="mqtt:topic:mosquitto:weewx:inTemp"}
+Number    Kitchen_Temperature          "Temperature [%.1f °C]"                 <temperature>   (gMQTT, Kitchen, gTemperature)               {channel="mqtt:topic:mosquitto:weewx:inTemp"}
 
 //BoM Forecasts & Warnings
 String    BoMWx_forecast_today         "Forecast for Today [%s]"                               (gMQTT, gBoMWeather, gWeather)                  {channel="mqtt:topic:mosquitto:bomxml:forecast_today"}
@@ -29,9 +29,9 @@ Number    BoMWx_forecast_tomorrow_max  "Tomorrow Forecast Temp [%.0f °C]"      
 Number    BoMWx_forecast_tonight_min   "Tonight Forecast Temp [%.0f °C]"       <temperature>   (gMQTT, gBoMWeather, gWeather)                  {channel="mqtt:topic:mosquitto:bomxml:forecast_tonight_min"}
 
 // Temperature Sensors
-Number    GF_MichaelsRoom_Temperature    "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_MichaelsRoom, gTemperature)    ["Temperature"]                    //{channel=""}
-Number    GF_RumpusRoom_Temperature      "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_RumpusRoom, gTemperature)      ["Temperature"]                    //{channel=""}
-Number    GF_Garage_Temperature          "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_Garage, gTemperature)          ["Temperature"]                    //{channel=""}
-Number    GF_CaitlynsRoom_Temperature    "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_CaitlynsRoom, gTemperature)    ["Temperature"]                    //{channel=""}
-Number    GF_MasterBedroom_Temperature   "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_MasterBedroom, gTemperature)   ["Temperature"]                    //{channel=""}
-Number    GF_Office_Temperature          "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_Office, gTemperature)          ["Temperature"]                    //{channel=""}
+// Number    GF_MichaelsRoom_Temperature    "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_MichaelsRoom, gTemperature)    ["Temperature"]                    //{channel=""}
+// Number    GF_RumpusRoom_Temperature      "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_RumpusRoom, gTemperature)      ["Temperature"]                    //{channel=""}
+// Number    GF_Garage_Temperature          "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_Garage, gTemperature)          ["Temperature"]                    //{channel=""}
+// Number    GF_CaitlynsRoom_Temperature    "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_CaitlynsRoom, gTemperature)    ["Temperature"]                    //{channel=""}
+// Number    GF_MasterBedroom_Temperature   "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_MasterBedroom, gTemperature)   ["Temperature"]                    //{channel=""}
+// Number    GF_Office_Temperature          "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_Office, gTemperature)          ["Temperature"]                    //{channel=""}

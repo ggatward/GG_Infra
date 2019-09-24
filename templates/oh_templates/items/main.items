@@ -1,29 +1,28 @@
-Group     Home                           "Our Home"         <house>                                         ["Building"]
+Group     Home                  "Our Home"          <house>
 
-Group     OU                             "Outside"          <garden>           (Home)                       ["Outdoor"]
-Group     OU_Alfresco                    "Alfresco"         <terrace>          (Home, OU)                   ["Outside"]
-Group     OU_Backyard                    "Backyard"         <lawnmower>        (Home, OU)                   ["Garden"]
-Group     OU_Deck                        "Deck"                                (Home, OU)                   ["Terrace"]
-Group     OU_Driveway                    "Driveway"                            (Home, OU)                   ["Outdoor"]
-Group     OU_FrontYard                   "Front Yard"       <lawnmower>        (Home, OU)                   ["Garden"]
-Group     OU_Shed                        "Shed"             <greenhouse>       (Home, OU)                   ["Garage"]
+Group     Outside               "Outside"           <garden>            (Home)
+Group     Alfresco              "Alfresco"          <terrace>           (Home, Outside)
+Group     Backyard              "Backyard"          <lawnmower>         (Home, Outside)
+Group     Deck                  "Deck"                                  (Home, Outside)
+Group     Driveway              "Driveway"                              (Home, Outside)
+Group     FrontYard             "Front Yard"        <lawnmower>         (Home, Outside)
+Group     Shed                  "Shed"              <greenhouse>        (Home, Outside)
 
-Group     GF                             "Ground Floor"     <groundfloor>      (Home)                       ["GroundFloor"]
-Group     GF_Bathroom                    "Bathroom"         <bath>             (Home, GF)                   ["Bathroom"]
-Group     GF_Ensuite                     "Ensuite"          <bath>             (Home, GF)                   ["Bathroom"]
-Group     GF_Wardrobe                    "Wardrobe"         <wardrobe>         (Home, GF)
-Group     GF_LivingDining                "Living and Dining" <sofa>            (Home, GF)                   ["Room"]
-Group     GF_RumpusRoom                  "Family Room"      <parents_2_4>      (Home, GF)                   ["Room"]
-Group     GF_Garage                      "Garage"           <garage>           (Home, GF)                   ["Garage"]
-Group     GF_Hallway                     "Hallway"          <corridor>         (Home, GF)                   ["Corridor"]
-Group     GF_MichaelsRoom                "Michaels Bedroom" <bedroom_blue>     (Home, GF)                   ["Bedroom"]
-Group     GF_CaitlynsRoom                "Caitlyns Bedroom" <bedroom_red>      (Home, GF)                   ["Room"]
-Group     GF_AnnasRoom                   "Sewing Room"      <girl_3>           (Home, GF)                   ["Room"]
-Group     GF_Kitchen                     "Kitchen"          <kitchen>          (Home, GF)                   ["Kitchen"]
-Group     GF_Laundry                     "Laundry"          <washingmachine>   (Home, GF)                   ["Room"]
-Group     GF_MasterBedroom               "Master Bedroom"   <bedroom_orange>   (Home, GF)                   ["Bedroom"]
-Group     GF_Office                      "Office"           <office>           (Home, GF)                   ["Room"]
-Group     GF_Toilet                      "Toilet"           <toilet>           (Home, GF)                   ["Bathroom"]
+Group     Bathroom              "Bathroom"          <bath>              (Home)
+Group     Ensuite               "Ensuite"           <bath>              (Home)
+Group     Wardrobe              "Wardrobe"          <wardrobe>          (Home)
+Group     LivingDining          "Living and Dining" <sofa>              (Home)
+Group     RumpusRoom            "Family Room"       <parents_2_4>       (Home)
+Group     Garage                "Garage"            <garage>            (Home)
+Group     Hallway               "Hallway"           <corridor>          (Home)
+Group     MichaelsRoom          "Michaels Bedroom"  <bedroom_blue>      (Home)
+Group     CaitlynsRoom          "Caitlyns Bedroom"  <bedroom_red>       (Home)
+Group     AnnasRoom             "Sewing Room"       <girl_3>            (Home)
+Group     Kitchen               "Kitchen"           <kitchen>           (Home)
+Group     Laundry               "Laundry"           <washingmachine>    (Home)
+Group     MasterBedroom         "Master Bedroom"    <bedroom_orange>    (Home)
+Group     Office                "Office"            <office>            (Home)
+Group     Toilet                "Toilet"            <toilet>            (Home)
 
 
 /* Weather Groups */
@@ -35,9 +34,10 @@ Group     gBoMWeather          "Data from BoM"                                 (
 Group     gPower               "Power Consumption"          <energy>           (Home)
 
 /* Aggregation Groups */
-Group:Contact:OR(OPEN, CLOSED)   gDoor          "Door"            <door>          (Home)   ["Door"]
-Group:Switch:OR(ON, OFF)         gLight         "Light"           <light>         (Home)   ["Lighting", "Switchable"]
+Group:Contact:OR(OPEN, CLOSED)   gDoors         "Doors"           <door>          (Home)
+Group:Switch:OR(ON, OFF)         gLight         "Light"           <light>         (Home)
 //Group:Number:AVG                 gTemperature   "Temperature"     <temperature>   (Home)   ["Temperature"]
-Group:Contact:OR(OPEN, CLOSED)   gWindow        "Window"          <window>        (Home)   ["Window"]
-Group:Switch:OR(ON, OFF)         gMotion        "Motion Sensor"   <motion>        (Home)   ["MotionDetector", "Switchable"]
-Group:Switch:OR(ON, OFF)         gFan           "Fan"             <fan_ceiling>   (Home)   ["Switchable"]
+Group:Contact:OR(OPEN, CLOSED)   gWindows       "Windows"         <window>        (Home)
+Group:Switch:OR(ON, OFF)         gMotion        "Motion Sensors"  <motion>        (Home)
+Group:Switch:OR(ON, OFF)         gFan           "Fan"             <fan_ceiling>   (Home)
+Group:Switch:OR(ON, OFF)         gOccupancy     "Occupancy"       <motion>        (Home)

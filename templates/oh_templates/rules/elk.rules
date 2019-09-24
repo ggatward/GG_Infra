@@ -1,164 +1,199 @@
+// TODO: Need to set motion sensors to OFF on startup so that they are not 'NULL'
+
+// TODO: Need to poll doors at startup to get state
+
 rule "Elk Parser"
 when
-  Item ElkString changed
+    Item Elk_TCP changed
 then
-  //logInfo("Elk Parser","Elk status string: " + ElkString.state.toString)
+    //logInfo("Elk Parser","Elk status string: " + Elk_TCP.state.toString)
 
-  // Zone status change (ZC)
-  if (ElkString.state.toString.substring(2,4).equals("ZC")) {
-    val status = ElkString.state.toString.substring(7,8)
-    val zone = ElkString.state.toString.substring(4,7)
-    if ((status.equals("9")) || (status.equals("A")) || (status.equals("B"))) {
-      logInfo("Elk Parser","ELK_Zone " + zone + " violated.")
-      sendCommand("ELK_Zone" + zone, ON.toString)
-    } else if ((status.equals("1")) || (status.equals("2")) || (status.equals("3"))) {
-      logInfo("Elk Parser","ELK_Zone " + zone + " normal.")
-      sendCommand("ELK_Zone" + zone, OFF.toString)
-    }
-  }
+    // Zone status change (ZC)
+    if (Elk_TCP.state.toString.substring(2,4).equals("ZC")) {
+        val status = Elk_TCP.state.toString.substring(7,8)
+        val zone = Elk_TCP.state.toString.substring(4,7)
+        if ((status.equals("9")) || (status.equals("A")) || (status.equals("B"))) {
+            // logInfo("Elk Parser","ELK_Zone " + zone + " violated.")
+            sendCommand("ELK_Zone" + zone, ON.toString)
+        } else if ((status.equals("1")) || (status.equals("2")) || (status.equals("3"))) {
+            // logInfo("Elk Parser","ELK_Zone " + zone + " normal.")
+            sendCommand("ELK_Zone" + zone, OFF.toString)
+        }
 
-  // Output status change (CC)
-  if (ElkString.state.toString.substring(2,4).equals("CC")) {
-    val status = ElkString.state.toString.substring(7,8)
-    val output = ElkString.state.toString.substring(4,7)
-    if (status.equals("0")) {
-      logInfo("Elk Parser","ELK_Output " + output + " OFF.")
-      sendCommand("ELK_Output" + output, OFF.toString)
-    } else if (status.equals("1")) {
-      logInfo("Elk Parser","ELK_Output " + output + " ON.")
-      sendCommand("ELK_Output" + output, ON.toString)
+    // Output status change (CC)
+    } else if (Elk_TCP.state.toString.substring(2,4).equals("CC")) {
+        val status = Elk_TCP.state.toString.substring(7,8)
+        val output = Elk_TCP.state.toString.substring(4,7)
+        if (status.equals("0")) {
+            logInfo("Elk Parser","ELK_Output " + output + " OFF.")
+            sendCommand("ELK_Output" + output, OFF.toString)
+        } else if (status.equals("1")) {
+            logInfo("Elk Parser","ELK_Output " + output + " ON.")
+            sendCommand("ELK_Output" + output, ON.toString)
+        }
+
+    // Arming Status
+    //      1EAS000000002111111100000000000D
+    } else if (Elk_TCP.state.toString.substring(2,4).equals("AS")) {
+        val armstate = Elk_TCP.state.toString.substring(4,11)    // array of 8 areas
+        val armupstate = Elk_TCP.state.toString.substring(12,19) // array of 8 areas
+        val alarmstate = Elk_TCP.state.toString.substring(20,27) // array of 8 areas
+        logInfo("Elk Parser","Arm State    = " + armstate)
+        logInfo("Elk Parser","Arm Up State = " + armupstate)
+        logInfo("Elk Parser","Alarm State  = " + alarmstate)
+
+    // Alarm Memory
+    //      0CAM000000007F
+    } else if (Elk_TCP.state.toString.substring(2,4).equals("AM")) {
+        val alarmmem = Elk_TCP.state.toString.substring(4,11) // array of 8 areas
+        logInfo("Elk Parser","Alarm Memory  = " + alarmmem)
+
     }
-  }
 end
 
-//---------------
+/*
+Other codes not really useful to us
+16XK02581832409190110060        - Ethernet module test frame + timestamp
+19KC01000001001000000000015     - Keypad KeyChange Update
+
+// One string !!
+0AZC003200CD
+1EAS000000001111111100000000000E
+0CAM000000007F
+//
+
+*/
+
+
+
+//------- Input sensor proxy rules ------------
+
+rule "Zone001 Command"
+when
+    Item ELK_Zone001 received command
+then
+    if(receivedCommand == ON) {
+        Dining_FrontDoor.postUpdate(OPEN)
+    } else {
+        Dining_FrontDoor.postUpdate(CLOSED)
+    }
+end
+
 
 rule "Zone002 Command"
 when
-  Item ELK_Zone002 received command
+    Item ELK_Zone002 received command
 then
-  if(receivedCommand == ON) {
-      Garage_Motion_Sensor.sendCommand(ON)
-  }
-  else {
-      Garage_Motion_Sensor.sendCommand(OFF)
-  }
+    if(receivedCommand == ON) {
+        Garage_MotionDetector.postUpdate(OPEN)
+    } else {
+        Garage_MotionDetector.postUpdate(CLOSED)
+    }
+    if(receivedCommand == ON) Garage_Occupancy.sendCommand(ON)
 end
 
-rule "Zone002 Update"
-when
-  Item ELK_Zone002 received update
-then
-  if(ELK_Zone002.state == ON) {
-      Garage_Motion_Sensor.postUpdate(ON)
-  }
-  else {
-      Garage_Motion_Sensor.postUpdate(OFF)
-  }
-end
-
-//---------------
 
 rule "Zone003 Command"
 when
-  Item ELK_Zone003 received command
+    Item ELK_Zone003 received command
 then
-  if(receivedCommand == ON) {
-      Dining_Motion_Sensor.sendCommand(ON)
-  }
-  else {
-      Dining_Motion_Sensor.sendCommand(OFF)
-  }
+    if(receivedCommand == ON) {
+        Dining_MotionDetector.postUpdate(OPEN)
+    } else {
+        Dining_MotionDetector.postUpdate(CLOSED)
+    }
+    if(receivedCommand == ON) Dining_Occupancy.sendCommand(ON)
 end
 
-rule "Zone003 Update"
-when
-  Item ELK_Zone003 received update
-then
-  if(ELK_Zone003.state == ON) {
-      Dining_Motion_Sensor.postUpdate(ON)
-  }
-  else {
-      Dining_Motion_Sensor.postUpdate(OFF)
-  }
-end
-
-//---------------
 
 rule "Zone004 Command"
 when
-  Item ELK_Zone004 received command
+    Item ELK_Zone004 received command
 then
-  if(receivedCommand == ON) {
-      Lounge_Motion_Sensor.sendCommand(ON)
-  }
-  else {
-      Lounge_Motion_Sensor.sendCommand(OFF)
-  }
+    if(receivedCommand == ON) {
+        Lounge_MotionDetector.postUpdate(OPEN)
+    } else {
+        Lounge_MotionDetector.postUpdate(CLOSED)
+    }
+    if(receivedCommand == ON) Lounge_Occupancy.sendCommand(ON)
 end
 
-rule "Zone004 Update"
-when
-  Item ELK_Zone004 received update
-then
-  if(ELK_Zone004.state == ON) {
-      Lounge_Motion_Sensor.postUpdate(ON)
-  }
-  else {
-      Lounge_Motion_Sensor.postUpdate(OFF)
-  }
-end
-
-//---------------
 
 rule "Zone005 Command"
 when
-  Item ELK_Zone005 received command
+    Item ELK_Zone005 received command
 then
-  if(receivedCommand == ON) {
-      Bedroom1_Motion_Sensor.sendCommand(ON)
-  }
-  else {
-      Bedroom1_Motion_Sensor.sendCommand(OFF)
-  }
+    if(receivedCommand == ON) {
+        Bedroom1_MotionDetector.postUpdate(OPEN)
+    } else {
+        Bedroom1_MotionDetector.postUpdate(CLOSED)
+    }
+    if(receivedCommand == ON) Bedroom1_Occupancy.sendCommand(ON)
 end
 
-rule "Zone005 Update"
-when
-  Item ELK_Zone005 received update
-then
-  if(ELK_Zone005.state == ON) {
-      Bedroom1_Motion_Sensor.postUpdate(ON)
-  }
-  else {
-      Bedroom1_Motion_Sensor.postUpdate(OFF)
-  }
-end
-
-//---------------
 
 rule "Zone006 Command"
 when
-  Item ELK_Zone006 received command
+    Item ELK_Zone006 received command
 then
-  if(receivedCommand == ON) {
-      Hallway_Motion_Sensor.sendCommand(ON)
-  }
-  else {
-      Hallway_Motion_Sensor.sendCommand(OFF)
-  }
+    if(receivedCommand == ON) {
+        Hallway_MotionDetector.postUpdate(OPEN)
+    } else {
+        Hallway_MotionDetector.postUpdate(CLOSED)
+    }
+    if(receivedCommand == ON) Hallway_Occupancy.sendCommand(ON)
 end
 
-rule "Zone006 Update"
+
+rule "Zone007 Command"
 when
-  Item ELK_Zone006 received update
+    Item ELK_Zone007 received command
 then
-  if(ELK_Zone006.state == ON) {
-      Hallway_Motion_Sensor.postUpdate(ON)
-  }
-  else {
-      Hallway_Motion_Sensor.postUpdate(OFF)
-  }
+    if(receivedCommand == ON) {
+        Garage_RollerDoor.postUpdate(OPEN)
+    } else {
+        Garage_RollerDoor.postUpdate(CLOSED)
+    }
 end
 
-//---------------
+
+rule "Zone008 Command"
+when
+    Item ELK_Zone008 received command
+then
+    if(receivedCommand == ON) {
+        Garage_SideDoor.postUpdate(OPEN)
+    } else {
+        Garage_SideDoor.postUpdate(CLOSED)
+    }
+end
+
+
+//------- Output proxy rules ------------
+
+rule "Garage_RollerDoorButton to ELK_Output009"
+when
+    Item Garage_RollerDoorButton changed from OFF to ON
+then
+    Elk_TCP.sendCommand('0Ecn0090000100D0')   // Output 009 on for 1 second
+end
+
+// Set button state to match output state
+rule "ELK_Output009 to Garage_RollerDoorButton"
+when
+    Item ELK_Output009 received update
+then
+    if(Garage_RollerDoorButton != ELK_Output009.state) Garage_RollerDoorButton.postUpdate(ELK_Output009.state)
+end
+
+
+rule "Elk Output62 Test"
+when
+    Item ELK_TestButton received command
+then
+    if(receivedCommand == ON) {
+        Elk_TCP.sendCommand('0Ecn0620000000D2')
+    } else {
+        Elk_TCP.sendCommand('09cf06200D6')
+    }
+end

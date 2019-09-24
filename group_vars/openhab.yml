@@ -44,6 +44,7 @@ openhab_package: expert
 
 openhab_bindings:
   - astro
+  - expire1
   - mqtt
   - network
   - ntp

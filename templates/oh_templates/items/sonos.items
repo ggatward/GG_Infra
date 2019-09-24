@@ -1,31 +1,3 @@
-// /*
-// Sonos Grouping configuration from:
-// https://community.openhab.org/t/sonos-grouping-rules-and-ui-visibility-bidirectional/20154
-// */
-
-// Group gSonos            "Sonos"           <sonos_control>         (Home)
-
-// Group gSonosAlfresco    "Alfresco"        <sonos_control>         (gSonos)
-// Group gSonosLiving      "Living room"     <sonos_control>         (gSonos)
-// Group gSonosPortable    "Portable"        <sonos_control>         (gSonos)
-
-// Group gSonosVolu "Volume"  <soundvolume>
-// Group gSonosMute "Mute"    <sonos_mute>
-// Group gSonosStop "Stop"    <sonos_stop> {autoupdate="false"}
-
-// /* Items to define Groups */
-// String SonosGroupID_Alfresco	"Alfresco group [%s]"
-// String SonosGroupID_Portable    "Portable group [%s]"
-// String SonosGroupID_Living	    "Living room group [%s]"
-
-// Number Sonos_Group1_Number      "Players in group 1 [%.1f]"
-// Number Sonos_Group2_Number      "Players in group 2 [%.1f]"
-// Number Sonos_Group3_Number      "Players in group 3 [%.1f]"
-
-// String Sonos_Group1_Visibility  "Group 1 visibility [%s]"
-// String Sonos_Group2_Visibility  "Group 2 visibility [%s]"
-// String Sonos_Group3_Visibility  "Group 3 visibility [%s]"
-
 
 // /* Alfresco */
 // String SonosAlfresco_Add                     "Add [%s]"                  <sonos_add>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:add"}
@@ -70,104 +42,11 @@
 // String SonosAlfresco_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttrackuri"}
 
 
-// /* LivingRoom */
-// String SonosLivingroom_Add                     "Add [%s]"                  <sonos_add>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:add"}
-// Switch SonosLivingroom_SetAlarm                "Set Alarm"                 <sonos_alarm>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:alarm"}
-// String SonosLivingroom_AlarmProperties         "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:alarmproperties"}
-// Switch SonosLivingroom_AlarmIsrunning          "Alarm is running"          <sonso_alarm_run>    (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:alarmrunning"}
-// Player SonosLivingroom_Control                 "Control"                   <sonos_control>      (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:control"}
-// String SonosLivingroom_CurrentAlbum            "Album [%s]"                <sonos_album>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currentalbum"}
-// String SonosLivingroom_CurrentArtist           "Artist [%s]"               <sonos_artist>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currentartist"}
-// String SonosLivingroom_CurrentTitle            "Title [%s]"                <sonos_title>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttitle"}
-// String SonosLivingroom_CurrentTrack            "Track [%s]"                <sonos_track>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttrack"}
-// Image  SonosLivingroom_Current_CoverArt        "Cover"                                          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currentalbumart"}
-// Switch SonosLivingroom_Shuffle                 "Shuffle"                   <sonos_shuffle>      (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:shuffle"}
-// String SonosLivingroom_Repeat                  "Repeat [%s]"               <sonos_repeat>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:repeat"}
-// String SonosLivingroom_Favorite                "Favorite [%s]"             <sonos_favorite>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:favorite"}
-// Switch SonosLivingroom_Led                     "Led"                       <sonos_led>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:led"}
-// Switch SonosLivingroom_LocalCoordinator        "Local Coordinator"         <sonos_coordinator>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:localcoordinator"}
-// Switch SonosLivingroom_Mute                    "Mute"                      <sonos_mute>         (gSonosLiving,gSonosMute) {channel="sonos:CONNECTAMP:livingroom:mute"}
-// String SonosLivingroom_NotificationSound       "Notification Sound [%s]"   <sonos_notification> (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:notificationsound"}
-// Dimmer SonosLivingroom_Notificationsoundvolume "Notification Sound Volume" <soundvolume>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:notificationvolume"}
-// String SonosLivingroom_PlayPlaylist            "Play Playlist [%s]"        <sonos_playlist>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playlist"}
-// Switch SonosLivingroom_PlayQueue               "Play Queue"                <sonos_que>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playqueue"}
-// Number SonosLivingroom_PlayTrack               "Play Track"                <sonos_play_track>   (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playtrack"}
-// String SonosLivingroom_PlayURI                 "Play URI [%s]"             <sonos_play_uri>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:playuri"}
-// Switch SonosLivingroom_PublicAddress           "Public Address"            <sonos_publiv>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:publicaddress"}
-// String SonosLivingroom_Radio                   "Radio [%s]"                <sonos_radio>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:radio"}
-// String SonosLivingroom_Remove                  "Remove [%s]"               <sonos_remove>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:remove"}
-// Switch SonosLivingroom_Restore                 "Restore"                   <sonos_restore>      (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:restore"}
-// Switch SonosLivingroom_RestoreAll              "Restore All"               <sonos_restore_all>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:restoreall"}
-// Switch SonosLivingroom_Save                    "Save"                      <sonos_save>         (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:save"}
-// Switch SonosLivingroom_SaveAll                 "Save All"                  <sonos_save_all>     (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:saveall"}
-// Number SonosLivingroom_Snooze                  "Snooze"                    <sonos_snooze>       (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:snooze"}
-// Switch SonosLivingroom_StandAlone              "Stand Alone"               <sonos_stand_alone>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:standalone"}
-// String SonosLivingroom_State                   "State [%s]"                <sonos_state>        (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:state"}
-// Switch SonosLivingroom_Stop                    "Stop"                      <sonos_stop>         (gSonosLiving,gSonosStop) {channel="sonos:CONNECTAMP:livingroom:stop", autoupdate="false"}
-// Dimmer SonosLivingroom_Volume                  "Volume"                    <soundvolume>        (gSonosLiving,gSonosVolu) {channel="sonos:CONNECTAMP:livingroom:volume"}
-// String SonosLivingroom_ZoneGroupID             "Zone Group ID [%s]"        <sonos_zone>         (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:zonegroupid"}
-// String SonosLivingroom_ZoneName                "Zone Name [%s]"            <sonos_zone>         (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:zonename"}
-// String SonosLivingroom_Coordinator             "Coordinator [%s]"          <sonos_coordinator>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:coordinator"}
-// Number SonosLivingroom_SleepTimer              "Sleep Timer"               <sonos_sleep_timer>  (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:sleeptimer"}
-// String SonosLivingroom_CurrentAVtransportURI   "AV transport URI [%s]"     <sonos_uri>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttransporturi"}
-// String SonosLivingroom_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosLiving)            {channel="sonos:CONNECTAMP:livingroom:currenttrackuri"}
-
-
-// /* Portable */
-// String SonosPortable1_Add                     "Add [%s]"                  <sonos_add>          (gSonosPortable)            {channel="sonos:PLAY1:portable1:add"}
-// Switch SonosPortable1_SetAlarm                "Set Alarm"                 <sonos_alarm>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:alarm"}
-// String SonosPortable1_AlarmProperties         "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosPortable)            {channel="sonos:PLAY1:portable1:alarmproperties"}
-// Switch SonosPortable1_AlarmIsrunning          "Alarm is running"          <sonso_alarm_run>    (gSonosPortable)            {channel="sonos:PLAY1:portable1:alarmrunning"}
-// Player SonosPortable1_Control                 "Control"                   <sonos_control>      (gSonosPortable)            {channel="sonos:PLAY1:portable1:control"}
-// String SonosPortable1_CurrentAlbum            "Album [%s]"                <sonos_album>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:currentalbum"}
-// String SonosPortable1_CurrentArtist           "Artist [%s]"               <sonos_artist>       (gSonosPortable)            {channel="sonos:PLAY1:portable1:currentartist"}
-// String SonosPortable1_CurrentTitle            "Title [%s]"                <sonos_title>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:currenttitle"}
-// String SonosPortable1_CurrentTrack            "Track [%s]"                <sonos_track>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:currenttrack"}
-// Image  SonosPortable1_Current_CoverArt        "Cover"                                          (gSonosPortable)            {channel="sonos:PLAY1:portable1:currentalbumart"}
-// Switch SonosPortable1_Shuffle                 "Shuffle"                   <sonos_shuffle>      (gSonosPortable)            {channel="sonos:PLAY1:portable1:shuffle"}
-// String SonosPortable1_Repeat                  "Repeat [%s]"               <sonos_repeat>       (gSonosPortable)            {channel="sonos:PLAY1:portable1:repeat"}
-// String SonosPortable1_Favorite                "Favorite [%s]"             <sonos_favorite>     (gSonosPortable)            {channel="sonos:PLAY1:portable1:favorite"}
-// Switch SonosPortable1_Led                     "Led"                       <sonos_led>          (gSonosPortable)            {channel="sonos:PLAY1:portable1:led"}
-// Switch SonosPortable1_LocalCoordinator        "Local Coordinator"         <sonos_coordinator>  (gSonosPortable)            {channel="sonos:PLAY1:portable1:localcoordinator"}
-// Switch SonosPortable1_Mute                    "Mute"                      <sonos_mute>         (gSonosPortable,gSonosMute) {channel="sonos:PLAY1:portable1:mute"}
-// String SonosPortable1_NotificationSound       "Notification Sound [%s]"   <sonos_notification> (gSonosPortable)            {channel="sonos:PLAY1:portable1:notificationsound"}
-// Dimmer SonosPortable1_Notificationsoundvolume "Notification Sound Volume" <soundvolume>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:notificationvolume"}
-// String SonosPortable1_PlayPlaylist            "Play Playlist [%s]"        <sonos_playlist>     (gSonosPortable)            {channel="sonos:PLAY1:portable1:playlist"}
-// Switch SonosPortable1_PlayQueue               "Play Queue"                <sonos_que>          (gSonosPortable)            {channel="sonos:PLAY1:portable1:playqueue"}
-// Number SonosPortable1_PlayTrack               "Play Track"                <sonos_play_track>   (gSonosPortable)            {channel="sonos:PLAY1:portable1:playtrack"}
-// String SonosPortable1_PlayURI                 "Play URI [%s]"             <sonos_play_uri>     (gSonosPortable)            {channel="sonos:PLAY1:portable1:playuri"}
-// Switch SonosPortable1_PublicAddress           "Public Address"            <sonos_publiv>       (gSonosPortable)            {channel="sonos:PLAY1:portable1:publicaddress"}
-// String SonosPortable1_Radio                   "Radio [%s]"                <sonos_radio>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:radio"}
-// String SonosPortable1_Remove                  "Remove [%s]"               <sonos_remove>       (gSonosPortable)            {channel="sonos:PLAY1:portable1:remove"}
-// Switch SonosPortable1_Restore                 "Restore"                   <sonos_restore>      (gSonosPortable)            {channel="sonos:PLAY1:portable1:restore"}
-// Switch SonosPortable1_RestoreAll              "Restore All"               <sonos_restore_all>  (gSonosPortable)            {channel="sonos:PLAY1:portable1:restoreall"}
-// Switch SonosPortable1_Save                    "Save"                      <sonos_save>         (gSonosPortable)            {channel="sonos:PLAY1:portable1:save"}
-// Switch SonosPortable1_SaveAll                 "Save All"                  <sonos_save_all>     (gSonosPortable)            {channel="sonos:PLAY1:portable1:saveall"}
-// Number SonosPortable1_Snooze                  "Snooze"                    <sonos_snooze>       (gSonosPortable)            {channel="sonos:PLAY1:portable1:snooze"}
-// Switch SonosPortable1_StandAlone              "Stand Alone"               <sonos_stand_alone>  (gSonosPortable)            {channel="sonos:PLAY1:portable1:standalone"}
-// String SonosPortable1_State                   "State [%s]"                <sonos_state>        (gSonosPortable)            {channel="sonos:PLAY1:portable1:state"}
-// Switch SonosPortable1_Stop                    "Stop"                      <sonos_stop>         (gSonosPortable,gSonosStop) {channel="sonos:PLAY1:portable1:stop", autoupdate="false"}
-// Dimmer SonosPortable1_Volume                  "Volume"                    <soundvolume>        (gSonosPortable,gSonosVolu) {channel="sonos:PLAY1:portable1:volume"}
-// String SonosPortable1_ZoneGroupID             "Zone Group ID [%s]"        <sonos_zone>         (gSonosPortable)            {channel="sonos:PLAY1:portable1:zonegroupid"}
-// String SonosPortable1_ZoneName                "Zone Name [%s]"            <sonos_zone>         (gSonosPortable)            {channel="sonos:PLAY1:portable1:zonename"}
-// String SonosPortable1_Coordinator             "Coordinator [%s]"          <sonos_coordinator>  (gSonosPortable)            {channel="sonos:PLAY1:portable1:coordinator"}
-// Number SonosPortable1_SleepTimer              "Sleep Timer"               <sonos_sleep_timer>  (gSonosPortable)            {channel="sonos:PLAY1:portable1:sleeptimer"}
-// String SonosPortable1_CurrentAVtransportURI   "AV transport URI [%s]"     <sonos_uri>          (gSonosPortable)            {channel="sonos:PLAY1:portable1:currenttransporturi"}
-// String SonosPortable1_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosPortable)            {channel="sonos:PLAY1:portable1:currenttrackuri"}
-
-
-
-
 Group gSonos "Sonos"       <sonos_control>      (Home)
 Group:Dimmer:AVG gSonosVolume					(gSonos)
 Group:Number:COUNT("PLAY") gSonosState		    (gSonos)
-//Group:Number:COUNT("ON") gSonosMultiroom		(gSonos)
-//Group:Number:AVG gSonosMultiroomOffset 			(gSonos)
-//String	SonosMultiroom			<mediacontrol>	(gSonos)
-//Switch 	SonosMultiroomUpdatePlayers			                //Do not use this item manually!!!
 
-//Switch	SonosLivingroom_MultiroomVolume		<switch>		(gSonosMultiroom)
-//Dimmer	SonosLivingroom_Offset			    <soundvolume>	(gSonosMultiroomOffset)
+
 Dimmer	SonosLivingroom_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:livingroom:volume" }
 Player	SonosLivingroom_Control		        <player>        (gSonosState)		     { channel="sonos:CONNECTAMP:livingroom:control" }
 Image   SonosLivingroom_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:livingroom:currentalbumart" }
@@ -186,10 +65,9 @@ Switch  SonosLivingroom_Shuffle					         	(gSonos)			     { channel="sonos:C
 Switch	SonosLivingroom_StandAlone				        	(gSonos)			     { channel="sonos:CONNECTAMP:livingroom:standalone" }
 String  SonosLivingroom_MultiRoomMode		"[%s]"        	(gSonos)
 String	SonosLivingroom_MultiRoom			<mediacontrol>	(gSonos)
+String	SonosLivingroom_Favourites                          (gSonos)
 
 
-//Switch	SonosAlfresco_MultiroomVolume		<switch>		(gSonosMultiroom)
-//Dimmer	SonosAlfresco_Offset			    <soundvolume>	(gSonosMultiroomOffset)
 Dimmer	SonosAlfresco_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:alfresco:volume" }
 Player	SonosAlfresco_Control		        <player>		(gSonosState)		     { channel="sonos:CONNECTAMP:alfresco:control" }
 Image   SonosAlfresco_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:alfresco:currentalbumart" }
@@ -208,10 +86,9 @@ Switch  SonosAlfresco_Shuffle					         	(gSonos)			     { channel="sonos:CON
 Switch	SonosAlfresco_StandAlone				        	(gSonos)			     { channel="sonos:CONNECTAMP:alfresco:standalone" }
 String  SonosAlfresco_MultiRoomMode			"[%s]"       	(gSonos)
 String	SonosAlfresco_MultiRoom			    <mediacontrol>	(gSonos)
+String	SonosAlfresco_Favourites                            (gSonos)
 
 
-//Switch	SonosPortable1_MultiroomVolume		<switch>		(gSonosMultiroom)
-//Dimmer	SonosPortable1_Offset			    <soundvolume>	(gSonosMultiroomOffset)
 Dimmer	SonosPortable1_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:PLAY1:portable1:volume" }
 Player	SonosPortable1_Control		        <player>		(gSonosState)		     { channel="sonos:PLAY1:portable1:control" }
 Image   SonosPortable1_CurrentAlbumArt				        (gSonos)	             { channel="sonos:PLAY1:portable1:currentalbumart" }
@@ -230,3 +107,4 @@ Switch  SonosPortable1_Shuffle					         	(gSonos)			     { channel="sonos:PL
 Switch	SonosPortable1_StandAlone				        	(gSonos)			     { channel="sonos:PLAY1:portable1:standalone" }
 String  SonosPortable1_MultiRoomMode		"[%s]"          (gSonos)
 String	SonosPortable1_MultiRoom			<mediacontrol>	(gSonos)
+String	SonosPortable1_Favourites                           (gSonos)

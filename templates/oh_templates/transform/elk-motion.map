@@ -1,5 +1,5 @@
-ON=Motion
-OFF=No Motion
+OPEN=Motion
+CLOSED=No Motion
 -=-
 undefined=-
 uninitialized=-

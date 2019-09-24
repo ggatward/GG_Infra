@@ -6,8 +6,21 @@
 //   SonosLivingroom_Radio.postUpdate(OFF)
 //   SonosLivingroom_Volume.sendCommand(22)
 //   SonosLivingroom_Radio.sendCommand("Mix 106.3")
-// 	 LivingRoom_Radio.postUpdate(OFF)
 // end
+
+
+rule "Livingroom Favourites"
+when
+    Item SonosLivingroom_Favourites received command
+then
+    if(receivedCommand.toString=="Mix1063") {
+        SonosLivingroom_Volume.sendCommand(20)
+        SonosLivingroom_Radio.sendCommand("Mix 106.3")
+    }
+    // Reset tthe selection list to empty
+    SonosLivingroom_Favourites.sendCommand("Empty")
+end
+
 
 
 rule "Livingroom Multiroom"
