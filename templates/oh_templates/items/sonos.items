@@ -49,6 +49,7 @@ Group:Number:COUNT("PLAY") gSonosState		    (gSonos)
 
 Dimmer	SonosLivingroom_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:livingroom:volume" }
 Player	SonosLivingroom_Control		        <player>        (gSonosState)		     { channel="sonos:CONNECTAMP:livingroom:control" }
+Switch  SonosLivingroom_ClearQueue      			        (gSonos)	             { channel="sonos:CONNECTAMP:livingroom:clearqueue" }
 Image   SonosLivingroom_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:livingroom:currentalbumart" }
 String  SonosLivingroom_CurrentArtist		                (gSonos)			     { channel="sonos:CONNECTAMP:livingroom:currentartist" }
 String  SonosLivingroom_CurrentTitle		                (gSonos)			     { channel="sonos:CONNECTAMP:livingroom:currenttitle" }
@@ -70,6 +71,7 @@ String	SonosLivingroom_Favourites                          (gSonos)
 
 Dimmer	SonosAlfresco_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:alfresco:volume" }
 Player	SonosAlfresco_Control		        <player>		(gSonosState)		     { channel="sonos:CONNECTAMP:alfresco:control" }
+Switch  SonosAlfresco_ClearQueue      			            (gSonos)	             { channel="sonos:CONNECTAMP:alfresco:clearqueue" }
 Image   SonosAlfresco_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:alfresco:currentalbumart" }
 String  SonosAlfresco_CurrentArtist			                (gSonos)			     { channel="sonos:CONNECTAMP:alfresco:currentartist" }
 String  SonosAlfresco_CurrentTitle			                (gSonos)			     { channel="sonos:CONNECTAMP:alfresco:currenttitle" }
@@ -91,6 +93,7 @@ String	SonosAlfresco_Favourites                            (gSonos)
 
 Dimmer	SonosPortable1_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:PLAY1:portable1:volume" }
 Player	SonosPortable1_Control		        <player>		(gSonosState)		     { channel="sonos:PLAY1:portable1:control" }
+Switch  SonosPortable1_ClearQueue      			            (gSonos)	             { channel="sonos:PLAY1:portable1:clearqueue" }
 Image   SonosPortable1_CurrentAlbumArt				        (gSonos)	             { channel="sonos:PLAY1:portable1:currentalbumart" }
 String  SonosPortable1_CurrentArtist		                (gSonos)			     { channel="sonos:PLAY1:portable1:currentartist" }
 String  SonosPortable1_CurrentTitle			                (gSonos)			     { channel="sonos:PLAY1:portable1:currenttitle" }

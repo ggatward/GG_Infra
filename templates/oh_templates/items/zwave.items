@@ -1,7 +1,7 @@
 Group     gZwave             "Z-Wave"                    <sun_clouds>       (Home)                       ["ZWave"]
 
 // node002
-Switch    Office_Test_Switch          "Test Switch"                              <switch>           (Office, gZwave)                     {channel="zwave:device:controller:node2:switch_binary"}
+Switch    Office_Test_Switch          "Test Switch"                              <poweroutlet>      (Office, gZwave)                     {channel="zwave:device:controller:node2:switch_binary"}
 Number    Office_Test_kWh             "Test kWh"                                 <energy>           (Office, gPower)             {channel="zwave:device:controller:node2:meter_kwh"}
 Number    Office_Test_Amps            "Test Amps"                                <energy>           (Office, gZwave)             {channel="zwave:device:controller:node2:meter_current"}
 Number    Office_Test_Volts           "Test Volts"                               <energy>           (Office, gZwave)             {channel="zwave:device:controller:node2:meter_voltage"}
@@ -44,17 +44,16 @@ Switch    LivingDining_Light2_AlarmTemp    "Dining 2 Alarm (Heat)"              
 
 
 
-
-Switch    Alfresco_Light              "Light"                                    <light>            (Alfresco, gLight)                       //{channel=""}
-Switch    Bathroom_Light              "Light"                                    <light>            (Bathroom, gLight)                      //{channel=""}
-Switch    Ensuite_Light               "Light"                                    <light>            (Ensuite, gLight)                       //{channel=""}
-Switch    MichaelsRoom_Light          "Light"                                    <light>            (MichaelsRoom, gLight)              //{channel=""}
-Switch    Wardrobe_Light              "Light"                                    <light>            (Wardrobe, gLight)                  //{channel=""}
-Switch    Garage_Light                "Light"                                    <light>            (Garage, gLight)                     //{channel=""}
-Switch    Hallway_Light               "Light"                                    <light>            (Hallway, gLight)                     //{channel=""}
-Switch    CaitlynsRoom_Light          "Light"                                    <light>            (CaitlynsRoom, gLight)             //{channel=""}
-Switch    Laundry_Light               "Light"                                    <light>            (Laundry, gLight)                   //{channel=""}
-Switch    MasterBedroom_Light         "Light"                                    <light>            (MasterBedroom, gLight)              //{channel=""}
-Switch    MasterBedroom_Fan           "Fan"                                      <fan_ceiling>      (MasterBedroom, gFan)                            //{channel=""}
-Switch    Office_Light                "Light"                                    <light>            (Office, gLight)                       //{channel=""}
-Switch    Toilet_Light                "Light"                                    <light>            (Toilet, gLight)        //{channel=""}
+// Switch    Alfresco_Light              "Light"                                    <light>            (Alfresco, gLight)                       //{channel=""}
+// Switch    Bathroom_Light              "Light"                                    <light>            (Bathroom, gLight)                      //{channel=""}
+// Switch    Ensuite_Light               "Light"                                    <light>            (Ensuite, gLight)                       //{channel=""}
+// Switch    MichaelsRoom_Light          "Light"                                    <light>            (MichaelsRoom, gLight)              //{channel=""}
+// Switch    Wardrobe_Light              "Light"                                    <light>            (Wardrobe, gLight)                  //{channel=""}
+// Switch    Garage_Light                "Light"                                    <light>            (Garage, gLight)                     //{channel=""}
+// Switch    Hallway_Light               "Light"                                    <light>            (Hallway, gLight)                     //{channel=""}
+// Switch    CaitlynsRoom_Light          "Light"                                    <light>            (CaitlynsRoom, gLight)             //{channel=""}
+// Switch    Laundry_Light               "Light"                                    <light>            (Laundry, gLight)                   //{channel=""}
+// Switch    MasterBedroom_Light         "Light"                                    <light>            (MasterBedroom, gLight)              //{channel=""}
+// Switch    MasterBedroom_Fan           "Fan"                                      <fan_ceiling>      (MasterBedroom, gFan)                            //{channel=""}
+// Switch    Office_Light                "Light"                                    <light>            (Office, gLight)                       //{channel=""}
+// Switch    Toilet_Light                "Light"                                    <light>            (Toilet, gLight)        //{channel=""}

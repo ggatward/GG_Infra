@@ -14,14 +14,44 @@ when
     Item SonosLivingroom_Favourites received command
 then
     if(receivedCommand.toString=="Mix1063") {
-        SonosLivingroom_Volume.sendCommand(20)
         SonosLivingroom_Radio.sendCommand("Mix 106.3")
+        SonosLivingroom_Favourites.sendCommand("Empty")
     }
-    // Reset tthe selection list to empty
-    SonosLivingroom_Favourites.sendCommand("Empty")
+    if(receivedCommand.toString=="KIX") {
+        SonosLivingroom_Radio.sendCommand("KIX")
+        SonosLivingroom_Favourites.sendCommand("Empty")
+    }
 end
 
+rule "Alfresco Favourites"
+when
+    Item SonosAlfresco_Favourites received command
+then
+    if(receivedCommand.toString=="Mix1063") {
+        SonosAlfresco_Radio.sendCommand("Mix 106.3")
+        SonosAlfresco_Favourites.sendCommand("Empty")
+    }
+    if(receivedCommand.toString=="KIX") {
+        SonosAlfresco_Radio.sendCommand("KIX")
+        SonosAlfresco_Favourites.sendCommand("Empty")
+    }
+end
 
+rule "Portable1 Favourites"
+when
+    Item SonosPortable1_Favourites received command
+then
+    if(receivedCommand.toString=="Mix1063") {
+        SonosPortable1_Radio.sendCommand("Mix 106.3")
+        SonosPortable1_Favourites.sendCommand("Empty")
+    }
+    if(receivedCommand.toString=="KIX") {
+        SonosPortable1_Radio.sendCommand("KIX")
+        SonosPortable1_Favourites.sendCommand("Empty")
+    }
+end
+
+//-------------------------------------------------------------
 
 rule "Livingroom Multiroom"
 when
@@ -41,6 +71,8 @@ then
         SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
+        SonosAlfresco_ClearQueue.sendCommand(ON)
+        SonosPortable1_ClearQueue.sendCommand(ON)
         SonosLivingroom_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Alfresco") {
         logInfo("SonosGrouping","Linking L->P")
@@ -87,6 +119,8 @@ then
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
         SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_ClearQueue.sendCommand(ON)
+        SonosPortable1_ClearQueue.sendCommand(ON)
         SonosAlfresco_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Livingroom") {
         logInfo("SonosGrouping","Linking Alfresco -> Livingroom")
@@ -133,6 +167,8 @@ then
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
         SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_ClearQueue.sendCommand(ON)
+        SonosAlfresco_ClearQueue.sendCommand(ON)
         SonosPortable1_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Livingroom") {
         logInfo("SonosGrouping","Linking Portable1 -> Livingroom")

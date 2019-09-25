@@ -67,6 +67,15 @@
     tags:
     - openhab
 
+  - name: Install additional packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - python2-speedtest-cli
+    tags:
+    - openhab
+
 ###############################################
 
 

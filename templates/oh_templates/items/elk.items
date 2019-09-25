@@ -4,6 +4,7 @@ String  Elk_TCP      { tcp=">[*:{{ elk_ip }}:{{ elk_port }}:default]" }
 
 Switch  ELK_Zone001
 Contact Dining_FrontDoor            "Front Door [MAP(elk.map):%s]"              <frontdoor>         (LivingDining, gDoors, gELK)
+DateTime Dining_FrontDoor_LastUpdate "Front Door last change [%1$td/%1$tm %1$tH:%1$tM]"    <time>  (LivingDining, gDoors, gELK)
 
 Switch  ELK_Zone002
 Contact Garage_MotionDetector       "Garage Motion Sensor [MAP(elk-motion.map):%s]"     <motion1>    (Garage, gMotion, gELK)
@@ -27,10 +28,15 @@ Switch  Hallway_Occupancy           (gOccupancy)                        { expire
 
 Switch  ELK_Zone007
 Contact Garage_RollerDoor           "Roller Door [MAP(elk.map):%s]"              <garagedoor>   (Garage, gDoors, gELK)
+DateTime Garage_RollerDoor_LastUpdate "Roller Door last change [%1$td/%1$tm %1$tH:%1$tM]"  <time>   (Garage, gDoors, gELK)
 
 Switch  ELK_Zone008
 Contact Garage_SideDoor             "Garage Door [MAP(elk.map):%s]"              <door>         (Garage, gDoors, gELK)
+DateTime Garage_SideDoor_LastUpdate "Garage Door last change [%1$td/%1$tm %1$tH:%1$tM]"  <time>      (Garage, gDoors, gELK)
 
+Switch  ELK_Zone009
+Contact Doorbell                    "Doorbell [MAP(elk.map):%s]"                 <bell>       (gELK)
+DateTime Doorbell_LastUpdate        "Doorbell last rung [%1$td/%1$tm %1$tH:%1$tM]"  <time>   (gELK)
 
 // Output expander - Output009-016
 Switch  ELK_Output009
@@ -38,10 +44,9 @@ Switch  Garage_RollerDoorButton     "Roller Door"     (Garage, gELK)
 
 
 // Virtual outputs
-Switch  ELK_Output061    "Elk Conn Trouble"  (gELK)
-
+Switch  ELK_Output061
 Switch  ELK_Output062
-Switch  ELK_TestButton   "Output 62 Test"  (gELK)
+
 
 
 // Contact   Shed_Door                   "Door"                                         (Shed, gDoors)            //{channel=""}

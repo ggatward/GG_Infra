@@ -37,10 +37,8 @@ sitemap ourhouse label="Our Home" {
                 "Standalone"="Standalone" ]
             Selection item=SonosLivingroom_Favourites label="Favourites"  icon="mediacontrol" mappings=[
                 "Empty"="",
-                "Mix1063"="Mix 106.3",
-            //     "Alfresco"="Add Alfresco to Group",
-            // 	"Portable1"="Add Portable1 to Group",
-                "Standalone"="Standalone" ]
+                "KIX"="KIX Country",
+                "Mix1063"="Mix 106.3" ]
             Text item=SonosLivingroom_MultiRoomMode label="Linked Multiroom Players: "
             Switch item=SonosLivingroom_Repeat label="Repeat: " icon="sonos_repeat" visibility=[SonosLivingroom_Control=="PLAY"] mappings=[ALL="All", OFF="None", ON="This track"]
             Switch item=SonosLivingroom_Shuffle label="Shuffle: " icon="sonos_shuffle" visibility=[SonosLivingroom_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
@@ -61,6 +59,10 @@ sitemap ourhouse label="Our Home" {
                 "Livingroom"="Add Livingroom to group",
                 "Portable1"="Add Portable1 to group",
                 "Standalone"="Standalone" ]
+            Selection item=SonosAlfresco_Favourites label="Favourites"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "KIX"="KIX Country",
+                "Mix1063"="Mix 106.3" ]
             Text item=SonosAlfresco_MultiRoomMode label="Linked Multiroom Players: "
             Switch item=SonosAlfresco_Repeat label="Repeat: " icon="sonos_repeat" visibility=[SonosAlfresco_Control=="PLAY"] mappings=[ALL="All", OFF="None", ON="This track"]
             Switch item=SonosAlfresco_Shuffle label="Shuffle: " icon="sonos_shuffle" visibility=[SonosAlfresco_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
@@ -81,6 +83,10 @@ sitemap ourhouse label="Our Home" {
                 "Alfresco"="Add Alfresco to group",
                 "Livingroom"="Add Livingroom to group",
                 "Standalone"="Standalone" ]
+            Selection item=SonosPortable1_Favourites label="Favourites"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "KIX"="KIX Country",
+                "Mix1063"="Mix 106.3" ]
             Text item=SonosPortable1_MultiRoomMode label="Linked Multiroom Players: "
             Switch item=SonosPortable1_Repeat label="Repeat: " icon="sonos_repeat" visibility=[SonosPortable1_Control=="PLAY"] mappings=[ALL="All", OFF="None", ON="This track"]
             Switch item=SonosPortable1_Shuffle label="Shuffle: " icon="sonos_shuffle" visibility=[SonosPortable1_Control=="PLAY"] mappings=[ON="On", OFF="Off"]

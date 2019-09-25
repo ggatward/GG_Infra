@@ -12,9 +12,8 @@ DateTime vEvening_Time "Afternoon [ %1$tH:%1$tM]" <sunset>          (gAstro)    
 
 
 // System devices
-// Switch    VIR_Announcements         "Annonuncements Enabled [MAP(onoff.map):%s]"                            (gVirtual)
-// Switch    VIR_MorningTrigger        "Morning Announcement Trigger [MAP(onoff.map):%s]"                      (gVirtual)
-// Switch    VIR_Occupancy             "House Occupancy"                                                       (gVirtual)
+Switch   vAnnouncementMute "Announcement Mute [MAP(onoff.map):%s]"                     (gVirtual)
+Switch   vMorningTrigger   "Morning Announcement Trigger [MAP(onoff.map):%s]"          (gVirtual)
 
 
 // Z-wave state detection devices
