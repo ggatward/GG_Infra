@@ -20,6 +20,8 @@ mqtt_users:
     pass: "{{ vault_openhab_mqtt_password }}"
   - user: bomxml
     pass: "{{ vault_bomxml2mqtt_pass }}"
+  - user: irrigation1
+    pass: "{{ vault_irrigation1_mqtt_password }}"
 
 # # Get sensitive vars from the vault
 
@@ -36,8 +38,8 @@ sonos_ids:
   alfresco: "{{ vault_sonos_alfresco }}"
   portable1: "{{ vault_sonos_portable1 }}"
 
-#openhab_audio_sink: "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
-openhab_audio_sink: "sonos:CONNECTAMP:livingroom"
+openhab_audio_sink: "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
+#openhab_audio_sink: "sonos:CONNECTAMP:livingroom"
 
 # Parameters for alarm panel
 elk_ip: 172.22.2.10

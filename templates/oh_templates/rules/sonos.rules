@@ -1,12 +1,29 @@
-// Rules defining 'quick switches' used by other events for sonos control
-// rule "LivingRoom Radio on"
+
+// val Number NotificationVolume = 20
+
+// rule "Say Announcement"
 // when
-//   Item LivingRoom_Radio changed from OFF to ON
+//     Item SayCommand received update
 // then
-//   SonosLivingroom_Radio.postUpdate(OFF)
-//   SonosLivingroom_Volume.sendCommand(22)
-//   SonosLivingroom_Radio.sendCommand("Mix 106.3")
+//     var string AudioSink
+//     switch AudioSink {
+//         case Speaker.state.toString=="LivingRoom" : AudioSink="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
+//         case Speaker.state.toString=="Alfresco" : AudioSink="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}"
+//         case Speaker.state.toString=="Portable1" : AudioSink= "sonos:PLAY1:{{ sonos_ids.portable1 }}"
+//         default:AudioSink="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
+//     }
+//     gSonosNotification.allMembers.filter(s | s.state!=NotificationVolume ).forEach [item | item.sendCommand(NotificationVolume)]
+//     say(SayCommand.state.toString, "voicerss:enUS", AudioSink)
 // end
+
+// rule "IntialNotificationVolumeSetting"
+// when
+//     System started
+// then
+//     gSonosNotification.allMembers.forEach [item | item.sendCommand(NotificationVolume)]
+//     logInfo("IntialNotificationVolumeSetting","NotificationVolume set!")
+// end
+
 
 
 rule "Livingroom Favourites"
@@ -73,6 +90,8 @@ then
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
         SonosAlfresco_ClearQueue.sendCommand(ON)
         SonosPortable1_ClearQueue.sendCommand(ON)
+        SonosAlfresco_ClearQueue.sendCommand(OFF)
+        SonosPortable1_ClearQueue.sendCommand(OFF)
         SonosLivingroom_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Alfresco") {
         logInfo("SonosGrouping","Linking L->P")
@@ -121,6 +140,8 @@ then
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
         SonosLivingroom_ClearQueue.sendCommand(ON)
         SonosPortable1_ClearQueue.sendCommand(ON)
+        SonosLivingroom_ClearQueue.sendCommand(OFF)
+        SonosPortable1_ClearQueue.sendCommand(OFF)
         SonosAlfresco_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Livingroom") {
         logInfo("SonosGrouping","Linking Alfresco -> Livingroom")
@@ -169,6 +190,8 @@ then
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
         SonosLivingroom_ClearQueue.sendCommand(ON)
         SonosAlfresco_ClearQueue.sendCommand(ON)
+        SonosLivingroom_ClearQueue.sendCommand(OFF)
+        SonosAlfresco_ClearQueue.sendCommand(OFF)
         SonosPortable1_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Livingroom") {
         logInfo("SonosGrouping","Linking Portable1 -> Livingroom")

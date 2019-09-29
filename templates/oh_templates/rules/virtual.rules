@@ -2,18 +2,17 @@ val logName = "Virtual Devices"
 
 rule "Morning Announce Trigger"
 when
-  Time cron "0 30 6 ? * MON-FRI *" or
-  Time cron "0 20 7 ? * SAT,SUN *"
+    Time cron "0 30 6 ? * MON-FRI *" or
+    Time cron "0 20 7 ? * SAT,SUN *"
 then
-  logInfo(logName, "Arming vMorningTrigger...")
-  vMorningTrigger.postUpdate(ON)
+    logInfo(logName, "Arming vMorningTrigger...")
+    vMorningTrigger.postUpdate(ON)
 end
 
 
 // Good Morning Announcement
 rule "Good Morning Announcement"
 when
-    // Item Lounge_Occupancy changed from OFF to ON
     Item Lounge_MotionDetector changed from CLOSED to OPEN
 then
     if (vMorningTrigger.state == ON) {
@@ -51,35 +50,39 @@ then
 
         if (vAnnouncementMute.state != ON) {
             logInfo(logName, announceText)
-            say(announceText)
+            say(announceText, "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+//            say(announceText, "voicerss:enUS", "sonos:PLAY1:{{ sonos_ids.portable1 }}", new PercentType(25))
+            // Speaker.postUpdate("LivingRoom")
+            // SayCommand.postUpdate("" + announceText)
         } else {
             logInfo(logName, "Morning announcement muted")
         }
 
         // Turn on the radio
-        SonosLivingroom_Volume.sendCommand(20)
         if (Today != "Saturday" && Today != "Sunday") {
+            SonosLivingroom_Volume.sendCommand(22)
             SonosLivingroom_Favourites.sendCommand("Mix1063")
         }
         if (Today == "Saturday" || Today == "Sunday") {
+            SonosLivingroom_Volume.sendCommand(25)
             SonosLivingroom_Favourites.sendCommand("KIX")
         }
     }
 end
 
 
-// // Rollerdoor announcements
-// rule "Rollerdoor Open"
-// when
-//   Item ELK_Zone007 changed from OFF to ON
-// then
-//   say("The roller door is opening")
-// end
+// Rollerdoor announcements
+rule "Rollerdoor Open"
+when
+    Item Garage_RollerDoor changed from CLOSED to OPEN
+then
+    say("The roller door is opening", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+end
 
-// // Rollerdoor announcements
-// rule "Rollerdoor Closed"
-// when
-//   Item ELK_Zone007 changed from ON to OFF
-// then
-//   say("The roller door is closed")
-// end
+// Rollerdoor announcements
+rule "Rollerdoor Closed"
+when
+    Item Garage_RollerDoor changed from OPEN to CLOSED
+then
+    say("The roller door is now closed", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+end

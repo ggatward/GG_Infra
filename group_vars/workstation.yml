@@ -4,4 +4,12 @@ role: Workstation
 
 # Role overrides
 configure_printer: true
-install_vscode: true
+install_chrome: true
+install_xrdp: true
+install_playonlinux: false
+install_spotify: false
+#desktop_group: "Cinnamon Desktop"
+browser_startup_url: 'https://google.com.au'
+
+# Development packages (git/VScode)
+development: false

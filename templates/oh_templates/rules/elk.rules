@@ -12,7 +12,7 @@ then
 
     //logInfo(logName,"Elk status string: " + Elk_TCP.state.toString)
     buffer.forEach[ line |
-        logInfo(logName,"\"" + line + "\"")
+        //logInfo(logName,"\"" + line + "\"")
 
         // Zone status change (ZC)
         if (line.substring(2,4).equals("ZC")) {
@@ -31,10 +31,10 @@ then
             val status = line.substring(7,8)
             val output = line.substring(4,7)
             if (status.equals("0")) {
-                logInfo(logName,"ELK_Output " + output + " OFF.")
+                //logInfo(logName,"ELK_Output " + output + " OFF.")
                 sendCommand("ELK_Output" + output, OFF.toString)
             } else if (status.equals("1")) {
-                logInfo(logName,"ELK_Output " + output + " ON.")
+                //logInfo(logName,"ELK_Output " + output + " ON.")
                 sendCommand("ELK_Output" + output, ON.toString)
             }
 

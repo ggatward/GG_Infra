@@ -5,7 +5,7 @@
 - import_playbook: tang.yml
 - import_playbook: weather.yml
 - import_playbook: automation.yml
-#- import_playbook: workstation.yml
+- import_playbook: workstation.yml
 - import_playbook: sat6.yml
 #- import_playbook: ansibletower.yml
 #- import_playbook: nagios.yml

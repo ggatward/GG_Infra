@@ -1,3 +1,6 @@
-Thing sonos:PLAY1:portable1 "Sonos Play1" [ udn="{{ sonos_ids.portable1 }}", refresh=60, notificationVolume=25]
-Thing sonos:CONNECTAMP:livingroom "Sonos Connect Amp (Living Room)" [ udn="{{ sonos_ids.livingroom }}", refresh=60, notificationVolume=40]
-Thing sonos:CONNECTAMP:alfresco "Sonos Connect Amp (Alfresco)" [ udn="{{ sonos_ids.alfresco }}", refresh=60, notificationVolume=15]
+// Sonos things are auto-detected and imported due to our runtime config.
+// It may take a few minutes for items to become linked when the things come online.
+
+//Thing sonos:PLAY1:portable1 "Sonos Play1" [ udn="{{ sonos_ids.portable1 }}", refresh=60, notificationVolume=25]
+//Thing sonos:CONNECTAMP:livingroom "Sonos Connect Amp (Living Room)" [ udn="{{ sonos_ids.livingroom }}", refresh=60, notificationVolume=42]
+//Thing sonos:CONNECTAMP:alfresco "Sonos Connect Amp (Alfresco)" [ udn="{{ sonos_ids.alfresco }}", refresh=60, notificationVolume=15]

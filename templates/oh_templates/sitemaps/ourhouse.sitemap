@@ -99,6 +99,14 @@ sitemap ourhouse label="Our Home" {
             }
     }
 
+    Frame label="Irrigation" {
+        Switch item=SprinklerSystemZone1
+        Switch item=SprinklerSystemZone2
+        Switch item=SprinklerSystemZone3
+        Switch item=SprinklerCycle
+        Switch item=SprinklerSystemSchedule
+    }
+
     Frame label="Weather" {
         Text label="Weather" icon="sun_clouds" {
             Frame label="Current Weather" {

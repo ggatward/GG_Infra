@@ -38,17 +38,19 @@ zwave1.iot.home.gatwards.org
 #rpi-usb1.core.home.gatwards.org
 
 
-#[workstation_core]
+[workstation_core]
 #shack.core.home.gatwards.org
+desktop-01.core.home.gatwards.org
 
-#[workstation_lab]
-#jumphost.lab.home.gatwards.org
-#vdi100.lab.home.gatwards.org
+[workstation_lab]
+#sandbox-rhel7w.lab.home.gatwards.org
+#sandbox-rhel8w.lab.home.gatwards.org
+sandbox-cent7w.lab.home.gatwards.org
+sandbox-f30w.lab.home.gatwards.org
 
-#[workstation:children]
+[workstation:children]
 #workstation_core
-#workstation_lab
-
+workstation_lab
 
 [foreman]
 foreman.core.home.gatwards.org
@@ -72,7 +74,12 @@ zwave
 sandbox-rhel7.lab.home.gatwards.org
 sandbox-rhel8.lab.home.gatwards.org
 sandbox-cent7.lab.home.gatwards.org
-
+sandbox-cent8.lab.home.gatwards.org
+sandbox-rhel7w.lab.home.gatwards.org
+sandbox-rhel8w.lab.home.gatwards.org
+sandbox-cent7w.lab.home.gatwards.org
+sandbox-cent8w.lab.home.gatwards.org
+sandbox-f30w.lab.home.gatwards.org
 
 [core:children]
 ansible_core

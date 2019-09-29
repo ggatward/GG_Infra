@@ -7,6 +7,7 @@
   - name: Include vault vars
     include_vars: vault.yml
     no_log: true
+
   tasks:
   - include_role:
       name: ansible-role-workstation
