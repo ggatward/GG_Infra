@@ -11,3 +11,35 @@
   tasks:
   - include_role:
       name: ansible-role-workstation
+
+  - block:
+    - name: Create NAS Homedir mountpoints
+      file:
+        path: /etc/skel/{{ item }}
+        state: directory
+      with_items:
+        - nas_home
+
+    - name: Create network mountpoints
+      file:
+        path: /media/{{ item }}
+        state: directory
+      with_items:
+        - Multimedia
+        - Software
+        - Family
+        - Public
+
+    - name: Add network mounts to bash profile
+      blockinfile:
+        path: /etc/skel/.bashrc
+        block: |
+          if [ $(mount | grep -c DH-AD) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5p nas1.core.home.gatwards.org:/volume1/homes/@DH-AD/0/$USER /home/$USER/nas_home; fi
+
+          # BACKUP FOR AUTOMOUNT
+          #if [ $(mount | grep -c Multimedia) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Multimedia /media/Multimedia; fi
+          #if [ $(mount | grep -c Family) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Family /media/Family; fi
+          #if [ $(mount | grep -c Public) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Public /media/Public; fi
+          #if [ $(mount | grep -c Software) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Software /media/Software; fi
+        insertafter: EOF
+    when: setup_automounts

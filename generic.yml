@@ -14,3 +14,14 @@
     - include_role:
         name: ansible-role-hardening
       when: skip_hardening is not defined
+
+    - name: Ensure krb5 realms are defined
+      lineinfile:
+        path: /etc/krb5.conf
+        insertafter: '[domain_realm]'
+        line: "  {{ item }}"
+      with_items:
+      - '.core.home.gatwards.org = {{ idm_realm }}'
+      - 'core.home.gatwards.org = {{ idm_realm }}'
+      - '.lab.home.gatwards.org = {{ idm_realm }}'
+      - 'lab.home.gatwards.org = {{ idm_realm }}'

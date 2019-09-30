@@ -2,4 +2,5 @@
 desktop_group: "Cinnamon Desktop"
 
 #install_playonlinux: false
-#install_spotify: false
+install_spotify: true
+disable_squashfs: false

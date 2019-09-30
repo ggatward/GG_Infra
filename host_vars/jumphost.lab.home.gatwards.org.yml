@@ -1,0 +1,5 @@
+---
+# MOTD vars
+role: External Jump Box
+
+setup_automounts: false

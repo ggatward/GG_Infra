@@ -23,7 +23,7 @@ ntpservers:
 
 # User Authentication via IPA
 # auth_idm: true
-# auth_idm_realm: IPA.HOME.GATWARDS.ORG
+idm_realm: IPA.HOME.GATWARDS.ORG
 idm_admin_user: admin
 idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
@@ -52,3 +52,5 @@ tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
 
 mqtt_broker_fqdn: automation.core.home.gatwards.org
 mqtt_broker_port: '1883'
+
+idmap_domain: 'home.gatwards.org'
