@@ -1,0 +1,10 @@
+---
+# MOTD vars
+role: External Jump Box
+
+ssh_PermitRootLogin: no
+
+setup_automounts: false
+configure_printer: false
+install_chrome: false
+install_xrdp: true
