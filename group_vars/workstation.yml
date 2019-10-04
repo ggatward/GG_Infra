@@ -14,4 +14,8 @@ install_spotify: false
 browser_startup_url: 'https://google.com.au'
 
 # Development packages (git/VScode)
-development: false
+install_development: false
+
+# Additional packages to install
+additional_ws_packages:
+- vlc
