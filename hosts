@@ -41,6 +41,7 @@ zwave1.iot.home.gatwards.org
 [workstation_core]
 desktop-01.core.home.gatwards.org
 desktop-03.core.home.gatwards.org
+desktop-04.core.home.gatwards.org
 jumpbox.lab.home.gatwards.org
 sandbox-xxx.lab.home.gatwards.org
 

@@ -23,10 +23,10 @@ weewx_wunderground_password: "{{ vault_weewx_wunderground_password }}"
 weewx_wunderground_rapidfire: 'True'
 
 weewx_use_mqtt: true
-weewx_use_mqtt_ssl: true
+weewx_use_mqtt_ssl: false
 weewx_mqtt_tls_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
 weewx_mqtt_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
-weewx_mqtt_url: "mqtt://{{ mqtt_broker_fqdn }}:{{ mqtt_broker_ssl_port }}/"
+weewx_mqtt_url: "mqtt://{{ mqtt_broker_fqdn }}:{{ mqtt_broker_port }}/"
 weewx_mqtt_topic: weather/weewx
 
 # Custom scripting
