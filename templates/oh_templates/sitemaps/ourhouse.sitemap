@@ -129,6 +129,47 @@ sitemap ourhouse label="Our Home" {
         }
     }
 
+    Frame label="GPSTracker" {
+        Text label="Status" {
+            Frame label="Geoff" {
+                Text item=GPS_GG_HomeDistance
+                //Text item=atWorkEX
+                Text item=GPS_GG_IsHome
+                Text item=GPS_GG_LastSeen
+                Text item=GPS_GG_Battery
+                Text item=GPS_GG_Accuracy
+                Mapview item=GPS_GG_Location height=4
+            }
+            Frame label="Anna" {
+                Text item=GPS_AG_HomeDistance
+                //Text item=atWorkEX
+                Text item=GPS_AG_IsHome
+                Text item=GPS_AG_LastSeen
+                Text item=GPS_AG_Battery
+                Text item=GPS_AG_Accuracy
+                Mapview item=GPS_AG_Location height=4
+            }
+            Frame label="Michael" {
+                Text item=GPS_MG_HomeDistance
+                //Text item=atWorkEX
+                Text item=GPS_MG_IsHome
+                Text item=GPS_MG_LastSeen
+                Text item=GPS_MG_Battery
+                Text item=GPS_MG_Accuracy
+                Mapview item=GPS_MG_Location height=4
+            }
+            // Frame label="Caitlyn" {
+            //     Text item=GPS_CG_HomeDistance
+            //     //Text item=atWorkEX
+            //     Text item=GPS_CG_IsHome
+            //     Text item=GPS_CG_LastSeen
+            //     Text item=GPS_CG_Battery
+            //     Text item=GPS_CG_Accuracy
+            //     Mapview item=GPS_CG_Location height=4
+            // }
+        }
+    }
+
     Frame label="By Device Groups" {
         Text label="Doors" icon="door" {
             // Default item=Shed_Door label="Shed" icon="door"

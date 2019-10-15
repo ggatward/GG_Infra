@@ -42,44 +42,44 @@ end
 
 
 
-//If sprinkler system schedule is on then water each zone at 5 am for 20 min
+//If sprinkler system schedule is on then water each zone at 6 am for 10 min
 rule "Sprinkler System Schedule"
 when
-    Time cron "0 0 5 1/1 * ? *"
+    Time cron "0 0 6 1/1 * ? *"
 then
     if(SprinklerSystemSchedule.state == ON) {
         // sendBroadcastNotification("SPRINKLER SYSTEM: Daily Watering Active")
         sendCommand(SprinklerSystemZone1, ON)
-        createTimer(now.plusMinutes(1)) [|
+        createTimer(now.plusMinutes(10)) [|
             sendCommand( SprinklerSystemZone1, OFF)
             sendCommand( SprinklerSystemZone2, ON)
-            createTimer(now.plusMinutes(1)) [|
+            createTimer(now.plusMinutes(10)) [|
                 sendCommand( SprinklerSystemZone2, OFF)
-                sendCommand( SprinklerSystemZone3, ON)
-                createTimer(now.plusMinutes(1)) [|
-                    sendCommand( SprinklerSystemZone3, OFF)
-                ]
+                // sendCommand( SprinklerSystemZone3, ON)
+                // createTimer(now.plusMinutes(1)) [|
+                //     sendCommand( SprinklerSystemZone3, OFF)
+                // ]
             ]
         ]
     }
 end
 
-//If 20 Minute Cycle Switch Is On then water each zone for 20 min
-rule "20 Minute Cycle"
+//If 10 Minute Cycle Switch Is On then water each zone for 10 min
+rule "10 Minute Cycle"
 when
     Item SprinklerCycle received update ON
 then
     // sendBroadcastNotification("SPRINKLER SYSTEM: 20 Minute Cycle Active")
     sendCommand(SprinklerSystemZone1, ON)
-    createTimer(now.plusMinutes(1)) [|
+    createTimer(now.plusMinutes(10)) [|
         sendCommand(SprinklerSystemZone1, OFF)
         sendCommand(SprinklerSystemZone2, ON)
-        createTimer(now.plusMinutes(1)) [|
+        createTimer(now.plusMinutes(10)) [|
             sendCommand(SprinklerSystemZone2, OFF)
-            sendCommand(SprinklerSystemZone3, ON)
-            createTimer(now.plusMinutes(1)) [|
-                sendCommand(SprinklerSystemZone3, OFF)
-            ]
+            // sendCommand(SprinklerSystemZone3, ON)
+            // createTimer(now.plusMinutes(1)) [|
+            //     sendCommand(SprinklerSystemZone3, OFF)
+            // ]
         ]
     ]
     sendCommand(SprinklerCycle, OFF)

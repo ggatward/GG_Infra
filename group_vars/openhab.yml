@@ -10,7 +10,7 @@ postgresql_pgdata: /var/lib/pgsql/data
 
 # MQTT defaults
 mqtt_use_ssl: true
-mqtt_broker_owntracks: true
+#mqtt_broker_owntracks: false
 mqtt_broker_tls_cafile: "{{ tls_cafile }}"
 mqtt_broker_tls_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
 mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
@@ -18,15 +18,12 @@ mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 mqtt_users:
   - user: openhab2
     pass: "{{ vault_openhab_mqtt_password }}"
-  - user: bomxml
-    pass: "{{ vault_bomxml2mqtt_pass }}"
-  - user: irrigation1
-    pass: "{{ vault_irrigation1_mqtt_password }}"
+  # - user: bomxml
+  #   pass: "{{ vault_bomxml2mqtt_pass }}"
+  # - user: irrigation1
+  #   pass: "{{ vault_irrigation1_mqtt_password }}"
 
 # # Get sensitive vars from the vault
-
-# mqtt_broker: broker
-# mqtt_host: localhost
 
 openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
 openhab_latlon: "{{ latitude }},{{ longitude }}"
@@ -39,7 +36,6 @@ sonos_ids:
   portable1: "{{ vault_sonos_portable1 }}"
 
 openhab_audio_sink: "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
-#openhab_audio_sink: "sonos:CONNECTAMP:livingroom"
 
 # Parameters for alarm panel
 elk_ip: 172.22.2.10
@@ -51,9 +47,11 @@ openhab_package: expert
 openhab_bindings:
   - astro
   - expire1
+  - gpstracker
   - mqtt
   - network
   - ntp
+  - solaredge
   - sonos
   - tcp1
   - zwave
