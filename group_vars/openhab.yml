@@ -8,6 +8,11 @@ openhab_db_name: openhab2
 openhab_db_host: 127.0.0.1
 postgresql_pgdata: /var/lib/pgsql/data
 
+# InfluxDB
+influx_admin_password: "{{ vault_influx_admin_password }}"
+openhab_influx_password: "{{ vault_openhab_influx_password }}"
+openhab_grafana_influx_password: "{{ vault_openhab_grafana_influx_password }}"
+
 # MQTT defaults
 mqtt_use_ssl: true
 #mqtt_broker_owntracks: false
@@ -29,6 +34,9 @@ openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
 openhab_latlon: "{{ latitude }},{{ longitude }}"
 
 openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
+
+openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
+openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
 
 sonos_ids:
   livingroom: "{{ vault_sonos_livingroom }}"
@@ -68,6 +76,7 @@ openhab_action: []
 openhab_persistence:
   - jdbc-postgresql
   - rrd4j
+  - influxdb
 
 openhab_transformation:
   - javascript

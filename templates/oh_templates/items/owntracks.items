@@ -1,5 +1,5 @@
 Location	    GPS_GG_Location	    "Location"		                {channel="gpstracker:tracker:GG:lastLocation"}
-DateTime	    GPS_GG_LastSeen	    "Last seen"		                {channel="gpstracker:tracker:GG:lastReport"}
+DateTime	    GPS_GG_LastSeen	    "Last seen"		      <time>    {channel="gpstracker:tracker:GG:lastReport"}
 Number		    GPS_GG_Battery	    "Battery level"		            {channel="gpstracker:tracker:GG:batteryLevel"}
 Number:Length	GPS_GG_Accuracy	    "GPS Accuracy [%d m]"	        {channel="gpstracker:tracker:GG:gpsAccuracy"}
 Number          GPS_GG_HomeDistance "Distance from Home [%.1f km]"  {channel="gpstracker:tracker:GG:distanceSystem"}
@@ -16,7 +16,7 @@ Switch          GPS_GG_AtWork       "Work presence"                 {channel="gp
 
 
 Location	    GPS_AG_Location	    "Location"		                {channel="gpstracker:tracker:AG:lastLocation"}
-DateTime	    GPS_AG_LastSeen	    "Last seen"		                {channel="gpstracker:tracker:AG:lastReport"}
+DateTime	    GPS_AG_LastSeen	    "Last seen"		      <time>    {channel="gpstracker:tracker:AG:lastReport"}
 Number		    GPS_AG_Battery	    "Battery level"		            {channel="gpstracker:tracker:AG:batteryLevel"}
 Number:Length	GPS_AG_Accuracy	    "GPS Accuracy [%d m]"	        {channel="gpstracker:tracker:AG:gpsAccuracy"}
 Number          GPS_AG_HomeDistance "Distance from Home [%.1f km]"  {channel="gpstracker:tracker:AG:distanceSystem"}
@@ -27,7 +27,7 @@ Switch          GPS_AG_IsHome       "Home presence"                 {channel="gp
                                                                     }
 
 Location	    GPS_MG_Location	    "Location"		                {channel="gpstracker:tracker:MG:lastLocation"}
-DateTime	    GPS_MG_LastSeen	    "Last seen"		                {channel="gpstracker:tracker:MG:lastReport"}
+DateTime	    GPS_MG_LastSeen	    "Last seen"		      <time>    {channel="gpstracker:tracker:MG:lastReport"}
 Number		    GPS_MG_Battery	    "Battery level"		            {channel="gpstracker:tracker:MG:batteryLevel"}
 Number:Length	GPS_MG_Accuracy	    "GPS Accuracy [%d m]"	        {channel="gpstracker:tracker:MG:gpsAccuracy"}
 Number          GPS_MG_HomeDistance "Distance from Home [%.1f km]"  {channel="gpstracker:tracker:MG:distanceSystem"}
@@ -38,7 +38,7 @@ Switch          GPS_MG_IsHome       "Home presence"                 {channel="gp
                                                                     }
 
 // Location	    GPS_CG_Location	    "Location"		                {channel="gpstracker:tracker:CG:lastLocation"}
-// DateTime	    GPS_CG_LastSeen	    "Last seen"		                {channel="gpstracker:tracker:CG:lastReport"}
+// DateTime	    GPS_CG_LastSeen	    "Last seen"		      <time>    {channel="gpstracker:tracker:CG:lastReport"}
 // Number		    GPS_CG_Battery	    "Battery level"		            {channel="gpstracker:tracker:CG:batteryLevel"}
 // Number:Length	GPS_CG_Accuracy	    "GPS Accuracy [%d m]"	        {channel="gpstracker:tracker:CG:gpsAccuracy"}
 // Number          GPS_CG_HomeDistance "Distance from Home [%.1f km]"  {channel="gpstracker:tracker:CG:distanceSystem"}
