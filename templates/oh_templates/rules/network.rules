@@ -1,0 +1,28 @@
+
+rule "Net_CG_LastUpdate"
+when
+    Item Net_CG_Online changed
+then
+    Net_CG_Since.postUpdate(new DateTimeType())
+end
+
+rule "Net_MG_LastUpdate"
+when
+    Item Net_MG_Online changed
+then
+    Net_MG_Since.postUpdate(new DateTimeType())
+end
+
+rule "Net_AG_LastUpdate"
+when
+    Item Net_AG_Online changed
+then
+    Net_AG_Since.postUpdate(new DateTimeType())
+end
+
+rule "Net_GG_LastUpdate"
+when
+    Item Net_GG_Online changed
+then
+    Net_GG_Since.postUpdate(new DateTimeType())
+end

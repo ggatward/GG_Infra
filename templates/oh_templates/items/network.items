@@ -1,15 +1,20 @@
-// Group     gPresence            "Presence Detection"                            (Home, gVirtual)              ["Presence"]
-// Group     gNetwork             "Network Devices"                               (Home, gVirtual)              ["Network"]
+Group     gNetwork             "Network Devices"                               (Home, gVirtual)
 
-// Presence Detection
-//Switch    Net_Geoffs_Phone          "Geoffs Phone [MAP(presence.map):%s]"                       <man_2>           (gNetwork, gPresence) {channel="network:pingdevice:Net_Geoffs_Phone:online"}
-//DateTime  Net_Geoffs_Phone_Since    "Geoffs Phone Last Seen [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"   <time>            (gPresence)           {channel="network:pingdevice:Net_Geoffs_Phone:lastseen"}
+Switch    Net_GG_Online         "Geoff Phone [MAP(network.map):%s]"                             (gNetwork)   {channel="network:pingdevice:GG_phone:online"}
+DateTime  Net_GG_LastUpdate     "Geoff Phone Last Seen [%1$td/%1$tm %1$tH:%1$tM]"       <time>  (gNetwork)   {channel="network:pingdevice:GG_phone:lastseen"}
+DateTime  Net_GG_Since          "Geoff Phone Last Change [%1$td/%1$tm %1$tH:%1$tM]"     <time>  (gNetwork)
 
-//Switch    Net_Annas_Phone           "Annas Phone [MAP(presence.map):%s]"                        <woman_3>         (gNetwork, gPresence) {channel="network:pingdevice:Net_Annas_Phone:online"}
-//DateTime  Net_Annas_Phone_Since     "Annas Phone Last Seen [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"    <time>            (gPresence)           {channel="network:pingdevice:Net_Annas_Phone:lastseen"}
+Switch    Net_AG_Online         "Anna Phone [MAP(network.map):%s]"                              (gNetwork)   {channel="network:pingdevice:AG_phone:online"}
+DateTime  Net_AG_LastUpdate     "Anna Phone Last Seen [%1$td/%1$tm %1$tH:%1$tM]"        <time>  (gNetwork)   {channel="network:pingdevice:AG_phone:lastseen"}
+DateTime  Net_AG_Since          "Anna Phone Last Change [%1$td/%1$tm %1$tH:%1$tM]"      <time>  (gNetwork)
 
-//Switch    Net_Geoffs_Tablet         "Geoffs Tablet [MAP(network.map):%s]"                       <present>         (gNetwork)            {channel="network:pingdevice:Net_Geoffs_Tablet:online"}
-//Switch    Net_Annas_Tablet          "Annas Tablet [MAP(network.map):%s]"                        <present>         (gNetwork)            {channel="network:pingdevice:Net_Annas_Tablet:online"}
+Switch    Net_MG_Online         "Michael Phone [MAP(network.map):%s]"                           (gNetwork)   {channel="network:pingdevice:MG_phone:online"}
+DateTime  Net_MG_LastUpdate     "Michael Phone Last Seen [%1$td/%1$tm %1$tH:%1$tM]"     <time>  (gNetwork)   {channel="network:pingdevice:MG_phone:lastseen"}
+DateTime  Net_MG_Since          "Michael Phone Last Change [%1$td/%1$tm %1$tH:%1$tM]"   <time>  (gNetwork)
+
+Switch    Net_CG_Online         "Caitlyn Ipod [MAP(network.map):%s]"                            (gNetwork)   {channel="network:pingdevice:CG_ipod:online"}
+DateTime  Net_CG_LastUpdate     "Caitlyn Ipod Last Seen [%1$td/%1$tm %1$tH:%1$tM]"      <time>  (gNetwork)   {channel="network:pingdevice:CG_ipod:lastseen"}
+DateTime  Net_CG_Since          "Caitlyn Ipod Last Change [%1$td/%1$tm %1$tH:%1$tM]"    <time>  (gNetwork)
 
 //Switch    Net_LoungeTV              "Lounge TV [MAP(onoff.map):%s]"                             <television>      (gNetwork)            {channel="network:pingdevice:Net_Lounge_TV:online"}
 //DateTime  Net_LoungeTV_Since        "Lounge TV Last Seen [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"      <time>            (gNetwork)            {channel="network:pingdevice:Net_Lounge_TV:lastseen"}

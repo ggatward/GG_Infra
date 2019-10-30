@@ -80,6 +80,26 @@
     - all
     - openhab
 
+  - name: Add rule to allow DHCP proxy listener
+    firewalld:
+      port: 6767/udp
+      immediate: yes
+      permanent: yes
+      state: enabled
+    tags:
+    - all
+    - openhab
+
+  - name: Redirect DHCP requests to DHCP Proxy listener
+    firewalld:
+      rich_rule: 'rule family="ipv4" forward-port port="67" protocol="udp" to-port="6767"'
+      immediate: yes
+      permanent: yes
+      state: enabled
+    tags:
+    - all
+    - openhab
+
   - name: Install additional packages
     package:
       name: "{{ item }}"
