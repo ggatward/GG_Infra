@@ -82,23 +82,26 @@
 
   - name: Add rule to allow DHCP proxy listener
     firewalld:
-      port: 6767/udp
+      port: "{{ item }}"
       immediate: yes
       permanent: yes
       state: enabled
+    with_items:
+#    - 67/udp
+    - 6767/udp
     tags:
     - all
     - openhab
 
-  - name: Redirect DHCP requests to DHCP Proxy listener
-    firewalld:
-      rich_rule: 'rule family="ipv4" forward-port port="67" protocol="udp" to-port="6767"'
-      immediate: yes
-      permanent: yes
-      state: enabled
-    tags:
-    - all
-    - openhab
+  # - name: Redirect DHCP requests to DHCP Proxy listener
+  #   firewalld:
+  #     rich_rule: 'rule family="ipv4" forward-port port="67" protocol="udp" to-port="6767"'
+  #     immediate: yes
+  #     permanent: yes
+  #     state: enabled
+  #   tags:
+  #   - all
+  #   - openhab
 
   - name: Install additional packages
     package:
@@ -282,6 +285,18 @@
     - all
     - config
 
+  - name: Deploy persistence config
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/persistence
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/persistence/*
+    tags:
+    - all
+    - config
+
   - name: Deploy sitemaps config
     template:
       src: "{{ item }}"
@@ -306,6 +321,9 @@
     - all
     - config
 
+  # To get the symbolic names:
+  # ssh -p 8101 openhab@localhost
+  # openhab> bundle:list -s
   - name: Configure logging
     blockinfile:
       path: /var/lib/openhab2/etc/org.ops4j.pax.logging.cfg
@@ -356,6 +374,9 @@
 
         log4j2.logger.voice.name = org.eclipse.smarthome.core.voice
         log4j2.logger.voice.level = OFF
+
+        log4j2.logger.network.name = org.openhab.binding.network
+        log4j2.logger.network.level = OFF
       state: present
     notify: Restart Openhab
     tags:

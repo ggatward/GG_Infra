@@ -16,6 +16,9 @@ influx_admin_password: "{{ vault_influx_admin_password }}"
 openhab_influx_password: "{{ vault_openhab_influx_password }}"
 openhab_grafana_influx_password: "{{ vault_openhab_grafana_influx_password }}"
 
+# Grafana
+grafana_admin_password: "{{ vault_grafana_admin_password }}"
+
 # MQTT defaults
 mqtt_use_ssl: true
 #mqtt_broker_owntracks: false
