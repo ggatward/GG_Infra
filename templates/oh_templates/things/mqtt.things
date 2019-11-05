@@ -1,5 +1,4 @@
 Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, clientid="openhab", username="openhab2", password="{{ vault_openhab_mqtt_password }}" ]
-//Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, clientid="openhab" ]
 {
     Thing topic weewx "WeeWX" {
 	    Channels:
@@ -25,18 +24,55 @@ Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, client
     Thing topic irrigation "Sprinkler System" {
         Channels:
         Type string : zone1 [
-                                stateTopic="SmartHome/utilities/MK-SprinklerSystem1/state",
-                                commandTopic="SmartHome/utilities/MK-SprinklerSystem1"
-                            ]
+            stateTopic="home/outside/irrigation/state",
+            commandTopic="home/outside/irrigation"
+        ]
         Type string : zone2 [
-                                stateTopic="SmartHome/utilities/MK-SprinklerSystem1/state",
-                                commandTopic="SmartHome/utilities/MK-SprinklerSystem1"
-                            ]
+            stateTopic="home/outside/irrigation/state",
+            commandTopic="home/outside/irrigation"
+        ]
         Type string : zone3 [
-                                stateTopic="SmartHome/utilities/MK-SprinklerSystem1/state",
-                                commandTopic="SmartHome/utilities/MK-SprinklerSystem1"
-                            ]
+            stateTopic="home/outside/irrigation/state",
+            commandTopic="home/outside/irrigation"
+        ]
     }
+
+    Thing topic sonoff1 "WashingMachine Sonoff" {
+        Channels:
+        Type switch : power       [ stateTopic="home/laundry/sonoff/washmachine/stat/POWER", commandTopic="home/laundry/sonoff/washmachine/cmnd/POWER", on="ON", off="OFF"]
+        Type string : devicestate [ stateTopic="home/laundry/sonoff/washmachine/tele/LWT"]
+        Type number : wifi-rssi   [ stateTopic="home/laundry/sonoff/washmachine/tele/STATE", transformationPattern="JSONPATH:$.Wifi.RSSI"]
+        Type string : fw          [ stateTopic="home/laundry/sonoff/washmachine/tele/INFO1", transformationPattern="JSONPATH:$.Version"]
+        Type string : hostname    [ stateTopic="home/laundry/sonoff/washmachine/tele/INFO2", transformationPattern="JSONPATH:$.Hostname"]
+        Type string : ip          [ stateTopic="home/laundry/sonoff/washmachine/tele/INFO2", transformationPattern="JSONPATH:$.IPAddress"]
+        Type string : wifi-ap       [ stateTopic="home/laundry/sonoff/washmachine/tele/STATE", transformationPattern="JSONPATH:$.Wifi.AP" ]
+        Type string : wifi-ssid     [ stateTopic="home/laundry/sonoff/washmachine/tele/STATE", transformationPattern="JSONPATH:$.Wifi.SSId" ]
+        Type string : wifi-channel  [ stateTopic="home/laundry/sonoff/washmachine/tele/STATE", transformationPattern="JSONPATH:$.Wifi.Channel" ]
+        Type string : SensorTime    [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.Time" ]
+        Type string : POW-startTime [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.TotalStartTime" ]
+        Type string : POW-Total     [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
+        Type string : POW-Voltage   [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
+        Type string : POW-Power     [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
+    }
+
+    Thing topic sonoff2 "Dryer Sonoff" {
+        Channels:
+        Type switch : power       [ stateTopic="home/laundry/sonoff/dryer/stat/POWER", commandTopic="home/laundry/sonoff/dryer/cmnd/POWER", on="ON", off="OFF"]
+        Type string : devicestate [ stateTopic="home/laundry/sonoff/dryer/tele/LWT"]
+        Type number : wifi-rssi   [ stateTopic="home/laundry/sonoff/dryer/tele/STATE", transformationPattern="JSONPATH:$.Wifi.RSSI"]
+        Type string : fw          [ stateTopic="home/laundry/sonoff/dryer/tele/INFO1", transformationPattern="JSONPATH:$.Version"]
+        Type string : hostname    [ stateTopic="home/laundry/sonoff/dryer/tele/INFO2", transformationPattern="JSONPATH:$.Hostname"]
+        Type string : ip          [ stateTopic="home/laundry/sonoff/dryer/tele/INFO2", transformationPattern="JSONPATH:$.IPAddress"]
+        Type string : wifi-ap       [ stateTopic="home/laundry/sonoff/dryer/tele/STATE", transformationPattern="JSONPATH:$.Wifi.AP" ]
+        Type string : wifi-ssid     [ stateTopic="home/laundry/sonoff/dryer/tele/STATE", transformationPattern="JSONPATH:$.Wifi.SSId" ]
+        Type string : wifi-channel  [ stateTopic="home/laundry/sonoff/dryer/tele/STATE", transformationPattern="JSONPATH:$.Wifi.Channel" ]
+        Type string : SensorTime    [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.Time" ]
+        Type string : POW-startTime [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.TotalStartTime" ]
+        Type string : POW-Total     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
+        Type string : POW-Voltage   [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
+        Type string : POW-Power     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
+    }
+
 
 //    Thing topic rgbw2 "Ambient Light 2" {
 //	    Channels:

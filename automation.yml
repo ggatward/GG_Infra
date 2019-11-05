@@ -321,6 +321,18 @@
     - all
     - config
 
+  - name: Deploy html
+    template:
+      src: "{{ item }}"
+      dest: /etc/openhab2/html
+      owner: openhab
+      group: openhab
+    with_fileglob:
+    - templates/oh_templates/html/*
+    tags:
+    - all
+    - config
+
   # To get the symbolic names:
   # ssh -p 8101 openhab@localhost
   # openhab> bundle:list -s

@@ -32,6 +32,10 @@ Group     gBoMWeather          "Data from BoM"                                 (
 
 /* Power and Energy */
 Group     gPower               "Power Consumption"          <energy>           (Home)
+Group     gBattery             "Battery Status"             <battery>          (Home)
+
+/* Reachable group for WiFi devices */
+Group     gReachable           "Device Status"                                 (Home)
 
 /* Aggregation Groups */
 Group:Contact:OR(OPEN, CLOSED)   gDoors         "Doors"           <door>          (Home)

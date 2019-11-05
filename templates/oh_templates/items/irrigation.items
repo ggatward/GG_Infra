@@ -1,12 +1,7 @@
 Group    gIrrigation    "Irrigation"          <water>      (Home)
 
-
 Switch SprinklerCycle "20 Minute Cycle" <water> [ "Switchable" ]
 Switch SprinklerSystemSchedule "Sprinkler System Schedule" <calendar> [ "Switchable" ]
-
-// Switch MKSprinklerSystemZone1 "Sprinklers Zone 1" <water> [ "Switchable" ] {mqtt=">[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1:command:ON:Z1ON],>[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1:command:OFF:Z1OFF],<[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1/state:state:ON:Z1ON],<[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1/state:state:OFF:Z1OFF]", autoupdate="false"}
-// Switch MKSprinklerSystemZone2 "Sprinklers Zone 2" <water> [ "Switchable" ] {mqtt=">[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1:command:ON:Z2ON],>[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1:command:OFF:Z2OFF],<[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1/state:state:ON:Z2ON],<[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1/state:state:OFF:Z2OFF]", autoupdate="false"}
-// Switch MKSprinklerSystemZone3 "Sprinklers Zone 3" <water> [ "Switchable" ] {mqtt=">[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1:command:ON:Z3ON],>[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1:command:OFF:Z3OFF],<[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1/state:state:ON:Z3ON],<[broker:MK-SmartHouse/utilities/MK-SprinklerSystem1/state:state:OFF:Z3OFF]", autoupdate="false"}
 
 String SprinklerSystemZone1MQTT     {channel="mqtt:topic:mosquitto:irrigation:zone1"}
 Switch SprinklerSystemZone1         "Sprinklers Zone 1"     <water>     (gMQTT, gIrrigation)    [ "Switchable" ]

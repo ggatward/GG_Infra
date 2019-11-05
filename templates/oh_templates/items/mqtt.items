@@ -28,6 +28,10 @@ Number    BoMWx_forecast_today_max     "Todays Forecast Temp [%.0f °C]"        
 Number    BoMWx_forecast_tomorrow_max  "Tomorrow Forecast Temp [%.0f °C]"      <temperature>   (gMQTT, gBoMWeather, gWeather)                  {channel="mqtt:topic:mosquitto:bomxml:forecast_tomorrow_max"}
 Number    BoMWx_forecast_tonight_min   "Tonight Forecast Temp [%.0f °C]"       <temperature>   (gMQTT, gBoMWeather, gWeather)                  {channel="mqtt:topic:mosquitto:bomxml:forecast_tonight_min"}
 
+
+//String    Sonoff_Temp                  "Sonoff Temp [%s °C]"                   <temperature>    { channel="mqtt:topic:mosquitto:sonoff:Temperature"}
+//String    Sonoff_Version               "Sonoff Version: [%s]"                  <sonoff_basic>   { channel="mqtt:topic:mosquitto:sonoff:Version"}
+
 // Temperature Sensors
 // Number    GF_MichaelsRoom_Temperature    "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_MichaelsRoom, gTemperature)    ["Temperature"]                    //{channel=""}
 // Number    GF_RumpusRoom_Temperature      "Temperature [%.1f °C]"               <temperature>   (gMQTT, GF_RumpusRoom, gTemperature)      ["Temperature"]                    //{channel=""}

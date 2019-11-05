@@ -1,0 +1,53 @@
+Group      gSonoffSwitches      "SONOFF Sensors"    (Home) // used for chart
+Group      gSonoffSw1           "sonoff switch 1"   (gSonoffSwitches)
+Group      gSonoffSw1Info       "sonoff Info 1"     (gSonoffSwitches)
+Group      gSonoffSw2           "sonoff switch 2"   (gSonoffSwitches)
+Group      gSonoffSw2Info       "sonoff Info 2"     (gSonoffSwitches)
+
+Switch Sonoff1_Switch          "Sonoff1 Switch"                    (gSonoffSw1) { channel="mqtt:topic:mosquitto:sonoff1:power" }
+String Sonoff1_DeviceState     "Sonoff1 Device State" <selfshield> (gSonoffSw1,gReachable) { channel="mqtt:topic:mosquitto:sonoff1:devicestate" }
+String Sonoff1_hostname        "Sonoff1 hostname"                  (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:hostname" }
+String Sonoff1_IP              "Sonoff1 IP"           <ip>         (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:ip" }
+String Sonoff1_FW              "Sonoff1 FW"           <selfinfo>   (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:fw" }
+String Sonoff1_WifiAp          "Sonoff1 Wifi AP"                   (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:wifi-ap" }
+String Sonoff1_WifiSSID        "Sonoff1 Wifi SSID"                 (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:wifi-ssid" }
+String Sonoff1_WifiChannel     "Sonoff1 Wifi Channel"              (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:wifi-channel" }
+Number Sonoff1_WifiRssi        "Sonoff1 Wifi RSSI"    <network>    (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:wifi-rssi" }
+String Sonoff1_Time            "Sonoff1 Sensor Time"               (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:SensorTime" }
+String Sonoff1_PowStart        "Sonoff1 Power Start"               (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:POW-startTime" }
+String Sonoff1_PowTotal        "Sonoff1 Power Total"               (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:POW-Total" }
+String Sonoff1_Voltage         "Sonoff1 Voltage"                   (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:POW-Voltage" }
+String Sonoff1_Power           "Sonoff1 Power"                     (gSonoffSw1Info) { channel="mqtt:topic:mosquitto:sonoff1:POW-Power" }
+
+Switch Sonoff2_Switch          "Sonoff2 Switch"                    (gSonoffSw2) { channel="mqtt:topic:mosquitto:sonoff2:power" }
+String Sonoff2_DeviceState     "Sonoff2 Device State" <selfshield> (gSonoffSw2,gReachable) { channel="mqtt:topic:mosquitto:sonoff2:devicestate" }
+String Sonoff2_hostname        "Sonoff2 hostname"                  (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:hostname" }
+String Sonoff2_IP              "Sonoff2 IP"           <ip>         (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:ip" }
+String Sonoff2_FW              "Sonoff2 FW"           <selfinfo>   (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:fw" }
+String Sonoff2_WifiAp          "Sonoff2 Wifi AP"                   (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:wifi-ap" }
+String Sonoff2_WifiSSID        "Sonoff2 Wifi SSID"                 (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:wifi-ssid" }
+String Sonoff2_WifiChannel     "Sonoff2 Wifi Channel"              (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:wifi-channel" }
+Number Sonoff2_WifiRssi        "Sonoff2 Wifi RSSI"    <network>    (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:wifi-rssi" }
+String Sonoff2_Time            "Sonoff2 Sensor Time"               (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:SensorTime" }
+String Sonoff2_PowStart        "Sonoff2 Power Start"               (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:POW-startTime" }
+String Sonoff2_PowTotal        "Sonoff2 Power Total"               (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:POW-Total" }
+String Sonoff2_Voltage         "Sonoff2 Voltage"                   (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:POW-Voltage" }
+String Sonoff2_Power           "Sonoff2 Power"                     (gSonoffSw2Info) { channel="mqtt:topic:mosquitto:sonoff2:POW-Power" }
+
+
+
+
+// Topic = home/laundry/sonoff/dryer
+// Full Topic = %topic%/%prefix%/
+// User = sonoff
+
+// Sonoff init commands for console
+// NTPSERVER1 172.22.1.2
+// NTPSERVER2 172.22.1.3
+// NTPSERVER3 172.22.1.4
+// TIMEDST 1,1,10,1,2,660
+// TIMESTD 1,1,4,1,2,600
+// TIMEZONE 99
+
+// POWERONSTATE 1  (For default ON)
+// POWERONSTATE 3  (default - last saved state)
