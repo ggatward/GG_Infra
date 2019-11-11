@@ -1,15 +1,15 @@
 
-Number:Power            Solar_LiveProduction    "Current Solar Production [%.2f kW]"   (gPower) {channel="solaredge:generic:inv1:live#production"}
+Number:Power            Solar_LiveProduction    "Current Solar Production [%.2f kW]"              (gPower) {channel="solaredge:generic:inv1:live#production"}
 //Number:Dimensionless    Solar_Live_Level        "Battery Charge"                 {channel="solaredge:generic:inv1:live#battery_level"}
-Number:Power            Solar_LiveConsumption   "Current Consumption"              (gPower)     {channel="solaredge:generic:inv1:live#consumption"}
-Number:Power            Solar_LiveImport        "Current import from grid"         (gPower)     {channel="solaredge:generic:inv1:live#import"}
-Number:Power            Solar_LiveExport        "Current export to grid"           (gPower)     {channel="solaredge:generic:inv1:live#export"}
-String                  Solar_LiveGridStatus    "Grid Status"                      (gPower)     {channel="solaredge:generic:inv1:live#grid_status"}
+Number:Power            Solar_LiveConsumption   "Current Power Consumption"         <energy>      (gPower)     {channel="solaredge:generic:inv1:live#consumption"}
+Number:Power            Solar_LiveImport        "Current import from grid"                        (gPower)     {channel="solaredge:generic:inv1:live#import"}
+Number:Power            Solar_LiveExport        "Current export to grid"                          (gPower)     {channel="solaredge:generic:inv1:live#export"}
+String                  Solar_LiveGridStatus    "Grid Status"                                     (gPower)     {channel="solaredge:generic:inv1:live#grid_status"}
 
 
-Number:Energy           Solar_DayProduction     "Solar Production Today [%.2f kWh]" (gPower)    {channel="solaredge:generic:inv1:aggregate_day#production"}
-Number:Energy           Solar_DayConsumption    "Consumption Today"                 (gPower)    {channel="solaredge:generic:inv1:aggregate_day#consumption"}
-Number:Energy           Solar_DaySelfConsumption "Self Consumption Today"           (gPower)    {channel="solaredge:generic:inv1:aggregate_day#selfConsumptionForConsumption"}
-Number:Dimensionless    Solar_DayCoverage       "Percentage of Self Consumption"    (gPower)    {channel="solaredge:generic:inv1:aggregate_day#selfConsumptionCoverage"}
-Number:Energy           Solar_DayImport         "Import from grid Today [%.2f kWh]" (gPower)    {channel="solaredge:generic:inv1:aggregate_day#import"}
-Number:Energy           Solar_DayExport         "Export to grid Today [%.2f kWh]"   (gPower)    {channel="solaredge:generic:inv1:aggregate_day#export"}
+Number:Energy           Solar_DayProduction     "Solar Production Today [%.2f kWh]" <solarplant>  (gPower)    {channel="solaredge:generic:inv1:aggregate_day#production"}
+Number:Energy           Solar_DayConsumption    "Power Consumption Today"           <energy>      (gPower)    {channel="solaredge:generic:inv1:aggregate_day#consumption"}
+Number:Energy           Solar_DaySelfConsumption "Self Consumption Today"                         (gPower)    {channel="solaredge:generic:inv1:aggregate_day#selfConsumptionForConsumption"}
+Number:Dimensionless    Solar_DayCoverage       "Percentage of Self Consumption"                  (gPower)    {channel="solaredge:generic:inv1:aggregate_day#selfConsumptionCoverage"}
+Number:Energy           Solar_DayImport         "Import from grid Today [%.2f kWh]"               (gPower)    {channel="solaredge:generic:inv1:aggregate_day#import"}
+Number:Energy           Solar_DayExport         "Export to grid Today [%.2f kWh]"                 (gPower)    {channel="solaredge:generic:inv1:aggregate_day#export"}

@@ -25,6 +25,9 @@ Group     Office                "Office"            <office>            (Home)
 Group     Toilet                "Toilet"            <toilet>            (Home)
 
 
+/* Group to control persistence */
+Group     gInfluxdb            "InfluxDB persistence items"                    (Home)
+
 /* Weather Groups */
 Group     gWeather             "Weather"                    <sun_clouds>       (Home)                       ["Weather"]
 Group     gHomeWeather         "Data from Weather Station"                     (gWeather)
@@ -32,16 +35,21 @@ Group     gBoMWeather          "Data from BoM"                                 (
 
 /* Power and Energy */
 Group     gPower               "Power Consumption"          <energy>           (Home)
-Group     gBattery             "Battery Status"             <battery>          (Home)
+Group     gPowerUsed           "Total Power Usage"          <energy>
+Group     gPowerLive           "Live Power Usage"           <energy>
+Group:Number:SUM   gBattery    "Battery Status [(%d)]"      <battery>          (Home,gInfluxdb)
+
+Group     gDoors               "Doors"                                          (Home)
 
 /* Reachable group for WiFi devices */
-Group     gReachable           "Device Status"                                 (Home)
+Group     gReachable           "IOT Device Status"                                (Home)
+Group     gWifiRSSI            "IOT Wifi Strength"                                (Home)
 
 /* Aggregation Groups */
-Group:Contact:OR(OPEN, CLOSED)   gDoors         "Doors"           <door>          (Home)
-Group:Switch:OR(ON, OFF)         gLight         "Light"           <light>         (Home)
+Group:Contact:OR(OPEN,CLOSED)    gDoorStatus    "Doors [(%d)]"          <door>          (gDoors)
+Group:Switch:OR(ON,OFF)          gLights        "Lights [(%d)]"         <light>         (Home)
 //Group:Number:AVG                 gTemperature   "Temperature"     <temperature>   (Home)   ["Temperature"]
-Group:Contact:OR(OPEN, CLOSED)   gWindows       "Windows"         <window>        (Home)
-Group:Switch:OR(ON, OFF)         gMotion        "Motion Sensors"  <motion>        (Home)
-Group:Switch:OR(ON, OFF)         gFan           "Fan"             <fan_ceiling>   (Home)
-Group:Switch:OR(ON, OFF)         gOccupancy     "Occupancy"       <motion>        (Home)
+Group:Contact:OR(OPEN,CLOSED)    gWindows       "Windows [(%d)]"        <window>        (Home)
+Group:Contact:OR(OPEN,CLOSED)    gMotion        "Motion Sensors [(%d)]" <motion>        (Home)
+Group:Switch:OR(ON,OFF)          gFan           "Fan [(%d)]"            <fan_ceiling>   (Home)
+Group:Switch:OR(ON,OFF)          gOccupancy     "Occupancy [(%d)]"      <motion>        (Home)

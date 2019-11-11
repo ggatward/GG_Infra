@@ -3,8 +3,8 @@ Group     gELK               "Alarm System"          <alarm>      (Home)
 String  Elk_TCP      { tcp=">[*:{{ elk_ip }}:{{ elk_port }}:default]" }
 
 Switch  ELK_Zone001
-Contact Dining_FrontDoor            "Front Door [MAP(elk.map):%s]"              <frontdoor>         (LivingDining, gDoors, gELK)
-DateTime Dining_FrontDoor_LastUpdate "Front Door last change [%1$td/%1$tm %1$tH:%1$tM]"    <time>  (LivingDining, gDoors, gELK)
+Contact Dining_FrontDoor            "Front Door [MAP(elk.map):%s]"              <frontdoor>         (LivingDining,gDoorStatus,gELK)
+DateTime Dining_FrontDoor_LastUpdate "Front Door last change [%1$td/%1$tm %1$tH:%1$tM]"    <time>  (LivingDining,gDoors,gELK)
 
 Switch  ELK_Zone002
 Contact Garage_MotionDetector       "Garage Motion Sensor [MAP(elk-motion.map):%s]"     <motion1>    (Garage, gMotion, gELK)
@@ -27,12 +27,12 @@ Contact Hallway_MotionDetector      "Hallway Motion Sensor [MAP(elk-motion.map):
 Switch  Hallway_Occupancy           (gOccupancy)                        { expire="1m,command=OFF" }
 
 Switch  ELK_Zone007
-Contact Garage_RollerDoor           "Roller Door [MAP(elk.map):%s]"              <garagedoor>   (Garage, gDoors, gELK)
+Contact Garage_RollerDoor           "Roller Door [MAP(elk.map):%s]"              <garagedoor>   (Garage, gDoorStatus, gELK)
 DateTime Garage_RollerDoor_LastUpdate "Roller Door last change [%1$td/%1$tm %1$tH:%1$tM]"  <time>   (Garage, gDoors, gELK)
 
 Switch  ELK_Zone008
-Contact Garage_SideDoor             "Garage Door [MAP(elk.map):%s]"              <door>         (Garage, gDoors, gELK)
-DateTime Garage_SideDoor_LastUpdate "Garage Door last change [%1$td/%1$tm %1$tH:%1$tM]"  <time>      (Garage, gDoors, gELK)
+Contact Garage_SideDoor             "Garage Door [MAP(elk.map):%s]"              <door>         (Garage,gDoorStatus,gELK)
+DateTime Garage_SideDoor_LastUpdate "Garage Door last change [%1$td/%1$tm %1$tH:%1$tM]"  <time>      (Garage,gDoors,gELK)
 
 Switch  ELK_Zone009
 Contact Doorbell                    "Doorbell [MAP(elk.map):%s]"                 <bell>       (gELK)

@@ -23,6 +23,13 @@ sitemap ourhouse label="Our Home" {
         Group item=FrontYard
         Group item=Driveway
         Group item=Shed
+        Text label="Irrigation" icon="water" {
+            Switch item=SprinklerSystemZone1
+            Switch item=SprinklerSystemZone2
+            Switch item=SprinklerSystemZone3
+            Switch item=SprinklerCycle
+            Switch item=SprinklerSystemSchedule
+        }
     }
 
     Frame label="Sonos" {
@@ -99,14 +106,6 @@ sitemap ourhouse label="Our Home" {
             }
     }
 
-    Frame label="Irrigation" {
-        Switch item=SprinklerSystemZone1
-        Switch item=SprinklerSystemZone2
-        Switch item=SprinklerSystemZone3
-        Switch item=SprinklerCycle
-        Switch item=SprinklerSystemSchedule
-    }
-
     Frame label="Weather" {
         Text label="Weather" icon="sun_clouds" {
             Frame label="Current Weather" {
@@ -129,75 +128,79 @@ sitemap ourhouse label="Our Home" {
         }
     }
 
-    Frame label="GPSTracker" {
-        Text label="Status" {
-            Frame label="Geoff" {
-                Text item=GPS_GG_HomeDistance
-                //Text item=atWorkEX
-                Text item=GPS_GG_IsHome
-                Text item=GPS_GG_LastSeen
-                Text item=GPS_GG_Battery
-                Text item=GPS_GG_Accuracy
-                Mapview item=GPS_GG_Location height=4
-            }
-            Frame label="Anna" {
-                Text item=GPS_AG_HomeDistance
-                //Text item=atWorkEX
-                Text item=GPS_AG_IsHome
-                Text item=GPS_AG_LastSeen
-                Text item=GPS_AG_Battery
-                Text item=GPS_AG_Accuracy
-                Mapview item=GPS_AG_Location height=4
-            }
-            Frame label="Michael" {
-                Text item=GPS_MG_HomeDistance
-                //Text item=atWorkEX
-                Text item=GPS_MG_IsHome
-                Text item=GPS_MG_LastSeen
-                Text item=GPS_MG_Battery
-                Text item=GPS_MG_Accuracy
-                Mapview item=GPS_MG_Location height=4
-            }
-            // Frame label="Caitlyn" {
-            //     Text item=GPS_CG_HomeDistance
-            //     //Text item=atWorkEX
-            //     Text item=GPS_CG_IsHome
-            //     Text item=GPS_CG_LastSeen
-            //     Text item=GPS_CG_Battery
-            //     Text item=GPS_CG_Accuracy
-            //     Mapview item=GPS_CG_Location height=4
-            // }
+    Frame label="Location Tracking" {
+        Text label="Geoff" icon="man_2" {
+            Text item=GPS_GG_HomeDistance
+            Text item=GPS_GG_IsHome
+            Text item=GPS_GG_LastSeen
+            Text item=GPS_GG_Battery
+            Text item=GPS_GG_Accuracy
+            Switch item=GPS_GG_Moving
+            Mapview item=GPS_GG_Location height=8
+        }
+        Text label="Anna" icon="woman_2" {
+            Text item=GPS_AG_HomeDistance
+            Text item=GPS_AG_IsHome
+            Text item=GPS_AG_LastSeen
+            Text item=GPS_AG_Battery
+            Text item=GPS_AG_Accuracy
+            Switch item=GPS_AG_Moving
+            Mapview item=GPS_AG_Location height=8
+        }
+        Text label="Michael" icon="boy_2" {
+            Text item=GPS_MG_HomeDistance
+            Text item=GPS_MG_IsHome
+            Text item=GPS_MG_LastSeen
+            Text item=GPS_MG_Battery
+            Text item=GPS_MG_Accuracy
+            Switch item=GPS_MG_Moving
+            Mapview item=GPS_MG_Location height=8
+        }
+        Text label="Caitlyn" icon="girl_3" {
+            Text item=GPS_CG_HomeDistance
+            Text item=GPS_CG_IsHome
+            Text item=GPS_CG_LastSeen
+            Text item=GPS_CG_Battery
+            Text item=GPS_CG_Accuracy
+            Switch item=GPS_MG_Moving
+            Mapview item=GPS_CG_Location height=8
         }
     }
 
-    Frame label="By Device Groups" {
-        Text label="Doors" icon="door" {
-            // Default item=Shed_Door label="Shed" icon="door"
-            Default item=Dining_FrontDoor label="Front Door" icon="frontdoor"
-            // Default item=RumpusRoom_Door label="Rumpus Room" icon="door"
-            Default item=Garage_RollerDoor label="Roller Door" icon="garagedoor"
-            Default item=Garage_SideDoor label="Garage" icon="door"
-            // Default item=Laundry_Door label="Laundry" icon="door"
+    Frame label="Energy Usage" {
+        Text item=Solar_LiveImport label="Import/Export" icon="energy" visibility=[Solar_LiveImport>"0"] valuecolor=[>0="red"]
+        Text item=Solar_LiveExport label="Import/Export" icon="solarplant" visibility=[Solar_LiveExport>"0"] valuecolor=[>=0="green"]
+        Text label="Power Usage" icon="energy" {
+            Group item=gPowerLive label="Live Consumption"
+            Group item=gPowerUsed label="Total Consumption"
         }
+        Text label="Solar Stats" icon="solarplant" {
+            Text item=Solar_DayConsumption
+            Text item=Solar_DayProduction
+            Text item=Solar_DayCoverage
+            Text item=Solar_DayImport
+            Text item=Solar_DayExport
+            Image refresh=60 url="http://automation.core.home.gatwards.org:3000/render/d-solo/a2s6rv1Wz/import-export?orgId=1&from=now-24h&to=now&panelId=4&width=1000&height=500&tz=Australia%2FSydney"
 
-        Text label="Lights" icon="light" {
-            // Default item=Alfresco_Light label="Alfresco"
-            // Default item=Wardrobe_Light label="Wardrobe"
-            Default item=LivingDining_Light1 label="Dining"
-            Default item=LivingDining_Light2 label="Dining 2"
-            Default item=LivingDining_Light3 label="Lounge"
-            Default item=RumpusRoom_Light label="Rumpus Room"
-            // Default item=Garage_Light label="Garage"
-            // Default item=Hallway_Light label="Hallway"
-            // Default item=CaitlynsRoom_Light label="Caitlyns Bedroom"
-            // Default item=MichaelsRoom_Light label="Michaels Bedroom"
-            Default item=Kitchen_Light label="Kitchen"
-            // Default item=Laundry_Light label="Laundry"
-            // Default item=MasterBedroom_Light label="Master Bedroom"
-            // Default item=Office_Light label="Office"
-            // Default item=Bathroom_Light label="Bathroom"
-            // Default item=Toilet_Light label="Toilet"
+            Text item=Solar_DaySelfConsumption
         }
+    }
+
+
+
+
+    Frame label="By Device Groups" {
+        Group item=gDoorStatus icon="door"
+        // Text label="Doors" icon="door" {
+        //     // Default item=Shed_Door label="Shed" icon="door"
+        //     Default item=Dining_FrontDoor label="Front Door" icon="frontdoor"
+        //     // Default item=RumpusRoom_Door label="Rumpus Room" icon="door"
+        //     Default item=Garage_RollerDoor label="Roller Door" icon="garagedoor"
+        //     Default item=Garage_SideDoor label="Garage" icon="door"
+        //     // Default item=Laundry_Door label="Laundry" icon="door"
+        // }
+
+        Group item=gLights icon="light"
 
         Text label="Temperature" icon="temperature" {
             // Default item=MichaelsRoom_Temperature label="Michaels Bedroom"
@@ -209,18 +212,14 @@ sitemap ourhouse label="Our Home" {
             // Default item=Office_Temperature label="Office"
         }
 
+        Group item=gSonoff icon="poweroutlet_au"
+
         // Text label="Windows" icon="window" {
         //     Default item=MichaelsRoom_Window label="Michaels Bedroom"
         //     Default item=CaitlynsRoom_Window label="Caitlyns Bedroom"
         // }
 
-        Text label="Motion Sensors" icon="motion1" {
-            Default item=Dining_MotionDetector label="Dining"
-            Default item=Garage_MotionDetector label="Garage"
-            Default item=Hallway_MotionDetector label="Hallway"
-            Default item=Lounge_MotionDetector label="Living Room"
-            Default item=Bedroom1_MotionDetector label="Master Bedroom"
-        }
+        Group item=gMotion icon="motion1"
 
         Text label="Occupancy" icon="presence" {
             Default item=Dining_Occupancy label="Dining" icon="presence"
@@ -272,8 +271,8 @@ sitemap ourhouse label="Our Home" {
         Group item=Home label="All Devices" icon="house"
 //        Group item=gVirtual label="Virtual Devices" icon="settings"
 //        Group item=gELK label="ELK Alarm Devices" icon="alarm"
-//        Group item=gZwave label="ZWave Devices" icon="energy"
-//        Group item=gMQTT label="MQTT Devices" icon="settings"
+        Group item=gReachable
+        Group item=gBattery
     }
 
 
