@@ -44,6 +44,9 @@ openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
 openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
 openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
 
+openhab_pushover_api_key: "{{ vault_openhab_pushover_api_key }}"
+openhab_pushover_user_key1: "{{ vault_openhab_pushover_user_key1 }}"
+
 sonos_ids:
   livingroom: "{{ vault_sonos_livingroom }}"
   alfresco: "{{ vault_sonos_alfresco }}"
@@ -77,7 +80,8 @@ openhab_ui:
   - habpanel
   - homebuilder
 
-openhab_action: []
+openhab_action:
+  - pushover
 
 openhab_persistence:
   - jdbc-postgresql

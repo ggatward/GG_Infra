@@ -50,9 +50,9 @@ Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, client
         Type string : wifi-channel  [ stateTopic="home/laundry/sonoff/washmachine/tele/STATE", transformationPattern="JSONPATH:$.Wifi.Channel" ]
         Type string : SensorTime    [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.Time" ]
         Type string : POW-startTime [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.TotalStartTime" ]
-        Type string : POW-Total     [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
-        Type string : POW-Voltage   [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
-        Type string : POW-Power     [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
+        Type number : POW-Total     [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
+        Type number : POW-Voltage   [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
+        Type number : POW-Power     [ stateTopic="home/laundry/sonoff/washmachine/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
     }
 
     Thing topic sonoff2 "Dryer Sonoff" {
@@ -68,9 +68,9 @@ Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="127.0.0.1", port=1883, client
         Type string : wifi-channel  [ stateTopic="home/laundry/sonoff/dryer/tele/STATE", transformationPattern="JSONPATH:$.Wifi.Channel" ]
         Type string : SensorTime    [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.Time" ]
         Type string : POW-startTime [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.TotalStartTime" ]
-        Type string : POW-Total     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
-        Type string : POW-Voltage   [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
-        Type string : POW-Power     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
+        Type number : POW-Total     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
+        Type number : POW-Voltage   [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
+        Type number : POW-Power     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
     }
 
 
