@@ -1,0 +1,18 @@
+---
+# Force python3 to be the interpreter
+ansible_python_interpreter: /usr/bin/python3
+
+rpmfusion_distro: fedora
+
+common_packages:
+  - alsa*
+  - cups
+  - firefox
+  - glib2-devel
+  - gnome-shell-extension-desktop-icons
+  - pulseaudio-module-x11
+  - pulseaudio-module-gsettings
+  - tar
+
+firefox_prefs_dir: /etc/firefox/pref
+firefox_prefs_entry: /usr/lib64/firefox/browser/defaults/preferences/firefox-redhat-default-prefs.js

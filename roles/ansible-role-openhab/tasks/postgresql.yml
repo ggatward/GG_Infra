@@ -1,0 +1,78 @@
+
+- name: Install RPM packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - postgresql-server
+  tags:
+  - all
+  - postgresql
+
+# Initialise and Configure Postgresql
+- name: Check for pgdata directory
+  stat: path={{ postgresql_pgdata }}/base
+  register: pgdata_stat
+  failed_when: false
+  tags:
+  - all
+  - postgresql
+
+- name: Initialize database
+  command: /usr/bin/postgresql-setup initdb
+  when: pgdata_stat.stat.isdir is not defined or not pgdata_stat.stat.isdir
+  tags:
+  - all
+  - postgresql
+
+- name: Deploy postgres client auth config
+  template:
+    src: pg_hba.conf.j2
+    dest: /var/lib/pgsql/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: 0600
+  notify: Restart Postgresql
+  tags:
+  - all
+  - postgresql
+
+- name: Enable database services
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+  tags:
+  - all
+  - postgresql
+
+# Create openhab2 DB and users
+- name: Create database
+  become_user: postgres
+  postgresql_db:
+    name: "{{ openhab_db_name }}"
+    encoding: UTF-8
+  tags:
+  - all
+  - postgresql
+
+- name: Ensure user has access to the database
+  become_user: postgres
+  postgresql_user:
+    db: "{{ openhab_db_name }}"
+    name: "{{ openhab_db_user }}"
+    password: "{{ openhab_db_password }}"
+    priv: ALL
+  tags:
+  - all
+  - postgresql
+
+- name: Ensure user does not have unnecessary db privileges
+  become_user: postgres
+  postgresql_user:
+    name: "{{ openhab_db_user }}"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+  tags:
+  - all
+  - postgresql

@@ -1,0 +1,86 @@
+---
+- name: Create SSH directory
+  become_user: geoff
+  file:
+    path: /home/geoff/.ssh
+    state: directory
+    owner: geoff
+    group: geoff
+
+
+- name: Deploy SSH keys
+  become_user: geoff
+  copy:
+    content: "{{ vault_geoff_private_ssh_key }}"
+    dest: /home/geoff/.ssh/id_rsa
+    owner: geoff
+    group: geoff
+    mode: 0600
+
+- name: Deploy SSH pubkey
+  become_user: geoff
+  copy:
+    src: id_rsa.pub
+    dest: /home/geoff/.ssh/id_rsa.pub
+    owner: geoff
+    group: geoff
+    mode: 0644
+
+- name: Deploy Ansible SSH keys
+  become_user: geoff
+  copy:
+    content: "{{ vault_svc_ansible_private_ssh_key }}"
+    dest: /home/geoff/.ssh/id_rsa_ansible
+    owner: geoff
+    group: geoff
+    mode: 0600
+
+- name: Deploy Ansible SSH pubkey
+  become_user: geoff
+  copy:
+    src: id_rsa_ansible.pub
+    dest: /home/geoff/.ssh/id_rsa_ansible.pub
+    owner: geoff
+    group: geoff
+    mode: 0644
+
+# Git profile
+#[user]
+#	name = Geoff
+#	email = geoff@gatwards.org
+#[push]
+#	default = simple
+#[color]
+#	ui = auto
+
+
+
+- name: Create network mountpoints
+  become_user: geoff
+  file:
+    path: /home/geoff/{{ item }}
+    state: directory
+  with_items:
+    - nas_home
+    - nas_mounts/Multimedia
+    - nas_mounts/Software
+    - nas_mounts/Family
+    - nas_mounts/Public
+
+# Mount NAS homedir  (deploy sudoers, update bashrc)
+# - name: Deploy sudoers rule for mounting
+
+
+- name: Add network mounts to bash profile
+  blockinfile:
+    path: /home/geoff/.bashrc
+    block: |
+      #if [ $(mount | grep -c DH-AD) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1:/volume1/homes/@DH-AD/0/geoff-1117 /home/$USER/nas_home; fi
+      if [ $(mount | grep -c DH-AD) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5p nas1:/volume1/homes/@DH-AD/0/$USER /home/$USER/nas_home; fi
+      if [ $(mount | grep -c Multimedia) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Multimedia /home/$USER/nas_mounts/Multimedia; fi
+      if [ $(mount | grep -c Family) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Family /home/$USER/nas_mounts/Family; fi
+      if [ $(mount | grep -c Public) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Public /home/$USER/nas_mounts/Public; fi
+      if [ $(mount | grep -c Software) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Software /home/$USER/nas_mounts/Software; fi
+    insertafter: EOF
+
+# Create symlinks

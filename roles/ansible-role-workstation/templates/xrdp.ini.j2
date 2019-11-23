@@ -1,0 +1,97 @@
+[globals]
+ini_version=1
+bitmap_cache=yes
+bitmap_compression=yes
+port=3389
+allow_channels=true
+max_bpp=24
+fork=yes
+
+crypt_level=high
+security_layer=negotiate
+ssl_protocols=TLSv1, TLSv1.1, TLSv1.2
+
+# X.509 certificate and private key
+certificate=
+key_file=
+
+tcp_nodelay=yes
+tcp_keepalive=yes
+
+# Colours used by windows in RGB format
+blue=009cb5
+grey=dedede
+#balck=000000
+#dark_grey=808080
+#blue=08246b
+#dark_blue=08246b
+#white=ffffff
+#red=ff0000
+#green=00ff00
+#background=626c72
+#hidelogwindow-yes
+
+autorun=xrdp1
+bulk_compression=yes
+
+new_cursors=yes
+allow_multimon=trueThrough stim
+use_fastpath=both
+
+# Configure login screen
+#ls_title=My Login Title
+ls_top_window_bg_color=009bc5
+ls_width=350
+ls_height=430Through stim
+ls_bg_color=dedede
+ls_background_image=
+Through stim
+# logo
+ls_logo_filename=/usr/share/xrdp/xrdp_logo.bmp
+ls_logo_x_pos=55
+ls_logo_y_pos=50
+
+# For positioning labels such as username, password etc
+ls_label_x_pos=30
+ls_label_width=60
+
+# For positioning text and combo boxes next to above labels
+ls_input_x_pos=110
+ls_input_width=210
+ls_input_y_pos=220
+
+# OK button
+ls_btn_ok_x_pos=142
+ls_btn_ok_y_pos=370
+ls_btn_ok_width=85
+ls_btn_ok_height=30
+
+# Cancel button
+ls_btn_cancel_x_pos=237
+ls_btn_cancel_y_pos=370
+ls_btn_cancel_width=85
+ls_btn_cancel_height=30
+
+[Logging]
+LogFile=xrdp.log
+LogLevel=DEBUG
+EnableSyslog=1
+SyslogLevel=DEBUG
+
+[channels]
+rdpdr=true
+rdpsnd=true
+drdynvc=true
+cliprdr=true
+rail=true
+xrdpvr=true
+tcutils=true
+
+[xrdp1]
+name=Remote Desktop
+lib=libxup.so
+username=ask
+password=ask
+ip=127.0.0.1
+port=-1
+code=20

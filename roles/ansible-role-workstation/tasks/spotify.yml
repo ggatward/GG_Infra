@@ -1,0 +1,17 @@
+---
+- name: Install snapd
+  yum:
+    name: snapd
+    state: present
+  register: snap
+
+- name: Wait for snap installation to complete
+  pause:
+    seconds: 120
+  when: snap.changed
+
+- name: Install Spotify
+  snap:
+    name: spotify
+    state: present
+  notify: reboot

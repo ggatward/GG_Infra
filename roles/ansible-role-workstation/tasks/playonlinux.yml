@@ -1,0 +1,19 @@
+---
+
+- name: Deploy PlayOnLinux repo configuration
+  get_url:
+    url: http://rpm.playonlinux.com/playonlinux.repo
+    dest: /etc/yum.repos.d/playonlinux.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Import PlayOnLinux GPG key
+  rpm_key:
+    key: http://rpm.playonlinux.com/public.gpg
+    state: present
+
+- name: Install PlayOnLinux
+  yum:
+    name: playonlinux
+    state: present

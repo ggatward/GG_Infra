@@ -1,0 +1,13 @@
+---
+
+rpmfusion_distro: el
+
+common_packages:
+  - alsa*
+  - cups
+  - firefox
+  - glib2-devel
+  - tar
+
+firefox_prefs_dir: /usr/lib64/firefox
+firefox_prefs_entry: /usr/lib64/firefox/defaults/preferences/all-redhat.js

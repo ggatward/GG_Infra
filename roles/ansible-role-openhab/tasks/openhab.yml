@@ -1,0 +1,101 @@
+
+- name: Install openhab repo
+  yum_repository:
+    name: openhab
+    description: openHAB 2.x Stable
+    baseurl: https://dl.bintray.com/openhab/rpm-repo2/stable
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://bintray.com/user/downloadSubjectPublicKey?username=openhab
+  tags:
+  - all
+  - openhab
+
+- name: Install RPM packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - java-1.8.0-openjdk
+    - python-psycopg2
+    - openhab2
+    - python-pip
+    - nginx
+    - httpd-tools
+  tags:
+  - all
+  - openhab
+
+- name: Install PIP packages
+  pip:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - speedtest-cli
+    - APScheduler
+  tags:
+  - all
+  - openhab
+
+- name: Open Firewall Ports
+  firewalld:
+    port: "{{ item }}"
+    immediate: yes
+    permanent: yes
+    state: enabled
+  with_items:
+  - 8080/tcp
+  - 1900/udp
+  tags:
+  - all
+  - openhab
+
+- name: Open Firewall Services
+  firewalld:
+    service: "{{ item }}"
+    immediate: yes
+    permanent: yes
+    state: enabled
+  with_items:
+    - upnp-client
+    - http
+    - https
+  tags:
+  - all
+  - openhab
+
+- name: Configure Nginx proxy
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart nginx
+  tags:
+  - all
+  - openhab
+
+- name: Set SELinux bools
+  seboolean:
+    name: httpd_can_network_connect
+    persistent: true
+    state: true
+  tags:
+  - all
+  - openhab
+
+- name: Enable services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+  with_items:
+  - openhab2
+  - nginx
+  tags:
+  - all
+  - openhab

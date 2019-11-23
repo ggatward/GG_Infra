@@ -1,0 +1,46 @@
+---
+# handlers file for ansible-role-openhab
+- name: Restart Openhab
+  service:
+    name: openhab2
+    state: restarted
+
+- name: Restart Postgresql
+  service:
+    name: postgresql
+    state: restarted
+
+- name: Restart MQTT
+  service:
+    name: mosquitto
+    state: restarted
+
+- name: Restart ser2net
+  service:
+    name: ser2net
+    state: restarted
+
+- name: Restart socat
+  service:
+    name: socat
+    state: restarted
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: Restart InfluxDB
+  service:
+    name: influxdb
+    state: restarted
+
+- name: Restart Grafana
+  service:
+    name: grafana-server
+    state: restarted
