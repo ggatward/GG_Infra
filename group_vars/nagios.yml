@@ -1,5 +1,0 @@
----
-# MOTD vars
-role: Nagios Server
-
-nagios_version: 5.5.2-1

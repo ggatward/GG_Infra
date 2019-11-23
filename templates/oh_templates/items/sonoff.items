@@ -2,7 +2,7 @@ Group      gSonoff          "Sonoff Devices"    (Home)
 Group      gSonoffSw1       "Washing Machine"   (gSonoff)
 Group      gSonoffSw2       "Dryer"             (gSonoff)
 
-Switch Sonoff1_Switch          "Washing Machine Switch"                 <poweroutlet>       (Laundry)       { channel="mqtt:topic:mosquitto:sonoff1:power" }
+Switch Sonoff1_Switch          "Washing Machine Switch"                 <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff1:power" }
 String Sonoff1_DeviceState     "Washing Machine Sonoff Status [%s]"     <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff1:devicestate" }
 String Sonoff1_hostname        "Washing Machine Sonoff hostname"                            (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:hostname" }
 String Sonoff1_IP              "Washing Machine Sonoff IP"              <ip>                (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:ip" }
@@ -17,7 +17,7 @@ Number:Energy Sonoff1_PowTotal "Washing Machine Total Energy Used [%.2f kWh]" <p
 Number Sonoff1_Voltage         "Washing Machine Sonoff Voltage [%.1f V]"                     (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-Voltage" }
 Number:Energy Sonoff1_Power    "Washing Machine Power [%.1f W]"         <poweroutlet_au>    (gSonoffSw1,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff1:POW-Power" }
 
-Switch Sonoff2_Switch          "Dryer Switch"                           <poweroutlet>       (Laundry)       { channel="mqtt:topic:mosquitto:sonoff2:power" }
+Switch Sonoff2_Switch          "Dryer Switch"                           <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff2:power" }
 String Sonoff2_DeviceState     "Dryer Sonoff Status [%s]"               <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff2:devicestate" }
 String Sonoff2_hostname        "Dryer Sonoff hostname"                                      (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:hostname" }
 String Sonoff2_IP              "Dryer Sonoff IP"                        <ip>                (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:ip" }
