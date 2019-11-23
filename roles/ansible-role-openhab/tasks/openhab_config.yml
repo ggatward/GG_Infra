@@ -180,7 +180,7 @@
       log4j2.appender.gpslogger.strategy.max = 10
 
       log4j2.logger.voicerss.name = org.openhab.voice.voicerss
-      log4j2.logger.voicerss.level = OFF
+      log4j2.logger.voicerss.level = DEBUG
 
       log4j2.logger.audio.name = org.eclipse.smarthome.core.audio
       log4j2.logger.audio.level = OFF

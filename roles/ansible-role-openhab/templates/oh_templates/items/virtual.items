@@ -17,5 +17,5 @@ Switch   vMorningTrigger   "Morning Announcement Trigger [MAP(onoff.map):%s]"   
 
 
 // Z-wave state detection devices
-Switch    vDryer       "Dryer Status [MAP(onoff.map):%s]"           <washingmachine> (Laundry,gVirtual)
-Switch    vWasher      "Washing Machine Status [MAP(onoff.map):%s]" <dryer>         (Laundry,gVirtual)
+String   vDryer       "Dryer Status [MAP(laundry.map):%s]"           <dryer>            (Laundry,gVirtual)
+String   vWasher      "Washing Machine Status [MAP(laundry.map):%s]" <washingmachine>   (Laundry,gVirtual)

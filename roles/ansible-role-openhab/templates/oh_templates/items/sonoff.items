@@ -15,7 +15,7 @@ String Sonoff1_Time            "Washing Machine Sonoff Sensor Time"             
 String Sonoff1_PowStart        "Washing Machine Power Start"                                (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-startTime" }
 Number:Energy Sonoff1_PowTotal "Washing Machine Total Energy Used [%.2f kWh]" <poweroutlet_au> (gSonoffSw1,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff1:POW-Total" }
 Number Sonoff1_Voltage         "Washing Machine Sonoff Voltage [%.1f V]"                     (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-Voltage" }
-Number:Energy Sonoff1_Power    "Washing Machine Power [%.1f W]"         <poweroutlet_au>    (gSonoffSw1,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff1:POW-Power" }
+Number Sonoff1_Power           "Washing Machine Power [%.1f W]"         <poweroutlet_au>    (gSonoffSw1,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff1:POW-Power" }
 
 Switch Sonoff2_Switch          "Dryer Switch"                           <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff2:power" }
 String Sonoff2_DeviceState     "Dryer Sonoff Status [%s]"               <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff2:devicestate" }
@@ -30,7 +30,7 @@ String Sonoff2_Time            "Dryer Sonoff Sensor Time"                       
 String Sonoff2_PowStart        "Dryer Sonoff Power Start"                                   (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-startTime" }
 Number:Energy Sonoff2_PowTotal "Dryer Total Energy Used [%.2f kWh]"     <poweroutlet_au>    (gSonoffSw2,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff2:POW-Total" }
 Number Sonoff2_Voltage         "Dryer Sonoff Voltage [%.1f V]"                              (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-Voltage" }
-Number:Energy Sonoff2_Power    "Dryer Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw2,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff2:POW-Power" }
+Number Sonoff2_Power           "Dryer Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw2,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff2:POW-Power" }
 
 
 

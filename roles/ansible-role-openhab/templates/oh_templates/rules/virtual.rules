@@ -74,7 +74,6 @@ end
 // Rollerdoor announcements
 rule "Rollerdoor Announcements"
 when
-    //Item Garage_RollerDoor changed from CLOSED to OPEN
     Item Garage_RollerDoor changed
 then
     if (Garage_RollerDoor.state == OPEN) {
@@ -84,33 +83,26 @@ then
     }
 end
 
-// rule "Rollerdoor Closed"
-// when
-//     Item Garage_RollerDoor changed from OPEN to CLOSED
-// then
-//     say("The roller door is now closed", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
-// end
-
 
 // Virtual Appliance states
-rule "Dryer virtual status"
+rule "Washing Machine virtual status"
 when
     Item Sonoff1_Power changed
 then
-    if (Sonoff1_Power.state > 1) {
-        vDryer.postUpdate(ON)
-    } else if (Sonoff1_Power.state < 0) {
-        vDryer.postUpdate(OFF)
+    if (Sonoff1_Power.state > 2) {
+        vWasher.postUpdate(1)
+    } else if (Sonoff1_Power.state < 2) {
+        vWasher.postUpdate(2)
     }
 end
 
-rule "Washing Machine virtual status"
+rule "Dryer virtual status"
 when
     Item Sonoff2_Power changed
 then
-    if (Sonoff2_Power.state > 1) {
-        vWasher.postUpdate(ON)
-    } else if (Sonoff2_Power.state < 0) {
-        vWasher.postUpdate(OFF)
+    if (Sonoff2_Power.state > 5) {
+        vDryer.postUpdate(1)
+    } else if (Sonoff2_Power.state == 0) {
+        vDryer.postUpdate(OFF)
     }
 end
