@@ -1,0 +1,7 @@
+---
+# tasks file for ansible-role-ipaclient
+
+
+# Request, sign and deploy server certs
+- include_tasks: getSSLCerts.yml
+  when: create_ssl_certs|bool

@@ -2,6 +2,8 @@
 # MOTD vars
 role: Weather Station
 
+create_ssl_certs: true
+
 weewx_location: Bungendore, NSW
 weewx_latitude: "{{ latitude }}"
 weewx_longitude: "{{ longitude }}"

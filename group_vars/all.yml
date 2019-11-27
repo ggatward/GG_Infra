@@ -17,9 +17,9 @@ reset_redhat_repos: no
 
 # Set our NTP servers
 ntpservers:
-  - ntp1.core.home.gatwards.org
-  - ntp2.core.home.gatwards.org
-  - ntp3.core.home.gatwards.org
+- ntp1.core.home.gatwards.org
+- ntp2.core.home.gatwards.org
+- ntp3.core.home.gatwards.org
 
 # User Authentication via IPA
 # auth_idm: true

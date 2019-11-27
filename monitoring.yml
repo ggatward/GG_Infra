@@ -1,0 +1,16 @@
+---
+- name: Install Monitoring Servers
+  remote_user: svc-ansible
+  become: true
+  hosts: influxdb
+  pre_tasks:
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
+
+  tasks:
+  - include_role:
+      name: ansible-role-influxdb
+    tags:
+    - all
+    - influx

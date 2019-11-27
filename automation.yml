@@ -17,36 +17,6 @@
     - grafana
 
   tasks:
-  - name: Create HTTP service in IPA
-    ipa_service:
-      ipa_user: "{{ idm_admin_user }}"
-      ipa_pass: "{{ idm_admin_pass }}"
-      krbcanonicalname: HTTP/{{ ansible_fqdn }}
-      state: present
-    tags:
-    - all
-    - openhab
-    - mqtt
-
-  - name: Check if SSL certs already exist
-    stat:
-      path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
-    register: sslcerts
-    changed_when: false
-    tags:
-    - all
-    - openhab
-    - mqtt
-
-  # We create 2048bit key here as IoT firmwares only support this due to memory constraints
-  - name: Request new SSL certs from IPA
-    command: ipa-getcert request -r -g 2048 -f /etc/pki/tls/certs/{{ ansible_fqdn }}.pem -k /etc/pki/tls/private/{{ ansible_fqdn }}.key -N CN={{ ansible_fqdn }} -K HTTP/{{ ansible_fqdn }}
-    when: not sslcerts.stat.exists
-    tags:
-    - all
-    - openhab
-    - mqtt
-
   - name: Deploy script to create client certs in IPA
     copy:
       src: create_certs.sh

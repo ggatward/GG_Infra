@@ -1,0 +1,18 @@
+---
+# defaults file for ansible-role-ipaclient
+
+# auth_idm: true
+idm_realm: IPA.EXAMPLE.COM
+idm_admin_user: admin
+idm_admin_pass: 'ChangeMe'
+
+# ipaclient_server: "ipa1.ipa.home.gatwards.org"
+# ipaclient_domain: "{{ auth_idm_realm }}"
+# ipaclient_enroll_user: "{{ idm_admin_user }}"
+# ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
+# ipaclient_validate_certs: False
+# ad_domain: AD.EXAMPLE.COM
+# ad_via_ipa: true
+
+create_ssl_certs: false
+ssl_keylen: '4096'

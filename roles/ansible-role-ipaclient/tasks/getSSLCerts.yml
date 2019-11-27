@@ -1,0 +1,26 @@
+---
+
+- name: Create HTTP service in IPA
+  ipa_service:
+    ipa_user: "{{ idm_admin_user }}"
+    ipa_pass: "{{ idm_admin_pass }}"
+    krbcanonicalname: HTTP/{{ ansible_fqdn }}
+    state: present
+  tags:
+  - all
+
+
+- name: Check if SSL certs already exist
+  stat:
+    path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+  register: sslcerts
+  changed_when: false
+  tags:
+  - all
+
+# TODO: Additional SANs
+- name: Request new SSL certs from IPA
+  command: ipa-getcert request -r -g {{ ssl_keylen }} -f /etc/pki/tls/certs/{{ ansible_fqdn }}.pem -k /etc/pki/tls/private/{{ ansible_fqdn }}.key -N CN={{ ansible_fqdn }} -K HTTP/{{ ansible_fqdn }}
+  when: not sslcerts.stat.exists
+  tags:
+  - all

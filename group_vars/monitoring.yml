@@ -1,0 +1,5 @@
+---
+# MOTD vars
+role: Monitoring and Metrics
+
+create_ssl_certs: true

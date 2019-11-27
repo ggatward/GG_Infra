@@ -1,0 +1,59 @@
+
+[ansible]
+ansible.core        ansible_host=ansible.core.home.gatwards.org
+
+[tang]
+#tang1.core         ansible_host=tang1.core.home.gatwards.org
+#tang2.core         ansible_host=tang2.core.home.gatwards.org
+
+[foreman]
+foreman.core        ansible_host=foreman.core.home.gatwards.org
+
+[weather]
+weather.core        ansible_host=weather.core.home.gatwards.org
+
+[monitoring:children]
+influxdb
+prometheus
+grafana
+
+[prometheus]
+prometheus.core     ansible_host=prometheus.core.home.gatwards.org
+
+[influxdb]
+prometheus.core     ansible_host=prometheus.core.home.gatwards.org
+
+[grafana]
+prometheus.core     ansible_host=prometheus.core.home.gatwards.org
+
+##########################################
+
+[openhab]
+automation.core     ansible_host=automation.core.home.gatwards.org
+
+[zwave]
+zwave1.iot          ansible_host=zwave1.iot.home.gatwards.org
+
+[automation:children]
+openhab
+zwave
+
+##########################################
+
+[workstation]
+desktop-01.core     ansible_host=desktop-01.core.home.gatwards.org
+desktop-03.core     ansible_host=desktop-03.core.home.gatwards.org
+desktop-04.core     ansible_host=desktop-04.core.home.gatwards.org
+jumphost.lab.home   ansible_host=jumphost.lab.home.gatwards.org
+sandbox-xxx.lab     ansible_host=sandbox-xxx.lab.home.gatwards.org
+
+
+###########################################
+
+[core:children]
+ansible
+automation
+weather
+foreman
+#tang
+workstation

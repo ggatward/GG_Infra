@@ -1,3 +1,0 @@
----
-# Force python3 to be the interpreter
-ansible_python_interpreter: /usr/bin/python3

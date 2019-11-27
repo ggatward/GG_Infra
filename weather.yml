@@ -8,22 +8,6 @@
     include_vars: vault.yml
     no_log: true
   tasks:
-  - name: Create HTTP service in IPA
-    ipa_service:
-      ipa_user: "{{ idm_admin_user }}"
-      ipa_pass: "{{ idm_admin_pass }}"
-      krbcanonicalname: HTTP/{{ ansible_fqdn }}
-      state: present
-
-  - name: Check if SSL certs already exist
-    stat:
-      path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
-    register: sslcerts
-    changed_when: false
-
-  - name: Request new SSL certs from IPA
-    command: ipa-getcert request -r -g 4096 -f /etc/pki/tls/certs/{{ ansible_fqdn }}.pem -k /etc/pki/tls/private/{{ ansible_fqdn }}.key -N CN={{ ansible_fqdn }} -K HTTP/{{ ansible_fqdn }}
-    when: not sslcerts.stat.exists
 
   - include_role:
       name: ansible-role-weewx

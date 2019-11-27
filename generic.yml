@@ -4,24 +4,29 @@
   become: true
   hosts: all
   pre_tasks:
-    - name: Include vault vars
-      include_vars: vault.yml
-      no_log: true
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
   tasks:
-    - include_role:
-        name: ansible-role-generic-os
+  - include_role:
+      name: ansible-role-generic-os
 
-    - include_role:
-        name: ansible-role-hardening
-      when: skip_hardening is not defined
+  - include_role:
+      name: ansible-role-ipaclient
 
-    - name: Ensure krb5 realms are defined
-      lineinfile:
-        path: /etc/krb5.conf
-        insertafter: '[domain_realm]'
-        line: "  {{ item }}"
-      with_items:
-      - '.core.home.gatwards.org = {{ idm_realm }}'
-      - 'core.home.gatwards.org = {{ idm_realm }}'
-      - '.lab.home.gatwards.org = {{ idm_realm }}'
-      - 'lab.home.gatwards.org = {{ idm_realm }}'
+  - include_role:
+      name: ansible-role-hardening
+    when: skip_hardening is not defined
+
+
+
+  - name: Ensure krb5 realms are defined
+    lineinfile:
+      path: /etc/krb5.conf
+      insertafter: '[domain_realm]'
+      line: "  {{ item }}"
+    with_items:
+    - '.core.home.gatwards.org = {{ idm_realm }}'
+    - 'core.home.gatwards.org = {{ idm_realm }}'
+    - '.lab.home.gatwards.org = {{ idm_realm }}'
+    - 'lab.home.gatwards.org = {{ idm_realm }}'

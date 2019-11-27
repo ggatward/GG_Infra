@@ -1,0 +1,101 @@
+---
+# tasks file for ansible-role-influxdb
+- name: Install influxdb repo
+  yum_repository:
+    name: influxdb
+    description: InfluxDB Repository - RHEL 8
+    baseurl: https://repos.influxdata.com/rhel/8/x86_64/stable
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://repos.influxdata.com/influxdb.key
+  tags:
+  - all
+  - influx
+
+- name: Install RPM packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - influxdb
+    - python-pip
+  tags:
+  - all
+  - influx
+
+# PIP packages are required for Ansible influxdb modules
+- name: Install PIP packages
+  pip:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - influxdb
+  tags:
+  - all
+  - influx
+
+- name: Enable InfluxDB service
+  service:
+    name: influxdb
+    state: started
+    enabled: true
+  tags:
+  - all
+  - influx
+
+- name: Create InfluxDB database
+  influxdb_database:
+    database_name: openhab_db
+    login_username: admin
+    login_password: "{{ influx_admin_password }}"
+    state: present
+  tags:
+  - all
+  - influx
+
+- name: Create InfluxDB admin user
+  influxdb_user:
+    login_username: admin
+    login_password: "{{ influx_admin_password }}"
+    user_name: admin
+    user_password: "{{ influx_admin_password }}"
+    admin: true
+    state: present
+  tags:
+  - all
+  - influx
+
+# - name: Create InfluxDB users
+#   influxdb_user:
+#     login_username: admin
+#     login_password: "{{ influx_admin_password }}"
+#     user_name: "{{ item.username }}"
+#     user_password: "{{ item.password }}"
+#     grants:
+#     - database: 'openhab_db'
+#       privilege: '{{ item.grants }}'
+#   with_items:
+#   - username: openhab
+#     password: "{{ openhab_influx_password }}"
+#     grants: ALL
+#   - username: grafana
+#     password: "{{ openhab_grafana_influx_password }}"
+#     grants: READ
+#   no_log: true
+#   tags:
+#   - all
+#   - influx
+
+# - name: Deploy InfluxDB configuration
+#   template:
+#     src: influxdb.conf.j2
+#     dest: /etc/influxdb/influxdb.conf
+#     owner: root
+#     group: root
+#     mode: 0644
+#   notify: Restart InfluxDB
+#   tags:
+#   - all
+#   - influx

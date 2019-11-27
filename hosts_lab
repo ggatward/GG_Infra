@@ -1,0 +1,51 @@
+
+[monitoring:children]
+influxdb
+prometheus
+grafana
+
+[prometheus]
+prometheus.lab      ansible_host=prometheus.lab.home.gatwards.org
+
+[influxdb]
+influxdb.lab        ansible_host=influxdb.lab.home.gatwards.org
+
+[grafana]
+grafana.lab         ansible_host=grafana.lab.home.gatwards.org
+
+##########################################
+
+[workstation]
+sandbox-rhel7w.lab  ansible_host=sandbox-rhel7w.lab.home.gatwards.org
+sandbox-rhel8w.lab  ansible_host=sandbox-rhel8w.lab.home.gatwards.org
+sandbox-cent7w.lab  ansible_host=sandbox-cent7w.lab.home.gatwards.org
+sandbox-cent8w.lab  ansible_host=sandbox-cent8w.lab.home.gatwards.org
+sandbox-f30w.lab    ansible_host=sandbox-f30w.lab.home.gatwards.org
+
+###########################################
+
+
+[ansible]
+#tower.lab          ansible_host=tower.lab.home.gatwards.org
+
+[tang]
+tang1.lab           ansible_host=tang1.lab.home.gatwards.org
+tang2.lab           ansible_host=tang2.lab.home.gatwards.org
+
+[sandbox]
+sandbox-rhel7.lab   ansible_host=sandbox-rhel7.lab.home.gatwards.org
+sandbox-rhel8.lab   ansible_host=sandbox-rhel8.lab.home.gatwards.org
+sandbox-cent7.lab   ansible_host=sandbox-cent7.lab.home.gatwards.org
+sandbox-cent8.lab   ansible_host=sandbox-cent8.lab.home.gatwards.org
+sandbox-rhel7w.lab  ansible_host=sandbox-rhel7w.lab.home.gatwards.org
+sandbox-rhel8w.lab  ansible_host=sandbox-rhel8w.lab.home.gatwards.org
+sandbox-cent7w.lab  ansible_host=sandbox-cent7w.lab.home.gatwards.org
+sandbox-cent8w.lab  ansible_host=sandbox-cent8w.lab.home.gatwards.org
+sandbox-f30w.lab    ansible_host=sandbox-f30w.lab.home.gatwards.org
+
+[lab:children]
+#ansible
+tang
+sandbox
+workstation
+monitoring
