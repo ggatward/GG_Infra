@@ -49,3 +49,12 @@ tang
 sandbox
 workstation
 monitoring
+
+
+## Empty groups in lab env
+[weather]
+[openhab]
+[zwave]
+[automation:children]
+openhab
+zwave

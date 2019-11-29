@@ -6,10 +6,7 @@ openhab_db_name: openhab2
 openhab_db_host: 127.0.0.1
 postgresql_pgdata: /var/lib/pgsql/data
 
-# InfluxDB defaults
-influx_admin_password: 'ChangeMe'
-openhab_influx_password: 'ChangeMe'
-openhab_grafana_influx_password: 'ChangeMe'
+influxdb_openhab_password: 'ChangeMe'
 
 # Grafana defaults
 grafana_admin_password: 'ChangeMe'

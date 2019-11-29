@@ -44,11 +44,20 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 # ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
 # ldap_group_filter: '(objectClass=ipausergroup)'
 
+
+
+
 latitude: "{{ vault_latitude }}"
 longitude: "{{ vault_longitude }}"
 altitude: '698'
 
 tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+
+# InfluxDB
+influxdb_admin_password: "{{ vault_influxdb_admin_password }}"
+influxdb_enable_ssl: true
+
+
 
 mqtt_broker_fqdn: automation.core.home.gatwards.org
 mqtt_broker_port: '1883'

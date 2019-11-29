@@ -24,3 +24,18 @@
   when: not sslcerts.stat.exists
   tags:
   - all
+
+- name: Wait for certs to be retrieved
+  wait_for:
+    path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+  when: not sslcerts.stat.exists
+
+- name: Set permissions on SSL certs
+  file:
+    path: "{{ item.path }}"
+    mode: "{{ item.perms }}"
+  with_items:
+  - path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+    perms: '0644'
+  - path: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+    perms: '0600'

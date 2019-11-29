@@ -35,11 +35,6 @@
     name: nginx
     state: restarted
 
-- name: Restart InfluxDB
-  service:
-    name: influxdb
-    state: restarted
-
 - name: Restart Grafana
   service:
     name: grafana-server

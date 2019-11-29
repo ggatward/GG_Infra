@@ -2,4 +2,21 @@
 # defaults file for ansible-role-influxdb
 
 # InfluxDB defaults
-influx_admin_password: 'ChangeMe'
+influxdb_admin_user: 'admin'
+influxdb_admin_password: 'ChangeMe'
+
+influxdb_http_port: '8086'
+influxdb_udp_port: '8189'
+influxdb_enable_ssl: false
+influxdb_enable_udp: false
+
+influxdb_databases:
+  - dbname: 'example'
+    dbusers:
+    - username: 'user'
+      password: 'ChangeMe'
+      grants: ALL
+
+
+# Empty list used by role for building firewall port list
+fwports: []

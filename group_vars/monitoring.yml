@@ -2,4 +2,16 @@
 # MOTD vars
 role: Monitoring and Metrics
 
+# We need an SSL cert
 create_ssl_certs: true
+
+# InfluxDB
+influxdb_databases:
+- dbname: 'prometheus'
+  dbusers:
+  - username: 'prometheus'
+    password: "{{ vault_influxdb_prometheus_password }}"
+    grants: ALL
+  - username: 'grafana'
+    password: "{{ vault_influxdb_grafana_password }}"
+    grants: READ

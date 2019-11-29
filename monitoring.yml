@@ -1,5 +1,5 @@
 ---
-- name: Install Monitoring Servers
+- name: Configure InfluxDB
   remote_user: svc-ansible
   become: true
   hosts: influxdb

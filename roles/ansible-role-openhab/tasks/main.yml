@@ -16,11 +16,6 @@
   - all
   - mqtt
 
-- include_tasks: influx.yml
-  tags:
-  - all
-  - influx
-
 - include_tasks: grafana.yml
   tags:
   - all

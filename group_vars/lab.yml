@@ -1,3 +1,6 @@
 ---
 # MOTD vars
 sys_env: LAB
+
+# InfluxDB
+influxdb_host: "influxdb.lab.home.gatwards.org"

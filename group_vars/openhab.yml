@@ -12,9 +12,18 @@ openhab_db_host: 127.0.0.1
 postgresql_pgdata: /var/lib/pgsql/data
 
 # InfluxDB
-influx_admin_password: "{{ vault_influx_admin_password }}"
-openhab_influx_password: "{{ vault_openhab_influx_password }}"
-openhab_grafana_influx_password: "{{ vault_openhab_grafana_influx_password }}"
+influxdb_openhab_password: "{{ vault_influxdb_openhab_password }}"
+
+influxdb_databases:
+- dbname: 'openhab'
+  dbusers:
+  - username: 'openhab'
+    password: "{{ vault_influxdb_openhab_password }}"
+    grants: ALL
+  - username: 'grafana'
+    password: "{{ vault_influxdb_grafana_password }}"
+    grants: READ
+
 
 # Grafana
 grafana_admin_password: "{{ vault_grafana_admin_password }}"
