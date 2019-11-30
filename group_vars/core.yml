@@ -4,3 +4,17 @@ sys_env: Core
 
 # InfluxDB
 influxdb_host: "prometheus.core.home.gatwards.org"
+
+# Prometheus parameters
+prometheus_external_labels:
+  environment: "CORE"
+
+prometheus_targets:
+  node:
+  - targets:
+    - "{{ ansible_fqdn }}:9100"
+    labels:
+      env: CORE
+
+prometheus_static_targets_files:
+  - prometheus/targets/core.json

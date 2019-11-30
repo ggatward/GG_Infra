@@ -4,3 +4,17 @@ sys_env: LAB
 
 # InfluxDB
 influxdb_host: "influxdb.lab.home.gatwards.org"
+
+# Prometheus parameters
+prometheus_external_labels:
+  environment: "LAB"
+
+prometheus_targets:
+  node:
+  - targets:
+    - "{{ ansible_fqdn }}:9100"
+    labels:
+      env: LAB
+
+prometheus_static_targets_files:
+  - prometheus/targets/lab.json

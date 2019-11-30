@@ -7,23 +7,7 @@
   scm: git
   version: development
 
-# - src: https://github.com/ggatward/role_nagios_client.git
-#   scm: git
-#   version: development
-
-# - src: git@github.com:ggatward/ansible-role-ansibletower.git
-#   scm: git
-#   version: development
-
-# - src: git@github.com:ggatward/ansible-role-sat6.git
-#   scm: git
-#   version: development
-
 # - src: git@github.com:ggatward/ansible-role-workstation.git
-#   scm: git
-#   version: development
-
-# - src: git@github.com:ggatward/ansible-role-nagiosxi.git
 #   scm: git
 #   version: development
 
@@ -34,3 +18,7 @@
 # - src: git@github.com:ggatward/ansible-role-openhab.git
 #   scm: git
 #   version: development
+
+#- src: https://github.com/cloudalchemy/ansible-prometheus.git
+- src: https://github.com/ggatward/ansible-prometheus.git
+  version: master

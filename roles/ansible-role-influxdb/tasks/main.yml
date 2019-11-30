@@ -108,7 +108,7 @@
     user_password: "{{ influxdb_admin_password }}"
     admin: true
     state: present
-#  no_log: true
+  no_log: true
   tags:
   - all
   - influx
