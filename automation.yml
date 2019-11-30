@@ -1,21 +1,4 @@
 ---
-# - name: Configure InfluxDB
-#   remote_user: svc-ansible
-#   become: true
-#   hosts: influxdb
-#   pre_tasks:
-#   - name: Include vault vars
-#     include_vars: vault.yml
-#     no_log: true
-
-#   tasks:
-#   - include_role:
-#       name: ansible-role-influxdb
-#     tags:
-#     - all
-#     - openhab
-
-
 - name: Install OpenHAB
   remote_user: svc-ansible
   become: true

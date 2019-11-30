@@ -1,0 +1,20 @@
+---
+
+# InfluxDB
+influxdb_databases:
+- dbname: 'prometheus'
+  dbusers:
+  - username: 'prometheus'
+    password: "{{ vault_influxdb_prometheus_password }}"
+    grants: ALL
+  - username: 'grafana'
+    password: "{{ vault_influxdb_grafana_password }}"
+    grants: READ
+- dbname: 'openhab'
+  dbusers:
+  - username: 'openhab'
+    password: "{{ vault_influxdb_openhab_password }}"
+    grants: ALL
+  - username: 'grafana'
+    password: "{{ vault_influxdb_grafana_password }}"
+    grants: READ

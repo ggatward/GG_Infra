@@ -16,10 +16,10 @@
   - all
   - mqtt
 
-- include_tasks: grafana.yml
-  tags:
-  - all
-  - grafana
+# - include_tasks: grafana.yml
+#   tags:
+#   - all
+#   - grafana
 
 - include_tasks: zwave.yml
   tags:

@@ -5,7 +5,7 @@ system: Home
 # Generic vars
 enable_epel: true
 
-# Hardening overrides
+# Hardening role overrides
 ssh_MaxAuthTries: 4
 ssh_PermitRootLogin: 'yes'
 
@@ -15,13 +15,13 @@ cdn_user: geoff@gatwards.org
 cdn_password: "{{ vault_cdn_password }}"
 reset_redhat_repos: no
 
-# Set our NTP servers
+# Define our NTP servers
 ntpservers:
 - ntp1.core.home.gatwards.org
 - ntp2.core.home.gatwards.org
 - ntp3.core.home.gatwards.org
 
-# User Authentication via IPA
+# Common IdM parameters
 # auth_idm: true
 idm_realm: IPA.HOME.GATWARDS.ORG
 idm_admin_user: admin
@@ -35,10 +35,12 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 # ad_domain: AD.HOME.GATWARDS.ORG
 # ad_via_ipa: true
 
+idmap_domain: 'home.gatwards.org'
+
+
 # ldap_servers:
 #   - ipa1.ipa.home.gatwards.org
 #   - ipa2.ipa.home.gatwards.org
-
 # ldap_user_base: 'CN=users,CN=accounts,DC=gatwards,DC=org'
 # ldap_user_filter: '(uid=%(user)s)'
 # ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
@@ -46,20 +48,19 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 
 
 
-
+# Location parameters used in multple groups
 latitude: "{{ vault_latitude }}"
 longitude: "{{ vault_longitude }}"
 altitude: '698'
 
+# Common SSL parameters
 tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
 
-# InfluxDB
+# InfluxDB is used by multiple groups, common params defined here
 influxdb_admin_password: "{{ vault_influxdb_admin_password }}"
 influxdb_enable_ssl: true
+influxdb_http_port: '8086'
 
-
-
+# MQTT broker is used by multiple groups, common params defined here
 mqtt_broker_fqdn: automation.core.home.gatwards.org
 mqtt_broker_port: '1883'
-
-idmap_domain: 'home.gatwards.org'

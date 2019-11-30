@@ -4,6 +4,18 @@ role: Home Automation Server
 # Hardening Overrides
 net_ipv4_ip_forward: 1
 
+# We need an SSL cert
+create_ssl_certs: true
+
+# Openhab InfluxDB parameters
+openhab_influxdb_db: 'openhab'
+openhab_influxdb_user: 'openhab'
+openhab_influxdb_password: "{{ vault_influxdb_openhab_password }}"
+
+# Grafana
+grafana_admin_password: "{{ vault_grafana_admin_password }}"
+
+
 # Postgresql
 openhab_db_user: openhab2
 openhab_db_password: "{{ vault_openhab_db_password }}"
@@ -11,22 +23,6 @@ openhab_db_name: openhab2
 openhab_db_host: 127.0.0.1
 postgresql_pgdata: /var/lib/pgsql/data
 
-# InfluxDB
-influxdb_openhab_password: "{{ vault_influxdb_openhab_password }}"
-
-influxdb_databases:
-- dbname: 'openhab'
-  dbusers:
-  - username: 'openhab'
-    password: "{{ vault_influxdb_openhab_password }}"
-    grants: ALL
-  - username: 'grafana'
-    password: "{{ vault_influxdb_grafana_password }}"
-    grants: READ
-
-
-# Grafana
-grafana_admin_password: "{{ vault_grafana_admin_password }}"
 
 # MQTT defaults
 mqtt_use_ssl: true
@@ -43,16 +39,11 @@ mqtt_users:
   - user: sonoff
     pass: "{{ vault_sonoff_mqtt_password }}"
 
-# # Get sensitive vars from the vault
-
+# Get sensitive vars from the vault
 openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
-openhab_latlon: "{{ latitude }},{{ longitude }}"
-
 openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
-
 openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
 openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
-
 openhab_pushover_api_key: "{{ vault_openhab_pushover_api_key }}"
 openhab_pushover_user_key1: "{{ vault_openhab_pushover_user_key1 }}"
 
@@ -63,9 +54,13 @@ sonos_ids:
 
 openhab_audio_sink: "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
 
+openhab_latlon: "{{ latitude }},{{ longitude }}"
+
 # Parameters for alarm panel
 elk_ip: 172.22.2.10
 elk_port: 2101
+
+
 
 # OpenHAB Base configuration - addons.cfg
 openhab_package: expert

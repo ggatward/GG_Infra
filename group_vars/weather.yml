@@ -2,6 +2,7 @@
 # MOTD vars
 role: Weather Station
 
+# We need an SSL cert
 create_ssl_certs: true
 
 weewx_location: Bungendore, NSW
