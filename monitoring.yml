@@ -1,0 +1,67 @@
+---
+- name: Configure InfluxDB
+  remote_user: svc-ansible
+  become: true
+  hosts: influxdb
+  pre_tasks:
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
+
+  tasks:
+  # - name: Copy SSL key for influxdb
+  #   copy:
+  #     src: "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
+  #     dest: /etc/pki/tls/private/influxdb.key
+  #     remote_src: true
+  #     owner: influxdb
+  #     mode: '0600'
+
+  - include_role:
+      name: ansible-role-influxdb
+
+
+
+- name: Configure Prometheus
+  remote_user: svc-ansible
+  become: true
+  hosts: prometheus
+  pre_tasks:
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
+
+  tasks:
+  - include_role:
+      name: ansible-prometheus
+
+  - include_role:
+      name: ansible-pushgateway
+
+  - include_role:
+      name: ansible-snmp-exporter
+
+  - include_role:
+      name: ansible-blackbox-exporter
+
+
+- name: Configure Grafana
+  remote_user: svc-ansible
+  become: true
+  hosts: grafana
+  pre_tasks:
+  - name: Include vault vars
+    include_vars: vault.yml
+    no_log: true
+
+  tasks:
+  # - name: Copy SSL key for grafana
+  #   copy:
+  #     src: "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
+  #     dest: /etc/pki/tls/private/grafana.key
+  #     remote_src: true
+  #     owner: grafana
+  #     mode: '0600'
+
+  - include_role:
+      name: ansible-grafana

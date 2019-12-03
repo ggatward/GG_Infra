@@ -68,6 +68,12 @@ prometheus_remote_write:
     username: 'prometheus'
     password: "{{ vault_influxdb_prometheus_password }}"
 
+# Open Node Exporter port for Prometheus to scrape
+node_exporter_open_firewall: true
+
+# Open Grafana port
+grafana_open_firewall: true
+
 # MQTT broker is used by multiple groups, common params defined here
 mqtt_broker_fqdn: automation.core.home.gatwards.org
 mqtt_broker_port: '1883'

@@ -16,3 +16,4 @@ idm_admin_pass: 'ChangeMe'
 
 create_ssl_certs: false
 ssl_keylen: '4096'
+ssl_key_mode: '0600'

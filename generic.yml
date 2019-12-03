@@ -18,6 +18,8 @@
       name: ansible-role-hardening
     when: skip_hardening is not defined
 
+  - include_role:
+      name: ansible-node-exporter
 
 
   - name: Ensure krb5 realms are defined

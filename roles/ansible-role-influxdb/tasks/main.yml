@@ -76,14 +76,14 @@
   with_items:
   - "{{ fwports }}"
 
-- name: Copy SSL key for InfluxDB user
-  copy:
-    src: /etc/pki/tls/private/{{ ansible_fqdn }}.key
-    dest: /etc/influxdb/{{ ansible_fqdn }}.key
-    remote_src: true
-    owner: influxdb
-    mode: 0600
-  when: influxdb_enable_ssl|bool
+# - name: Copy SSL key for InfluxDB user
+#   copy:
+#     src: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+#     dest: /etc/influxdb/{{ ansible_fqdn }}.key
+#     remote_src: true
+#     owner: influxdb
+#     mode: 0600
+#   when: influxdb_enable_ssl|bool
 
 - name: Enable InfluxDB service
   service:

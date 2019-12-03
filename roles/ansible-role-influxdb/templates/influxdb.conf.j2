@@ -190,7 +190,7 @@ reporting-disabled = true
   https-certificate = "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem"
 
   # Use a separate private key location.
-  https-private-key = "/etc/influxdb/{{ ansible_fqdn }}.key"
+  https-private-key = "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
 {% else %}
   https-enabled = https-enabled = false
 {% endif %}

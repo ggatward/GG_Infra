@@ -7,7 +7,7 @@ influxdb_databases:
   - username: 'prometheus'
     password: "{{ vault_influxdb_prometheus_password }}"
     grants: ALL
-  - username: 'grafana'
+  - username: 'grafana_prometheus'
     password: "{{ vault_influxdb_grafana_password }}"
     grants: READ
 - dbname: 'openhab'
@@ -15,6 +15,6 @@ influxdb_databases:
   - username: 'openhab'
     password: "{{ vault_influxdb_openhab_password }}"
     grants: ALL
-  - username: 'grafana'
+  - username: 'grafana_openhab'
     password: "{{ vault_influxdb_grafana_password }}"
     grants: READ

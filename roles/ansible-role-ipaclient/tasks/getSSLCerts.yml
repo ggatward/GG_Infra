@@ -38,4 +38,4 @@
   - path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
     perms: '0644'
   - path: /etc/pki/tls/private/{{ ansible_fqdn }}.key
-    perms: '0600'
+    perms: '{{ ssl_key_mode }}'

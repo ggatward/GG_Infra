@@ -22,3 +22,20 @@
 #- src: https://github.com/cloudalchemy/ansible-prometheus.git
 - src: https://github.com/ggatward/ansible-prometheus.git
   version: master
+
+#- src: https://github.com/cloudalchemy/ansible-node-exporter.git
+- src: https://github.com/ggatward/ansible-node-exporter.git
+  version: master
+
+- src: https://github.com/cloudalchemy/ansible-snmp-exporter.git
+  version: master
+
+- src: https://github.com/cloudalchemy/ansible-blackbox-exporter.git
+  version: master
+
+- src: https://github.com/cloudalchemy/ansible-pushgateway.git
+  version: master
+
+#- src: https://github.com/cloudalchemy/ansible-grafana.git
+- src: https://github.com/ggatward/ansible-grafana.git
+  version: master
