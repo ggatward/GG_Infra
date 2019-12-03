@@ -38,13 +38,14 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 idmap_domain: 'home.gatwards.org'
 
 
-# ldap_servers:
-#   - ipa1.ipa.home.gatwards.org
-#   - ipa2.ipa.home.gatwards.org
-# ldap_user_base: 'CN=users,CN=accounts,DC=gatwards,DC=org'
-# ldap_user_filter: '(uid=%(user)s)'
-# ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
-# ldap_group_filter: '(objectClass=ipausergroup)'
+# LDAP configs for non-IdM apps
+ldap_servers:
+  - ipa1.ipa.home.gatwards.org
+  - ipa2.ipa.home.gatwards.org
+ldap_user_base: 'CN=users,CN=accounts,DC=gatwards,DC=org'
+ldap_user_filter: '(uid=%(user)s)'
+ldap_group_base: 'CN=groups,CN=accounts,DC=gatwards,DC=org'
+ldap_group_filter: '(objectClass=ipausergroup)'
 
 
 

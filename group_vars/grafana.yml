@@ -1,0 +1,93 @@
+---
+
+# Grafana parameters
+grafana_security:
+  admin_user: admin
+  admin_password: "{{ vault_grafana_admin_password }}"
+
+grafana_server:
+  protocol: https
+  enforce_domain: false
+  socket: ""
+  cert_key: "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
+  cert_file: "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem"
+  enable_gzip: true
+  static_root_path: public
+  router_logging: false
+  serve_from_sub_path: false
+
+# Update datasource definitions if they have changed
+grafana_provisioning_synced: true
+
+grafana_datasources:
+- name: "Prometheus"
+  type: "influxdb"
+  access: "proxy"
+  url: "https://{{ influxdb_host }}:{{ influxdb_http_port }}"
+  database: "prometheus"
+  user: "grafana_prometheus"
+  withCredentials: true
+  isDefault: true
+  editable: true
+  secureJsonData:
+    password: "{{ vault_influxdb_grafana_password }}"
+- name: "OpenHAB"
+  type: "influxdb"
+  access: "proxy"
+  url: "https://{{ influxdb_host }}:{{ influxdb_http_port }}"
+  database: "openhab"
+  user: "grafana_openhab"
+  withCredentials: true
+  isDefault: false
+  editable: true
+  secureJsonData:
+    password: "{{ vault_influxdb_grafana_password }}"
+
+# Enable and configure LDAP
+grafana_auth:
+  disable_login_form: false
+  oauth_auto_login: false
+  disable_signout_menu: false
+  signout_redirect_url: ""
+  anonymous:
+    org_name: "Main Organization"
+    org_role: Viewer
+  ldap:
+    config_file: "/etc/grafana/ldap.toml"
+    allow_sign_up: false
+  basic:
+    enabled: true
+
+grafana_ldap:
+  verbose_logging: false
+  servers:
+    host: "{{ ldap_servers[0] }}"
+    port: 389 # 636 for SSL
+    use_ssl: false
+    start_tls: true
+    ssl_skip_verify: true
+    root_ca_cert: "{{ tls_cafile }}"
+    bind_dn: "uid=svc-grafana,cn=users,cn=accounts,dc=gatwards,dc=org"
+    bind_password: grafana
+    search_filter: "{{ ldap_user_filter }}"
+    search_base_dns:
+      - "{{ ldap_user_base }}"
+    group_search_filter: "{{ ldap_group_filter }}"
+    group_search_base_dns:
+      - "{{ ldap_group_base }}"
+    attributes:
+      name: givenName
+      surname: sn
+      username: uid  # sAMAccountName  on AD
+      member_of: memberOf
+      email: mail
+  group_mappings:
+    - name: Main Org.
+      id: 1
+      groups:
+        - group_dn: "cn=grafana-admins,cn=groups,cn=accounts,dc=grafana,dc=org"
+          org_role: Admin
+        - group_dn: "cn=grafana-editors,cn=groups,cn=accounts,dc=grafana,dc=org"
+          org_role: Editor
+        - group_dn: "*"
+          org_role: Viewer
