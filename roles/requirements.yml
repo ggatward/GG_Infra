@@ -1,11 +1,22 @@
 ---
+roles:
 - src: https://github.com/ggatward/ansible-role-generic-os.git
   scm: git
-  version: development
 
 - src: https://github.com/ggatward/ansible-role-hardening.git
   scm: git
-  version: development
+
+- src: https://github.com/CTL-Fed-Security/ansible-freeipa-client.git
+  scm: git
+
+- src: https://github.com/ggatward/linux_adbinding.git
+  scm: git
+
+- src: https://github.com/ggatward/Ansible-RHEL7-CIS-Benchmarks.git
+  scm: git
+
+- src: https://github.com/ggatward/Ansible-RHEL8-CIS-Benchmarks.git
+  scm: git
 
 # - src: git@github.com:ggatward/ansible-role-workstation.git
 #   scm: git
@@ -19,23 +30,31 @@
 #   scm: git
 #   version: development
 
+- src: https://github.com/ggatward/ansible-influxdb.git
+  scm: git
+
 #- src: https://github.com/cloudalchemy/ansible-prometheus.git
 - src: https://github.com/ggatward/ansible-prometheus.git
-  version: master
+  scm: git
 
 #- src: https://github.com/cloudalchemy/ansible-node-exporter.git
 - src: https://github.com/ggatward/ansible-node-exporter.git
-  version: master
+  scm: git
 
 - src: https://github.com/cloudalchemy/ansible-snmp-exporter.git
-  version: master
+  scm: git
 
 - src: https://github.com/cloudalchemy/ansible-blackbox-exporter.git
-  version: master
+  scm: git
 
 - src: https://github.com/cloudalchemy/ansible-pushgateway.git
-  version: master
+  scm: git
 
 #- src: https://github.com/cloudalchemy/ansible-grafana.git
 - src: https://github.com/ggatward/ansible-grafana.git
-  version: master
+  scm: git
+
+
+# collections:
+# - name: freeipa.ansible_freeipa
+#   src: https://github.com/freeipa/ansible-freeipa

@@ -3,33 +3,67 @@
   remote_user: svc-ansible
   become: true
   hosts: influxdb
-  pre_tasks:
-  - name: Include vault vars
-    include_vars: vault.yml
-    no_log: true
+  vars_files:
+  - vault.yml
 
   tasks:
-  # - name: Copy SSL key for influxdb
-  #   copy:
-  #     src: "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
-  #     dest: /etc/pki/tls/private/influxdb.key
-  #     remote_src: true
-  #     owner: influxdb
-  #     mode: '0600'
-
   - include_role:
-      name: ansible-role-influxdb
+      name: ansible-influxdb
+    vars:
+      influxdb_config: true
+      influxdb_http:
+        auth_enabled: true
+        bind_address: ""
+        bind_port: "{{ influxdb_http_port }}"
+        bind_socket: /var/run/influxdb.sock
+        enabled: true
+        https_enabled: "{{ influxdb_enable_ssl }}"
+        https_certificate: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+        https_private_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+        log_enabled: true
+        max_connection_limit: 0
+        max_row_limit: 0
+        pprof_enabled: true
+        realm: InfluxDB
+        shared_secret: ""
+        unix_socket_enabled: false
+        write_tracing: false
 
+  # Not done inside role
+  - name: Open InfluxDB firewall ports
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - 8086/tcp
+    #- 8189/udp
+
+  # Not done inside role
+  - name: Create InfluxDB users
+    influxdb_user:
+      login_username: "{{ influxdb_admin_user }}"
+      login_password: "{{ influxdb_admin_password }}"
+      hostname: "{{ ansible_fqdn }}"
+      ssl: "{{ influxdb_enable_ssl | default(false) }}"
+      user_name: "{{ item.0.username }}"
+      user_password: "{{ item.0.password }}"
+      grants:
+      - database: "{{ item.1.database }}"
+        privilege: '{{ item.1.grants }}'
+    with_subelements:
+    - "{{ influxdb_users }}"
+    - permissions
+    no_log: true
 
 
 - name: Configure Prometheus
   remote_user: svc-ansible
   become: true
   hosts: prometheus
-  pre_tasks:
-  - name: Include vault vars
-    include_vars: vault.yml
-    no_log: true
+  vars_files:
+  - vault.yml
 
   tasks:
   - include_role:
@@ -49,10 +83,8 @@
   remote_user: svc-ansible
   become: true
   hosts: grafana
-  pre_tasks:
-  - name: Include vault vars
-    include_vars: vault.yml
-    no_log: true
+  vars_files:
+  - vault.yml
 
   tasks:
   # - name: Copy SSL key for grafana

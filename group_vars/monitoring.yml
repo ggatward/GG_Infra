@@ -3,5 +3,5 @@
 role: Monitoring and Metrics
 
 # We need an SSL cert
-create_ssl_certs: true
-ssl_key_mode: '0644'
+ipaclient_create_ssl_certs: true
+ipaclient_ssl_key_mode: '0644'

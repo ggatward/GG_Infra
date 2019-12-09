@@ -1,7 +1,22 @@
 ---
 # tasks file for ansible-role-ipaclient
 
+# - name: Assert supported distribution
+#   assert:
+#     that:
+#       - ansible_distribution + '-' + ansible_distribution_major_version in ipaclient_supported_distributions
+
+- name: Assert required variables
+  assert:
+    that:
+      - ipaclient_servers is defined
+      - ipaclient_domain is defined
+      - ipaclient_enroll_user is defined
+      - ipaclient_enroll_pass is defined
+
+# Enroll client system
+- include_tasks: enroll_client.yml
 
 # Request, sign and deploy server certs
-- include_tasks: getSSLCerts.yml
-  when: create_ssl_certs|bool
+- include_tasks: get_ssl_certs.yml
+  when: ipaclient_create_ssl_certs|bool

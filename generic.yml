@@ -3,20 +3,20 @@
   remote_user: svc-ansible
   become: true
   hosts: all
-  pre_tasks:
-  - name: Include vault vars
-    include_vars: vault.yml
-    no_log: true
+  vars_files:
+  - vault.yml
+
   tasks:
   - include_role:
       name: ansible-role-generic-os
 
+
   - include_role:
       name: ansible-role-ipaclient
 
-  - include_role:
-      name: ansible-role-hardening
-    when: skip_hardening is not defined
+  # - include_role:
+  #     name: ansible-role-hardening
+  #   when: skip_hardening is not defined
 
   - include_role:
       name: ansible-node-exporter

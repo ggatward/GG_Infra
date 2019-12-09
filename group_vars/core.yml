@@ -3,7 +3,48 @@
 sys_env: Core
 
 # InfluxDB
-influxdb_host: "prometheus.core.home.gatwards.org"
+influxdb_admin_user: admin
+influxdb_admin_password: "{{ vault_influxdb_admin_password }}"
+influxdb_databases:
+  - host: "{{ ansible_fqdn }}"
+    name: 'prometheus'
+    state: present
+    retention_policy:
+      enabled: true
+      name: test-1w
+      duration: 1w
+      replication: 1
+  - host: "{{ ansible_fqdn }}"
+    name: 'openhab'
+    state: present
+    retention_policy:
+      enabled: true
+      name: test-1w
+      duration: 1w
+      replication: 1
+
+influxdb_users:
+  - username: 'prometheus'
+    password: "{{ vault_influxdb_prometheus_password }}"
+    permissions:
+    - database: 'prometheus'
+      grants: ALL
+  - username: 'grafana_prometheus'
+    password: "{{ vault_influxdb_grafana_password }}"
+    permissions:
+    - database: 'prometheus'
+      grants: READ
+  - username: 'openhab'
+    password: "{{ vault_influxdb_openhab_password }}"
+    permissions:
+    - database: 'openhab'
+      grants: ALL
+  - username: 'grafana_openhab'
+    password: "{{ vault_influxdb_grafana_password }}"
+    permissions:
+    - database: 'openhab'
+      grants: READ
+
 
 # Prometheus parameters
 prometheus_external_labels:

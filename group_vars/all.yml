@@ -2,12 +2,24 @@
 # MOTD vars
 system: Home
 
+# CIS Hardening
+cis_level_1_exclusions: ['1.2.3','1.8','3.4.1','3.4.2','3.4.3','3.4.4','3.4.5','5.3.2']
+cis_local_login_warning_banner: |
+  ###############################################################
+  #  All connections to this system are monitored and recorded  #
+  #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+  ###############################################################
+
+cis_remote_login_warning_banner: "{{ cis_local_login_warning_banner }}"
+cis_chrony_servers: |+
+  server ntp1.core.home.gatwards.org
+  server ntp2.core.home.gatwards.org
+  server ntp3.core.home.gatwards.org
+
+
+
 # Generic vars
 enable_epel: true
-
-# Hardening role overrides
-ssh_MaxAuthTries: 4
-ssh_PermitRootLogin: 'yes'
 
 # RHEL systems need a CDN/Satellite registration
 register_with_cdn: true
@@ -23,9 +35,17 @@ ntpservers:
 
 # Common IdM parameters
 # auth_idm: true
-idm_realm: IPA.HOME.GATWARDS.ORG
-idm_admin_user: admin
-idm_admin_pass: "{{ vault_idm_admin_pass }}"
+# idm_realm: IPA.HOME.GATWARDS.ORG
+# idm_admin_user: admin
+# idm_admin_pass: "{{ vault_idm_admin_pass }}"
+
+ipaclient_servers:
+- ipa1.ipa.home.gatwards.org
+- ipa2.ipa.home.gatwards.org
+ipaclient_domain: ipa.home.gatwards.org
+ipaclient_enroll_user: admin
+ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
+
 
 # ipaclient_server: "ipa1.ipa.home.gatwards.org"
 # ipaclient_domain: "{{ auth_idm_realm }}"
@@ -36,6 +56,8 @@ idm_admin_pass: "{{ vault_idm_admin_pass }}"
 # ad_via_ipa: true
 
 idmap_domain: 'home.gatwards.org'
+
+
 
 
 # LDAP configs for non-IdM apps
