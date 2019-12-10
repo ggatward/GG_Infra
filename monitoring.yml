@@ -10,6 +10,9 @@
   - include_role:
       name: ansible-influxdb
     vars:
+      influxdb_redhat_pre_reqs:
+      - python3-pip
+      - python3-requests
       influxdb_config: true
       influxdb_http:
         auth_enabled: true
