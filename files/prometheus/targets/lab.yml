@@ -1,0 +1,7 @@
+
+- targets:
+  - influxdb.lab.home.gatwards.org:9100
+  - grafana.lab.home.gatwards.org:9100
+
+  labels:
+    job: "node"

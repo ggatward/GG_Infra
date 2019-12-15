@@ -18,13 +18,13 @@ prometheus
 grafana
 
 [prometheus]
-prometheus.core     ansible_host=prometheus.core.home.gatwards.org
+prometheus.core.home.gatwards.org
 
 [influxdb]
-prometheus.core     ansible_host=prometheus.core.home.gatwards.org
+prometheus.core.home.gatwards.org
 
 [grafana]
-prometheus.core     ansible_host=prometheus.core.home.gatwards.org
+prometheus.core.home.gatwards.org
 
 ##########################################
 

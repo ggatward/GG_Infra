@@ -58,4 +58,7 @@ prometheus_targets:
       env: CORE
 
 prometheus_static_targets_files:
-  - prometheus/targets/core.json
+  - prometheus/targets/core.yml
+
+prometheus_server_ips:
+- 172.22.1.69

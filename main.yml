@@ -6,14 +6,16 @@
 # Bootstrap VM instance (as root)
 #- import_playbook: bootstrap_instance.yml
 
+- import_playbook: generic.yml
 
 - import_playbook: hardening.yml
-
-- import_playbook: generic.yml
 
 
 
 - import_playbook: monitoring.yml
+
+
+
 - import_playbook: tang.yml
 - import_playbook: weather.yml
 - import_playbook: automation.yml

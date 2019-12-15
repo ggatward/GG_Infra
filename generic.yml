@@ -7,20 +7,24 @@
   - vault.yml
 
   tasks:
-  - include_role:
-      name: ansible-role-generic-os
+  - import_role:
+      name: ansible-generic-os
+    tags:
+    - generic
 
 
-  - include_role:
+  - import_role:
       name: ansible-role-ipaclient
-
-  # - include_role:
-  #     name: ansible-role-hardening
-  #   when: skip_hardening is not defined
-
-  - include_role:
-      name: ansible-node-exporter
-
+    tags:
+    - generic
+    - ipa
+    vars:
+      ipaclient_servers:
+      - ipa1.ipa.home.gatwards.org
+      - ipa2.ipa.home.gatwards.org
+      ipaclient_domain: ipa.home.gatwards.org
+      ipaclient_enroll_user: admin
+      ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
 
   - name: Ensure krb5 realms are defined
     lineinfile:
@@ -28,7 +32,22 @@
       insertafter: '[domain_realm]'
       line: "  {{ item }}"
     with_items:
-    - '.core.home.gatwards.org = {{ idm_realm }}'
-    - 'core.home.gatwards.org = {{ idm_realm }}'
-    - '.lab.home.gatwards.org = {{ idm_realm }}'
-    - 'lab.home.gatwards.org = {{ idm_realm }}'
+    - '.core.home.gatwards.org = {{ ipaclient_domain|upper }}'
+    - 'core.home.gatwards.org = {{ ipaclient_domain|upper }}'
+    - '.lab.home.gatwards.org = {{ ipaclient_domain|upper }}'
+    - 'lab.home.gatwards.org = {{ ipaclient_domain|upper }}'
+
+  - name: Add NFS domain to idmap.conf
+    lineinfile:
+      path: /etc/idmapd.conf
+      regexp: '^#?\s?Domain.*=.*'
+      line: "Domain = home.gatwards.org"
+      backrefs: true
+      state: present
+
+
+  - import_role:
+      name: ansible-role-hw_vm_tools
+    tags:
+    - generic
+    - vmtools

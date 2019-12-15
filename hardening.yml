@@ -7,14 +7,29 @@
   - vault.yml
 
   tasks:
-  - include_role:
-      name: Ansible-RHEL8-CIS-Benchmarks
+  - block:
+    - name: Install pre-requisite packages
+      tags:
+      - hardening
+      - cis
+      yum:
+        name: authselect-compat
+        state: present
+
+    - import_role:
+        name: Ansible-RHEL8-CIS-Benchmarks
+      tags:
+      - hardening
+      - cis
     when:
     - ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
     - ansible_distribution_major_version == '8'
 
-  - include_role:
+  - import_role:
       name: Ansible-RHEL7-CIS-Benchmarks
+    tags:
+    - hardening
+    - cis
     when:
     - ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
     - ansible_distribution_major_version == '7'

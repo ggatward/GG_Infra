@@ -1,0 +1,1038 @@
+all:
+  children:
+
+    ansible: {}
+
+    automation:
+      children:
+        openhab: {}
+        zwave: {}
+
+    lab:
+      children:
+        monitoring:
+          children:
+            grafana:
+              hosts:
+                grafana.lab:
+                  altitude: '698'
+                  ansible_host: grafana.lab.home.gatwards.org
+                  cdn_password: '{{ vault_cdn_password }}'
+                  cdn_user: geoff@gatwards.org
+                  cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+                    server ntp2.core.home.gatwards.org iburst
+                    server ntp3.core.home.gatwards.org iburst
+                    '
+                  cis_level_1_exclusions: &id001
+                  - 1.2.3
+                  - '1.8'
+                  - 3.4.1
+                  - 3.4.2
+                  - 3.4.3
+                  - 3.4.4
+                  - 3.4.5
+                  - 5.3.2
+                  cis_local_login_warning_banner: '###############################################################
+
+                    #  All connections to this system are monitored and recorded  #
+
+                    #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                    ###############################################################
+
+                    '
+                  cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                    }}'
+                  enable_epel: true
+                  grafana_auth: &id002
+                    anonymous:
+                      org_name: Main Organization
+                      org_role: Viewer
+                    basic:
+                      enabled: true
+                    disable_login_form: false
+                    disable_signout_menu: false
+                    ldap:
+                      allow_sign_up: false
+                      config_file: /etc/grafana/ldap.toml
+                    oauth_auto_login: false
+                    signout_redirect_url: ''
+                  grafana_datasources:
+                  - access: proxy
+                    database: prometheus
+                    editable: true
+                    isDefault: true
+                    name: Prometheus
+                    secureJsonData:
+                      password: '{{ vault_influxdb_grafana_password }}'
+                    type: influxdb
+                    url: https://{{ influxdb_host }}:{{ influxdb_http_port }}
+                    user: grafana_prometheus
+                    withCredentials: true
+                  - access: proxy
+                    database: openhab
+                    editable: true
+                    isDefault: false
+                    name: OpenHAB
+                    secureJsonData:
+                      password: '{{ vault_influxdb_grafana_password }}'
+                    type: influxdb
+                    url: https://{{ influxdb_host }}:{{ influxdb_http_port }}
+                    user: grafana_openhab
+                    withCredentials: true
+                  grafana_ldap: &id003
+                    group_mappings:
+                    - groups:
+                      - group_dn: cn=grafana-admins,cn=groups,cn=accounts,dc=grafana,dc=org
+                        org_role: Admin
+                      - group_dn: cn=grafana-editors,cn=groups,cn=accounts,dc=grafana,dc=org
+                        org_role: Editor
+                      - group_dn: '*'
+                        org_role: Viewer
+                      id: 1
+                      name: Main Org.
+                    servers:
+                      attributes:
+                        email: mail
+                        member_of: memberOf
+                        name: givenName
+                        surname: sn
+                        username: uid
+                      bind_dn: uid=svc-grafana,cn=users,cn=accounts,dc=gatwards,dc=org
+                      bind_password: grafana
+                      group_search_base_dns:
+                      - '{{ ldap_group_base }}'
+                      group_search_filter: '{{ ldap_group_filter }}'
+                      host: '{{ ldap_servers[0] }}'
+                      port: 389
+                      root_ca_cert: '{{ tls_cafile }}'
+                      search_base_dns:
+                      - '{{ ldap_user_base }}'
+                      search_filter: '{{ ldap_user_filter }}'
+                      ssl_skip_verify: true
+                      start_tls: true
+                      use_ssl: false
+                    verbose_logging: false
+                  grafana_open_firewall: true
+                  grafana_provisioning_synced: true
+                  grafana_security:
+                    admin_password: '{{ vault_grafana_admin_password }}'
+                    admin_user: admin
+                  grafana_server:
+                    cert_file: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+                    cert_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+                    enable_gzip: true
+                    enforce_domain: false
+                    protocol: https
+                    router_logging: false
+                    serve_from_sub_path: false
+                    socket: ''
+                    static_root_path: public
+                  influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+                  influxdb_admin_user: admin
+                  influxdb_databases: &id004
+                  - host: '{{ ansible_fqdn }}'
+                    name: prometheus
+                    retention_policy:
+                      duration: 1w
+                      enabled: true
+                      name: test-1w
+                      replication: 1
+                    state: present
+                  - host: '{{ ansible_fqdn }}'
+                    name: openhab
+                    retention_policy:
+                      duration: 1w
+                      enabled: true
+                      name: test-1w
+                      replication: 1
+                    state: present
+                  influxdb_enable_ssl: true
+                  influxdb_http_port: '8086'
+                  influxdb_users: &id005
+                  - password: '{{ vault_influxdb_prometheus_password }}'
+                    permissions:
+                    - database: prometheus
+                      grants: ALL
+                    username: prometheus
+                  - password: '{{ vault_influxdb_grafana_password }}'
+                    permissions:
+                    - database: prometheus
+                      grants: READ
+                    username: grafana_prometheus
+                  - password: '{{ vault_influxdb_openhab_password }}'
+                    permissions:
+                    - database: openhab
+                      grants: ALL
+                    username: openhab
+                  - password: '{{ vault_influxdb_grafana_password }}'
+                    permissions:
+                    - database: openhab
+                      grants: READ
+                    username: grafana_openhab
+                  ipaclient_create_ssl_certs: true
+                  ipaclient_ssl_key_mode: '0644'
+                  latitude: '{{ vault_latitude }}'
+                  ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+                  ldap_group_filter: (objectClass=ipausergroup)
+                  ldap_servers: &id006
+                  - ipa1.ipa.home.gatwards.org
+                  - ipa2.ipa.home.gatwards.org
+                  ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+                  ldap_user_filter: (uid=%(user)s)
+                  longitude: '{{ vault_longitude }}'
+                  mqtt_broker_fqdn: automation.core.home.gatwards.org
+                  mqtt_broker_port: '1883'
+                  node_exporter_open_firewall: true
+                  prometheus_external_labels: &id007
+                    environment: LAB
+                  prometheus_remote_write: &id008
+                  - basic_auth:
+                      password: '{{ vault_influxdb_prometheus_password }}'
+                      username: prometheus
+                    url: https://{{ influxdb_host }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus
+                  prometheus_scrape_configs: &id009
+                  - job_name: prometheus
+                    metrics_path: '{{ prometheus_metrics_path }}'
+                    static_configs:
+                    - targets:
+                      - '{{ ansible_fqdn | default(ansible_host) | default(''localhost'')
+                        }}:9090'
+                  - file_sd_configs:
+                    - files:
+                      - '{{ prometheus_config_dir }}/file_sd/node.yml'
+                      - '{{ prometheus_config_dir }}/file_sd/lab.json'
+                    job_name: node
+                  prometheus_static_targets_files: &id010
+                  - prometheus/targets/lab.json
+                  prometheus_targets: &id011
+                    node:
+                    - labels:
+                        env: LAB
+                      targets:
+                      - '{{ ansible_fqdn }}:9100'
+                  register_with_cdn: true
+                  reset_redhat_repos: false
+                  role: Monitoring and Metrics
+                  sys_env: LAB
+                  system: Home
+                  tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            influxdb:
+              hosts:
+                influxdb.lab:
+                  altitude: '698'
+                  ansible_host: influxdb.lab.home.gatwards.org
+                  cdn_password: '{{ vault_cdn_password }}'
+                  cdn_user: geoff@gatwards.org
+                  cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                    server ntp2.core.home.gatwards.org iburst
+
+                    server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                    '
+                  cis_level_1_exclusions: *id001
+                  cis_local_login_warning_banner: '###############################################################
+
+                    #  All connections to this system are monitored and recorded  #
+
+                    #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                    ###############################################################
+
+                    '
+                  cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                    }}'
+                  enable_epel: true
+                  grafana_auth: *id002
+                  grafana_ldap: *id003
+                  grafana_open_firewall: true
+                  influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+                  influxdb_admin_user: admin
+                  influxdb_databases: *id004
+                  influxdb_enable_ssl: true
+                  influxdb_http_port: '8086'
+                  influxdb_users: *id005
+                  ipaclient_create_ssl_certs: true
+                  ipaclient_ssl_key_mode: '0644'
+                  latitude: '{{ vault_latitude }}'
+                  ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+                  ldap_group_filter: (objectClass=ipausergroup)
+                  ldap_servers: *id006
+                  ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+                  ldap_user_filter: (uid=%(user)s)
+                  longitude: '{{ vault_longitude }}'
+                  mqtt_broker_fqdn: automation.core.home.gatwards.org
+                  mqtt_broker_port: '1883'
+                  node_exporter_open_firewall: true
+                  prometheus_external_labels: *id007
+                  prometheus_remote_write: *id008
+                  prometheus_scrape_configs: *id009
+                  prometheus_static_targets_files: *id010
+                  prometheus_targets: *id011
+                  register_with_cdn: true
+                  reset_redhat_repos: false
+                  role: Monitoring and Metrics
+                  sys_env: LAB
+                  system: Home
+                  tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            prometheus:
+              hosts:
+                prometheus.lab:
+                  altitude: '698'
+                  ansible_host: prometheus.lab.home.gatwards.org
+                  cdn_password: '{{ vault_cdn_password }}'
+                  cdn_user: geoff@gatwards.org
+                  cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                    server ntp2.core.home.gatwards.org iburst
+
+                    server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                    '
+                  cis_level_1_exclusions: *id001
+                  cis_local_login_warning_banner: '###############################################################
+
+                    #  All connections to this system are monitored and recorded  #
+
+                    #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                    ###############################################################
+
+                    '
+                  cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                    }}'
+                  enable_epel: true
+                  grafana_auth: *id002
+                  grafana_ldap: *id003
+                  grafana_open_firewall: true
+                  influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+                  influxdb_admin_user: admin
+                  influxdb_databases: *id004
+                  influxdb_enable_ssl: true
+                  influxdb_http_port: '8086'
+                  influxdb_users: *id005
+                  ipaclient_create_ssl_certs: true
+                  ipaclient_ssl_key_mode: '0644'
+                  latitude: '{{ vault_latitude }}'
+                  ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+                  ldap_group_filter: (objectClass=ipausergroup)
+                  ldap_servers: *id006
+                  ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+                  ldap_user_filter: (uid=%(user)s)
+                  longitude: '{{ vault_longitude }}'
+                  mqtt_broker_fqdn: automation.core.home.gatwards.org
+                  mqtt_broker_port: '1883'
+                  node_exporter_open_firewall: true
+                  prometheus_external_labels: *id007
+                  prometheus_remote_write: *id008
+                  prometheus_scrape_configs: *id009
+                  prometheus_static_targets_files: *id010
+                  prometheus_targets: *id011
+                  register_with_cdn: true
+                  reset_redhat_repos: false
+                  role: Monitoring and Metrics
+                  sys_env: LAB
+                  system: Home
+                  tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+        sandbox:
+          hosts:
+            sandbox-cent7.lab:
+              altitude: '698'
+              ansible_host: sandbox-cent7.lab.home.gatwards.org
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-cent7w.lab:
+              additional_ws_packages: &id012
+              - vlc
+              altitude: '698'
+              ansible_host: sandbox-cent7w.lab.home.gatwards.org
+              browser_startup_url: https://google.com.au
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              configure_printer: true
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              install_chrome: true
+              install_development: false
+              install_playonlinux: false
+              install_spotify: false
+              install_xrdp: true
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Workstation
+              setup_automounts: true
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-cent8.lab:
+              altitude: '698'
+              ansible_host: sandbox-cent8.lab.home.gatwards.org
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-cent8w.lab:
+              additional_ws_packages: *id012
+              altitude: '698'
+              ansible_host: sandbox-cent8w.lab.home.gatwards.org
+              browser_startup_url: https://google.com.au
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              configure_printer: true
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              install_chrome: true
+              install_development: false
+              install_playonlinux: false
+              install_spotify: false
+              install_xrdp: true
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Workstation
+              setup_automounts: true
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-f30w.lab:
+              additional_ws_packages: *id012
+              altitude: '698'
+              ansible_host: sandbox-f30w.lab.home.gatwards.org
+              browser_startup_url: https://google.com.au
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              configure_printer: true
+              desktop_group: Cinnamon Desktop
+              disable_squashfs: false
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              install_chrome: true
+              install_development: false
+              install_playonlinux: false
+              install_spotify: true
+              install_xrdp: true
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Workstation
+              setup_automounts: true
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-rhel7.lab:
+              altitude: '698'
+              ansible_host: sandbox-rhel7.lab.home.gatwards.org
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-rhel7w.lab:
+              additional_ws_packages: *id012
+              altitude: '698'
+              ansible_host: sandbox-rhel7w.lab.home.gatwards.org
+              browser_startup_url: https://google.com.au
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              configure_printer: true
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              install_chrome: true
+              install_development: false
+              install_playonlinux: false
+              install_spotify: false
+              install_xrdp: true
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Workstation
+              setup_automounts: true
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-rhel8.lab:
+              altitude: '698'
+              ansible_host: sandbox-rhel8.lab.home.gatwards.org
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            sandbox-rhel8w.lab:
+              additional_ws_packages: *id012
+              altitude: '698'
+              ansible_host: sandbox-rhel8w.lab.home.gatwards.org
+              browser_startup_url: https://google.com.au
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              configure_printer: true
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              install_chrome: true
+              install_development: false
+              install_playonlinux: false
+              install_spotify: false
+              install_xrdp: true
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Workstation
+              setup_automounts: true
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+        tang:
+          hosts:
+            tang1.lab:
+              altitude: '698'
+              ansible_host: tang1.lab.home.gatwards.org
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Network Disk Encryption Server
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+            tang2.lab:
+              altitude: '698'
+              ansible_host: tang2.lab.home.gatwards.org
+              cdn_password: '{{ vault_cdn_password }}'
+              cdn_user: geoff@gatwards.org
+              cis_chrony_servers: 'server ntp1.core.home.gatwards.org iburst
+
+                server ntp2.core.home.gatwards.org iburst
+
+                server ntp3.core.home.gatwards.org iburst
+
+
+
+
+                '
+              cis_level_1_exclusions: *id001
+              cis_local_login_warning_banner: '###############################################################
+
+                #  All connections to this system are monitored and recorded  #
+
+                #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+
+                ###############################################################
+
+                '
+              cis_remote_login_warning_banner: '{{ cis_local_login_warning_banner
+                }}'
+              enable_epel: true
+              grafana_auth: *id002
+              grafana_ldap: *id003
+              grafana_open_firewall: true
+              influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+              influxdb_admin_user: admin
+              influxdb_databases: *id004
+              influxdb_enable_ssl: true
+              influxdb_http_port: '8086'
+              influxdb_users: *id005
+              latitude: '{{ vault_latitude }}'
+              ldap_group_base: CN=groups,CN=accounts,DC=gatwards,DC=org
+              ldap_group_filter: (objectClass=ipausergroup)
+              ldap_servers: *id006
+              ldap_user_base: CN=users,CN=accounts,DC=gatwards,DC=org
+              ldap_user_filter: (uid=%(user)s)
+              longitude: '{{ vault_longitude }}'
+              mqtt_broker_fqdn: automation.core.home.gatwards.org
+              mqtt_broker_port: '1883'
+              node_exporter_open_firewall: true
+              prometheus_external_labels: *id007
+              prometheus_remote_write: *id008
+              prometheus_scrape_configs: *id009
+              prometheus_static_targets_files: *id010
+              prometheus_targets: *id011
+              register_with_cdn: true
+              reset_redhat_repos: false
+              role: Network Disk Encryption Server
+              sys_env: LAB
+              system: Home
+              tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+        workstation:
+          hosts:
+            sandbox-cent7w.lab: {}
+            sandbox-cent8w.lab: {}
+            sandbox-f30w.lab: {}
+            sandbox-rhel7w.lab: {}
+            sandbox-rhel8w.lab: {}
+    ungrouped: {}
+    weather: {}

@@ -3,18 +3,17 @@
 system: Home
 
 # CIS Hardening
-cis_level_1_exclusions: ['1.2.3','1.8','3.4.1','3.4.2','3.4.3','3.4.4','3.4.5','5.3.2']
+cis_level_1_exclusions: ['1.2.3','1.3.1','1.8','3.4.1','3.4.2','3.4.3','3.4.4','3.4.5','5.3.2']
 cis_local_login_warning_banner: |
   ###############################################################
   #  All connections to this system are monitored and recorded  #
   #  Disconnect IMMEDIATELY if you are not an authorized user!  #
   ###############################################################
-
 cis_remote_login_warning_banner: "{{ cis_local_login_warning_banner }}"
 cis_chrony_servers: |+
-  server ntp1.core.home.gatwards.org
-  server ntp2.core.home.gatwards.org
-  server ntp3.core.home.gatwards.org
+  server ntp1.core.home.gatwards.org iburst
+  server ntp2.core.home.gatwards.org iburst
+  server ntp3.core.home.gatwards.org iburst
 
 
 
@@ -26,36 +25,6 @@ register_with_cdn: true
 cdn_user: geoff@gatwards.org
 cdn_password: "{{ vault_cdn_password }}"
 reset_redhat_repos: no
-
-# Define our NTP servers
-ntpservers:
-- ntp1.core.home.gatwards.org
-- ntp2.core.home.gatwards.org
-- ntp3.core.home.gatwards.org
-
-# Common IdM parameters
-# auth_idm: true
-# idm_realm: IPA.HOME.GATWARDS.ORG
-# idm_admin_user: admin
-# idm_admin_pass: "{{ vault_idm_admin_pass }}"
-
-ipaclient_servers:
-- ipa1.ipa.home.gatwards.org
-- ipa2.ipa.home.gatwards.org
-ipaclient_domain: ipa.home.gatwards.org
-ipaclient_enroll_user: admin
-ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
-
-
-# ipaclient_server: "ipa1.ipa.home.gatwards.org"
-# ipaclient_domain: "{{ auth_idm_realm }}"
-# ipaclient_enroll_user: "{{ idm_admin_user }}"
-# ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
-# ipaclient_validate_certs: False
-# ad_domain: AD.HOME.GATWARDS.ORG
-# ad_via_ipa: true
-
-idmap_domain: 'home.gatwards.org'
 
 
 
@@ -84,15 +53,7 @@ influxdb_admin_password: "{{ vault_influxdb_admin_password }}"
 influxdb_enable_ssl: true
 influxdb_http_port: '8086'
 
-# Prometheus common params
-prometheus_remote_write:
-- url: https://{{ influxdb_host }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus
-  basic_auth:
-    username: 'prometheus'
-    password: "{{ vault_influxdb_prometheus_password }}"
 
-# Open Node Exporter port for Prometheus to scrape
-node_exporter_open_firewall: true
 
 # Open Grafana port
 grafana_open_firewall: true

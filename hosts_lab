@@ -5,13 +5,13 @@ prometheus
 grafana
 
 [prometheus]
-prometheus.lab      ansible_host=prometheus.lab.home.gatwards.org
+prometheus.lab.home.gatwards.org
 
 [influxdb]
-influxdb.lab        ansible_host=influxdb.lab.home.gatwards.org
+influxdb.lab.home.gatwards.org
 
 [grafana]
-grafana.lab         ansible_host=grafana.lab.home.gatwards.org
+grafana.lab.home.gatwards.org
 
 ##########################################
 

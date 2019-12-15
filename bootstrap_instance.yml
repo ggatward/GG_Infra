@@ -8,9 +8,19 @@
 
   tasks:
 
-# - include_role:
+# - import_role:
 #     name: rhsm-register.yml
 #   when: ansible_distribution == 'RedHat'
 
-  - include_role:
+  - import_role:
       name: ansible-role-ipaclient
+    tags:
+    - generic
+    - ipa
+    vars:
+      ipaclient_servers:
+      - ipa1.ipa.home.gatwards.org
+      - ipa2.ipa.home.gatwards.org
+      ipaclient_domain: ipa.home.gatwards.org
+      ipaclient_enroll_user: admin
+      ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
