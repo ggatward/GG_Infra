@@ -101,7 +101,10 @@
       prometheus_config_global_external_labels:
         xxx: something
       prometheus_config_remote_write:
-      - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus&u=prometheus&p={{ vault_influxdb_prometheus_password|urlencode() }}"
+      - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus"
+        basic_auth:
+          username: prometheus
+          password: "{{ vault_influxdb_prometheus_password }}"
 
       prometheus_config_scrape_configs:
       - job_name: 'prometheus'
