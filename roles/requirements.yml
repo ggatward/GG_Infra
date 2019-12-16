@@ -33,15 +33,14 @@ roles:
 - src: https://github.com/ggatward/ansible-influxdb.git
   scm: git
 
-# #- src: https://github.com/cloudalchemy/ansible-prometheus.git
-- src: https://github.com/ggatward/ansible-prometheus.git
+- src: https://github.com/ernestas-poskus/ansible-prometheus.git
   scm: git
 
-- src: https://github.com/kevincoakley/ansible-role-prometheus-node-exporter.git
-  scm: git
+# - src: https://github.com/kevincoakley/ansible-role-prometheus-node-exporter.git
+#   scm: git
 
-- src: https://github.com/cloudalchemy/ansible-snmp-exporter.git
-  scm: git
+# - src: https://github.com/cloudalchemy/ansible-snmp-exporter.git
+#   scm: git
 
 # - src: https://github.com/cloudalchemy/ansible-blackbox-exporter.git
 #   scm: git

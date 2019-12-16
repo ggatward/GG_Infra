@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+- targets:
+  - {{ ansible_fqdn }}:9100
+{% for server in prometheus_node_exporter_targets %}
+  - {{ server }}
+{% endfor %}
+
+#  labels:
+#    xxx: yyy
