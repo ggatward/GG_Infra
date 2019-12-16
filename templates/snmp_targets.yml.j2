@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+- targets:
+{% for server in prometheus_snmp_targets %}
+  - {{ server }}
+{% endfor %}
+
+  labels:
+    xxx: yyy

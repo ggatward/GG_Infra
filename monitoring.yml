@@ -84,22 +84,24 @@
     - monitoring
     - prometheus
     vars:
-      prometheus_node_exporter_install: true
       prometheus_alert_manager_install: false
+      prometheus_push_gateway_install: true
+      prometheus_snmp_exporter_install: true
+      prometheus_blackbox_exporter_install: false
       prometheus_install_dir: /opt
       prometheus_version: '2.14.0'
       prometheus_node_exporter_version: '0.18.1'
-      prometheus_alert_manager_version: '0.18.0'
+      prometheus_alert_manager_version: '0.20.0'
       prometheus_push_gateway_version: '1.0.0'
-      prometheus_snmp_exporter_version: '0.15.0'
-      prometheus_blackbox_exporter_version: '0.15.1'
+      prometheus_snmp_exporter_version: '0.16.1'
+      prometheus_blackbox_exporter_version: '0.16.0'
       prometheus_config_global_scrape_interval: '15s'
       prometheus_config_global_evaluation_interval: '30s'
       prometheus_config_global_scrape_timeout: '10s'
       prometheus_config_global_external_labels:
         xxx: something
       prometheus_config_remote_write:
-      - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus&u=prometheus&p={{ vault_influxdb_prometheus_password }}"
+      - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus&u=prometheus&p={{ vault_influxdb_prometheus_password|urlencode() }}"
 
       prometheus_config_scrape_configs:
       - job_name: 'prometheus'
@@ -115,10 +117,43 @@
         file_sd_configs:
         - files:
           - /etc/prometheus/nodeexp_targets.yml
-
-      prometheus_node_exporter_targets:
-      - influxdb.lab.home.gatwards.org:9100
-      - grafana.lab.home.gatwards.org:9100
+      - job_name: 'pushgateway'
+        honor_labels: true
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9091'
+      - job_name: 'snmp'
+        file_sd_configs:
+        - files:
+          - /etc/prometheus/snmp_targets.yml
+        scrape_interval: '60s'
+        scrape_timeout: '10s'
+        metrics_path: /snmp
+        params:
+          module: [if_mib]
+        relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+      - job_name: 'blackbox'
+        metrics_path: /probe
+        params:
+          module: [http_2xx]  # Look for a HTTP 200 response.
+        file_sd_configs:
+        - files:
+          - /etc/prometheus/blackbox_targets.yml
+        scrape_interval: '60s'
+        scrape_timeout: '10s'
+        relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 127.0.0.1:9115  # The blackbox exporter's real hostname:port.
 
 
       prometheus_collector_____enabled_collectors:
@@ -177,6 +212,52 @@
     #  - 'collector.wifi' # disabled by default
     #  - 'web.disable-exporter-metrics' # disabled by default
 
+      prometheus_snmp_exporter_log__format: 'logfmt'
+
+      prometheus_black_box_config_modules:
+        http_2xx:
+          prober: http
+          timeout: 5s
+          http:
+            valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+            valid_status_codes: []  # Defaults to 2xx
+            method: GET
+            headers:
+              Host: vhost.example.com
+              Accept-Language: en-US
+              Origin: example.com
+            no_follow_redirects: false
+            fail_if_ssl: false
+            fail_if_not_ssl: false
+            fail_if_body_matches_regexp:
+              - "Could not connect to database"
+            fail_if_body_not_matches_regexp:
+              - "Download the latest version here"
+            fail_if_header_matches: # Verifies that no cookies are set
+              - header: Set-Cookie
+                allow_missing: true
+                regexp: '.*'
+            fail_if_header_not_matches:
+              - header: Access-Control-Allow-Origin
+                regexp: '(\*|example\.com)'
+            tls_config:
+              insecure_skip_verify: false
+            preferred_ip_protocol: "ip4" # defaults to "ip6"
+            ip_protocol_fallback: false  # no fallback to "ip6"
+
+
+      prometheus_node_exporter_targets:
+      - influxdb.lab.home.gatwards.org:9100
+      - grafana.lab.home.gatwards.org:9100
+
+      prometheus_snmp_targets:
+      - 172.22.4.1
+
+      prometheus_blackbox_targets:
+      - http://google.com.au
+      - https://prometheus.io
+
+
 
   - name: Deploy monitoring target config
     tags:
@@ -191,6 +272,8 @@
       mode: '0644'
     with_items:
     - nodeexp_targets.yml
+    - snmp_targets.yml
+    - blackbox_targets.yml
 
 
   # Not done inside role (Only needed if we are federating Prometheus)
@@ -208,18 +291,6 @@
 
 
 
-  # - include_role:
-  #     name: ansible-pushgateway
-
-  # - import_role:
-  #     name: ansible-snmp-exporter
-  #   tags:
-  #   - monitoring
-  #   - prometheus
-  #   - snmp_exporter
-
-  # - include_role:
-  #     name: ansible-blackbox-exporter
 
 
 # - name: Configure Grafana

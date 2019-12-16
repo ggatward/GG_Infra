@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+- targets:
+{% for server in prometheus_blackbox_targets %}
+  - {{ server }}
+{% endfor %}
+
+  labels:
+    aaa: bbb
