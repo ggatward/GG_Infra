@@ -84,22 +84,14 @@
     - monitoring
     - prometheus
     vars:
+      prometheus_install: true
+      prometheus_node_exporter_install: true
       prometheus_alert_manager_install: false
       prometheus_push_gateway_install: true
       prometheus_snmp_exporter_install: true
-      prometheus_blackbox_exporter_install: false
-      prometheus_install_dir: /opt
-      prometheus_version: '2.14.0'
-      prometheus_node_exporter_version: '0.18.1'
-      prometheus_alert_manager_version: '0.20.0'
-      prometheus_push_gateway_version: '1.0.0'
-      prometheus_snmp_exporter_version: '0.16.1'
-      prometheus_blackbox_exporter_version: '0.16.0'
-      prometheus_config_global_scrape_interval: '15s'
-      prometheus_config_global_evaluation_interval: '30s'
-      prometheus_config_global_scrape_timeout: '10s'
+      prometheus_blackbox_exporter_install: true
       prometheus_config_global_external_labels:
-        xxx: something
+        prom_cluster: HOME
       prometheus_config_remote_write:
       - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus"
         basic_auth:
@@ -119,7 +111,7 @@
       - job_name: 'node_exporter'
         file_sd_configs:
         - files:
-          - /etc/prometheus/nodeexp_targets.yml
+          - /etc/prometheus/nodeexporter/targets.yml
       - job_name: 'pushgateway'
         honor_labels: true
         static_configs:
@@ -128,7 +120,7 @@
       - job_name: 'snmp'
         file_sd_configs:
         - files:
-          - /etc/prometheus/snmp_targets.yml
+          - /etc/prometheus/snmpexporter/snmp_targets.yml
         scrape_interval: '60s'
         scrape_timeout: '10s'
         metrics_path: /snmp
@@ -147,7 +139,7 @@
           module: [http_2xx]  # Look for a HTTP 200 response.
         file_sd_configs:
         - files:
-          - /etc/prometheus/blackbox_targets.yml
+          - /etc/prometheus/blackboxexporter/blackbox_targets.yml
         scrape_interval: '60s'
         scrape_timeout: '10s'
         relabel_configs:
@@ -247,6 +239,8 @@
               insecure_skip_verify: false
             preferred_ip_protocol: "ip4" # defaults to "ip6"
             ip_protocol_fallback: false  # no fallback to "ip6"
+
+
 
 
       prometheus_node_exporter_targets:
