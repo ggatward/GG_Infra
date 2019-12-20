@@ -280,6 +280,14 @@ all:
                   system: Home
                   tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
             prometheus:
+              vars:
+                prometheus_node_exporter_targets:
+                - project: HOME
+                  targets:
+                  - - "{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:9100
+                    - "{{ hostvars[groups['influxdb'][1]].inventory_hostname }}:9100
+                    
+                    
               hosts:
                 prometheus.lab:
                   altitude: '698'
