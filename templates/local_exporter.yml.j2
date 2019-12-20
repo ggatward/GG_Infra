@@ -1,0 +1,9 @@
+#{{ ansible_managed }}
+
+# Local node_exporter of this prometheus server
+- targets
+  - {{ ansible_fqdn }}:9100
+  
+  labels:
+    project: HOME
+  
