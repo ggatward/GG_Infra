@@ -34,6 +34,20 @@
         shared_secret: ""
         unix_socket_enabled: false
         write_tracing: false
+        
+  # Flush handlers to force restart on initial installation
+  - name: Flush Handlers
+    tags:
+    - monitoring
+    - influxdb
+    meta: flush_handlers
+
+  - name: Wait for InfluxDB
+    tags:
+    - monitoring
+    - influxdb
+    wait_for:
+      port: "{{ influxdb_http_port }}"
 
   # Not done inside role
   - name: Open InfluxDB firewall ports
@@ -46,8 +60,8 @@
       permanent: yes
       state: enabled
     with_items:
-    - 8086/tcp
-    #- 8189/udp
+    - "{{ influxdb_http_port }}/tcp"
+    #- "{{ influxdb_udp_port }}/udp"
 
   # Not done inside role
   - name: Create InfluxDB users
@@ -69,7 +83,74 @@
     - permissions
     no_log: true
 
+  - name: Get existing subscriptions
+    tags:
+    - monitoring
+    - influxdb
+    command: /bin/influx -ssl -unsafeSsl -username {{ influxdb_admin_user }} -password '{{ influxdb_admin_password }}' -database prometheus -execute 'show subscriptions'
+    register: subscriptions
+    changed_when: false
+    
+  - name: Create subscriptions
+    tags:
+    - monitoring
+    - influxdb
+    command: /bin/influx -ssl -unsafeSsl -username {{ influxdb_admin_user }} -password '{{ influxdb_admin_password }}' -database prometheus -execute "create subscription {{ item.name }} on prometheus.autogen DESTINATIONS ALL '{{ item.dest }}'"
+    with_items: "{{ influxdb_subscriptions }}"
+    when:
+    - influxdb_subscriptions is defined
+    - item.dest not in subscriptions.stdout
 
+#########################################################################################
+# InfluxDB relay & keepalived
+
+
+
+#########################################################################################
+# Nginx (Prometheus SSL frontend)
+- name: Configure Nginx for Prometheus
+  remote_user: svc-ansible
+  become: true
+  hosts: prometheus
+  vars_files:
+  - vault.yml
+  tasks:
+  - name: Set SELinux booleans for nginx
+    tags:
+    - monitoring
+    - nginx
+    seboolean:
+      state: true
+      name: httpd_can_network_connect
+      persistent: yes
+
+  - import_role:
+      name: ansible_nginx
+    tags:
+    - monitoring
+    - nginx
+    vars:
+      nginx_yum_repo_enabled: false
+      nginx_vhosts:
+      - listen: "443 ssl http2"
+        server_name: "{{ ansible_fqdn }}"
+        extra_parameters: |
+          location / {
+            proxy_pass http://localhost:9090/;
+          }
+          ssl_session_cache         shared:SSL:10m;
+          ssl_session_timeout       1h;
+          ssl_session_tickets       on;
+          ssl_certificate           "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem";
+          ssl_certificate_key       "/etc/pki/tls/private/{{ ansible_fqdn }}.key";
+          ssl_protocols             TLSv1.2;
+          ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
+          ssl_prefer_server_ciphers on;
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+          
+
+#########################################################################################
+# Prometheus
 - name: Configure Prometheus
   remote_user: svc-ansible
   become: true
@@ -91,13 +172,13 @@
       prometheus_snmp_exporter_install: true
       prometheus_blackbox_exporter_install: true
       prometheus_config_global_external_labels:
-        prom_cluster: HOME
       prometheus_config_remote_write:
       - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus"
         basic_auth:
           username: prometheus
           password: "{{ vault_influxdb_prometheus_password }}"
-
+          
+      prometheus_web__external_url: https://{{ ansible_fqdn }}
       prometheus_config_scrape_configs:
       - job_name: 'prometheus'
         honor_labels: true
@@ -109,18 +190,29 @@
         - targets:
           - '{{ ansible_fqdn }}:9090'
       - job_name: 'node_exporter'
+        honor_labels: true
         file_sd_configs:
         - files:
-          - /etc/prometheus/nodeexporter/targets.yml
+          - /etc/prometheus/nodeexporter/*.yml
       - job_name: 'pushgateway'
         honor_labels: true
         static_configs:
         - targets:
           - '{{ ansible_fqdn }}:9091'
+      - job_name: 'statsd'
+        honor_labels: true
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9102'
+      - job_name: 'collectd'
+        honor_labels: true
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9103'
       - job_name: 'snmp'
         file_sd_configs:
         - files:
-          - /etc/prometheus/snmpexporter/snmp_targets.yml
+          - /etc/prometheus/snmpexporter/*.yml
         scrape_interval: '60s'
         scrape_timeout: '10s'
         metrics_path: /snmp
@@ -139,7 +231,7 @@
           module: [http_2xx]  # Look for a HTTP 200 response.
         file_sd_configs:
         - files:
-          - /etc/prometheus/blackboxexporter/blackbox_targets.yml
+          - /etc/prometheus/blackboxexporter/*.yml
         scrape_interval: '60s'
         scrape_timeout: '10s'
         relabel_configs:
@@ -255,26 +347,81 @@
       - https://prometheus.io
 
 
+  - name: Create target directories
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    file:
+      path: "/etc/prometheus/{{ item }}"
+      state: directory
+      owner: prometheus
+      group: prometheus
+      mode: '0755'
+    with_items:
+    - nodeexporter
+    - snmpexporter
+    - blackboxexporter
 
-  - name: Deploy monitoring target config
+  - name: Deploy local node_exporter configuration
     tags:
     - monitoring
     - prometheus
     - prometheus_targets
     template:
-      src: "{{ item }}.j2"
-      dest: "/etc/prometheus/{{ item }}"
+      src: "local_exporter.yml.j2"
+      dest: /etc/prometheus/nodeexporter/local_target.yml
       owner: prometheus
       group: prometheus
       mode: '0644'
-    with_items:
-    - nodeexp_targets.yml
-    - snmp_targets.yml
-    - blackbox_targets.yml
 
+  - name: Deploy node_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "exporter_targets.yml.j2"
+      dest: "/etc/prometheus/nodeexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_node_exporter_targets }}"
+    - targets
+
+  - name: Deploy snmp_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "exporter_targets.yml.j2"
+      dest: "/etc/prometheus/snmpexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_snmp_exporter_targets }}"
+    - targets
+
+  - name: Deploy blackbox_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "exporter_targets.yml.j2"
+      dest: "/etc/prometheus/blackboxexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_blackbox_exporter_targets }}"
+    - targets
 
   # Not done inside role (Only needed if we are federating Prometheus)
-  - name: Open Prometheus firewall ports
+  - name: Open Prometheus firewall ports to receive push events
     tags:
     - monitoring
     - prometheus
@@ -284,7 +431,22 @@
       permanent: yes
       state: enabled
     with_items:
-    - 9090/tcp
+    - 9091/tcp
+    - 9125/tcp  # statsd
+    - 9125/udp  # statsd
+    - 25826/udp # collectd
+
+  - name: Open Prometheus firewall port for federation
+    tags:
+    - monitoring
+    - prometheus
+    firewalld:
+      rich_rule: 'rule family="ipv4" source address="{{ hostvars[item].instance_ip }}" port protocol="tcp" port="443" accept'
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - "{{ groups['prometheus_agg'] }}"
 
 
 
