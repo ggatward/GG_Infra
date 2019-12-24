@@ -65,7 +65,7 @@
       prometheus_blackbox_exporter_install: true
       prometheus_config_global_external_labels:
       prometheus_config_remote_write:
-      - url: "https://{{ groups['influxdb'][0] }}:{{ influxdb_http_port }}/api/v1/prom/write?db=prometheus"
+      - url: "https://{{ groups['influxdb'][0] }}:{{ hostvars[groups['influxdb'][0]].influxdb_http_port }}/api/v1/prom/write?db=prometheus"
         basic_auth:
           username: prometheus
           password: "{{ vault_influxdb_prometheus_password }}"
