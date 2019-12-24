@@ -1,11 +1,28 @@
 ---
+- name: Create dummy hosts in IPA for additional SANs
+  ipa_host:
+    ipa_user: "{{ ipaclient_enroll_user }}"
+    ipa_pass: "{{ ipaclient_enroll_pass }}"
+    fqdn: "{{ item }}"
+    force: true
+  with_items:
+  - "{{ ipaclient_ssl_subject_altnames }}"
+  when: ipaclient_ssl_subject_altnames|length > 0
 
 - name: Create HTTP service in IPA
   ipa_service:
     ipa_user: "{{ ipaclient_enroll_user }}"
     ipa_pass: "{{ ipaclient_enroll_pass }}"
-    krbcanonicalname: HTTP/{{ ansible_fqdn }}
+    krbcanonicalname: HTTP/{{ item }}
+    hosts: "{{ ansible_fqdn }}"
     state: present
+  with_items:
+  - "{{ ansible_fqdn }}"
+  - "{{ ipaclient_ssl_subject_altnames }}"
+
+# ipa host-add san.host.example.test --force                          (Dummy hostname)
+# ipa service-add test/san.host.example.test --force                  (Dummy service)
+# ipa service-add-host test/san.host.example.test --host `hostname`   (Link service to real host)
 
 - name: Check if SSL certs already exist
   stat:

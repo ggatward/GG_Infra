@@ -2,11 +2,21 @@
 - name: System Bootstrap
   remote_user: svc-ansible
   become: true
+  gather_facts: false
   hosts: all
   vars_files:
   - vault.yml
 
   tasks:
+  - name: Deploy Gold Image root SSH key
+    tags:
+    - bootstrap
+    copy:
+      content: "{{ vault_root_ssh_private_key }}"
+      dest: /tmp/root.ssh
+      mode: '0600'
+    delegate_to: localhost
+
 
 # - import_role:
 #     name: rhsm-register.yml
@@ -15,8 +25,7 @@
   - import_role:
       name: ansible-role-ipaclient
     tags:
-    - generic
-    - ipa
+    - bootstrap
     vars:
       ipaclient_servers:
       - ipa1.ipa.home.gatwards.org

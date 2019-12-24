@@ -15,6 +15,15 @@ ipaclient_ip_address: false
 ipaclient_enable_dns_updates: true
 
 # SSL Certificate defaults
-ipaclient_create_ssl_certs: false
+ipaclient_ssl_create_certs: false
 ipaclient_ssl_keylen: '4096'
 ipaclient_ssl_key_mode: '0600'
+ipaclient_ssl_subject_altnames: []
+
+ipaclient_krb5_dns_lookup_realm: 'false'
+ipaclient_krb5_dns_lookup_kdc: 'false'
+ipaclient_krb5_dns_canonicalize_hostname: 'false'
+ipaclient_krb5_extra_domains: []
+
+# Set sssd to use short usernames when AD realm trust is in place
+ipaclient_sssd_shortnames: false

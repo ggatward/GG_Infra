@@ -17,6 +17,8 @@
 # Enroll client system
 - include_tasks: enroll_client.yml
 
+- include_tasks: krb5.yml
+
 # Request, sign and deploy server certs
 - include_tasks: get_ssl_certs.yml
-  when: ipaclient_create_ssl_certs|bool
+  when: ipaclient_ssl_create_certs|bool

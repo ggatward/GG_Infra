@@ -33,6 +33,19 @@ roles:
 - src: https://github.com/ggatward/ansible-influxdb.git
   scm: git
 
+- src: https://github.com/mrlesmithjr/ansible-influxdb-relay.git
+  scm: git
+
+- src: https://github.com/mrlesmithjr/ansible-keepalived.git
+  scm: git
+
+- src: https://github.com/mrlesmithjr/ansible-haproxy.git
+  scm: git
+
+- name: ansible_nginx
+  src: https://github.com/geerlingguy/ansible-role-nginx.git
+  scm: git
+
 - src: https://github.com/ggatward/ansible-prometheus.git
   scm: git
 

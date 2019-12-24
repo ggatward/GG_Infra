@@ -25,19 +25,23 @@
       ipaclient_domain: ipa.home.gatwards.org
       ipaclient_enroll_user: admin
       ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
+      ipaclient_sssd_shortnames: true
+      ipaclient_krb5_dns_lookup_realm: 'true'
+      ipaclient_krb5_dns_lookup_kdc: 'true'
+      ipaclient_krb5_dns_canonicalize_hostname: 'true'
+      ipaclient_krb5_extra_domains:
+      - core.home.gatwards.org
+      - .core.home.gatwards.org
+      - lab.home.gatwards.org
+      - .lab.home.gatwards.org
 
-  - name: Ensure krb5 realms are defined
-    lineinfile:
-      path: /etc/krb5.conf
-      insertafter: '[domain_realm]'
-      line: "  {{ item }}"
-    with_items:
-    - '.core.home.gatwards.org = {{ ipaclient_domain|upper }}'
-    - 'core.home.gatwards.org = {{ ipaclient_domain|upper }}'
-    - '.lab.home.gatwards.org = {{ ipaclient_domain|upper }}'
-    - 'lab.home.gatwards.org = {{ ipaclient_domain|upper }}'
+
+
 
   - name: Add NFS domain to idmap.conf
+    tags:
+    - generic
+    - ipa
     lineinfile:
       path: /etc/idmapd.conf
       regexp: '^#?\s?Domain.*=.*'

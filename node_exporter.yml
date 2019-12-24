@@ -1,0 +1,52 @@
+---
+- name: Install node_exporter
+  hosts: all
+  become: true
+
+  tasks:
+  - import_role:
+      name: ansible-prometheus
+    tags:
+    - node_exporter
+    vars:
+      prometheus_install: false
+      prometheus_node_exporter_install: true
+      prometheus_alert_manager_install: false
+      prometheus_push_gateway_install: false
+      prometheus_snmp_exporter_install: false
+      prometheus_blackbox_exporter_install: false
+      prometheus_collector_____enabled_collectors:
+      - 'collector.arp'
+      - 'collector.bcache'
+      - 'collector.bonding'
+      - 'collector.cpu'
+      - 'collector.cpufreq'
+      - 'collector.edac'
+      - 'collector.entropy'
+      - 'collector.filefd'
+      - 'collector.hwmon'
+      - 'collector.ipvs'
+      - 'collector.loadavg'
+      - 'collector.mdadm'
+      - 'collector.meminfo'
+      - 'collector.netdev'
+      - 'collector.netstat'
+      - 'collector.nfs'
+      - 'collector.nfsd'
+      - 'collector.stat'
+      - 'collector.time'
+      - 'collector.vmstat'
+      - 'collector.diskstats' # disabled by default
+      - 'collector.filesystem' # disabled by default
+      - 'collector.mountstats' # disabled by default
+      - 'collector.systemd' # disabled by default
+      - 'collector.textfile' # disabled by default
+
+  - name: Open Prometheus node_exporter firewall port
+    tags:
+    - node_exporter
+    firewalld:
+      port: '9100/tcp'
+      immediate: yes
+      permanent: yes
+      state: enabled

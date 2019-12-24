@@ -1,44 +1,44 @@
----
+# ---
 
-# Grafana parameters
-grafana_security:
-  admin_user: admin
-  admin_password: "{{ vault_grafana_admin_password }}"
+# # Grafana parameters
+# grafana_security:
+#   admin_user: admin
+#   admin_password: "{{ vault_grafana_admin_password }}"
 
-grafana_server:
-  protocol: https
-  enforce_domain: false
-  socket: ""
-  cert_key: "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
-  cert_file: "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem"
-  enable_gzip: true
-  static_root_path: public
-  router_logging: false
-  serve_from_sub_path: false
+# grafana_server:
+#   protocol: https
+#   enforce_domain: false
+#   socket: ""
+#   cert_key: "/etc/pki/tls/private/{{ ansible_fqdn }}.key"
+#   cert_file: "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem"
+#   enable_gzip: true
+#   static_root_path: public
+#   router_logging: false
+#   serve_from_sub_path: false
 
-# Update datasource definitions if they have changed
-grafana_provisioning_synced: true
+# # Update datasource definitions if they have changed
+# grafana_provisioning_synced: true
 
-grafana_datasources:
-- name: "Prometheus"
-  type: "influxdb"
-  access: "proxy"
-  url: "https://{{ influxdb_host }}:{{ influxdb_http_port }}"
-  database: "prometheus"
-  user: "grafana_prometheus"
-  withCredentials: true
-  isDefault: true
-  editable: true
-  secureJsonData:
-    password: "{{ vault_influxdb_grafana_password }}"
-- name: "OpenHAB"
-  type: "influxdb"
-  access: "proxy"
-  url: "https://{{ influxdb_host }}:{{ influxdb_http_port }}"
-  database: "openhab"
-  user: "grafana_openhab"
-  withCredentials: true
-  isDefault: false
-  editable: true
-  secureJsonData:
-    password: "{{ vault_influxdb_grafana_password }}"
+# grafana_datasources:
+# - name: "Prometheus"
+#   type: "influxdb"
+#   access: "proxy"
+#   url: "https://{{ influxdb_host }}:{{ influxdb_http_port }}"
+#   database: "prometheus"
+#   user: "grafana_prometheus"
+#   withCredentials: true
+#   isDefault: true
+#   editable: true
+#   secureJsonData:
+#     password: "{{ vault_influxdb_grafana_password }}"
+# - name: "OpenHAB"
+#   type: "influxdb"
+#   access: "proxy"
+#   url: "https://{{ influxdb_host }}:{{ influxdb_http_port }}"
+#   database: "openhab"
+#   user: "grafana_openhab"
+#   withCredentials: true
+#   isDefault: false
+#   editable: true
+#   secureJsonData:
+#     password: "{{ vault_influxdb_grafana_password }}"

@@ -1,7 +1,7 @@
----
-# MOTD vars
-role: Monitoring and Metrics
+# ---
+# # MOTD vars
+# role: Monitoring and Metrics
 
-# We need an SSL cert
-ipaclient_create_ssl_certs: true
-ipaclient_ssl_key_mode: '0644'
+# # We need an SSL cert
+# ipaclient_create_ssl_certs: true
+# ipaclient_ssl_key_mode: '0644'

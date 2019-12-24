@@ -1,0 +1,40 @@
+---
+- name: Configure Grafana
+  remote_user: svc-ansible
+  become: true
+  hosts: grafana
+  vars_files:
+  - vault.yml
+
+  tasks:
+  - import_role:
+      name: ansible-grafana
+    tags:
+    - monitoring
+    - grafana
+    vars:
+      grafana_provisioning_synced: true
+      grafana_security:
+        admin_password: "'{{ vault_grafana_admin_password }}'"
+        admin_user: admin
+      grafana_server:
+        cert_file: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+        cert_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+        enable_gzip: true
+        enforce_domain: false
+        protocol: https
+        router_logging: false
+        serve_from_sub_path: false
+        socket: ''
+        static_root_path: public
+
+
+  - name: Open Grafana firewall port
+    tags:
+    - monitoring
+    - prometheus
+    firewalld:
+      port: '3000/tcp'
+      immediate: yes
+      permanent: yes
+      state: enabled
