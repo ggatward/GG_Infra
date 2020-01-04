@@ -15,8 +15,6 @@
 - import_playbook: node_exporter.yml
   when: "'prometheus' not in group_names"
 
-
-# - import_playbook: tang.yml
-# - import_playbook: weather.yml
-# - import_playbook: automation.yml
+- import_playbook: weather.yml
+- import_playbook: automation.yml
 # - import_playbook: workstation.yml

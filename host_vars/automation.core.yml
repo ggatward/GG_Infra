@@ -1,3 +1,0 @@
----
-create_ssl_certs: true
-ssl_keylen: '2048'

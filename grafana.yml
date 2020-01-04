@@ -28,6 +28,10 @@
         socket: ''
         static_root_path: public
 
+  # Admin password doesn't always set properly within the role (and leaves it in plaintext in the config file)...
+  - name: Set Grafana Admin password
+    command: grafana-cli admin reset-admin-password '{{ vault_grafana_admin_password }}'
+    changed_when: false
 
   - name: Open Grafana firewall port
     tags:

@@ -8,7 +8,6 @@
     gpgcheck: true
     gpgkey: https://bintray.com/user/downloadSubjectPublicKey?username=openhab
   tags:
-  - all
   - openhab
 
 - name: Install RPM packages
@@ -21,10 +20,8 @@
     - python-psycopg2
     - openhab2
     - python-pip
-    - nginx
     - httpd-tools
   tags:
-  - all
   - openhab
 
 - name: Install PIP packages
@@ -36,7 +33,6 @@
     - speedtest-cli
     - APScheduler
   tags:
-  - all
   - openhab
 
 - name: Open Firewall Ports
@@ -49,7 +45,6 @@
   - 8080/tcp
   - 1900/udp
   tags:
-  - all
   - openhab
 
 - name: Open Firewall Services
@@ -63,20 +58,19 @@
     - http
     - https
   tags:
-  - all
   - openhab
 
-- name: Configure Nginx proxy
-  template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart nginx
-  tags:
-  - all
-  - openhab
+# - name: Configure Nginx proxy
+#   template:
+#     src: nginx.conf.j2
+#     dest: /etc/nginx/nginx.conf
+#     owner: root
+#     group: root
+#     mode: 0644
+#   notify: Restart nginx
+#   tags:
+#   - all
+#   - openhab
 
 - name: Set SELinux bools
   seboolean:
@@ -84,7 +78,6 @@
     persistent: true
     state: true
   tags:
-  - all
   - openhab
 
 - name: Enable services
@@ -95,7 +88,5 @@
     daemon_reload: true
   with_items:
   - openhab2
-  - nginx
   tags:
-  - all
   - openhab

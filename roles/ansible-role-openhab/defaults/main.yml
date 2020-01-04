@@ -8,11 +8,6 @@ postgresql_pgdata: /var/lib/pgsql/data
 
 influxdb_openhab_password: 'ChangeMe'
 
-# Grafana defaults
-grafana_admin_password: 'ChangeMe'
-grafana_plugins:
-- grafana-influxdb-08-datasource
-
 # MQTT defaults
 mqtt_use_ssl: false
 mqtt_broker_port: '1883'

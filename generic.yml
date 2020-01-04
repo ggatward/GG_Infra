@@ -34,9 +34,7 @@
       - .core.home.gatwards.org
       - lab.home.gatwards.org
       - .lab.home.gatwards.org
-
-
-
+    when: ansible_lsb.id is not defined or (ansible_lsb.id is defined and ansible_lsb.id != 'Raspbian')
 
   - name: Add NFS domain to idmap.conf
     tags:
@@ -48,6 +46,7 @@
       line: "Domain = home.gatwards.org"
       backrefs: true
       state: present
+    when: ansible_lsb.id is not defined or (ansible_lsb.id is defined and ansible_lsb.id != 'Raspbian')
 
 
   - import_role:

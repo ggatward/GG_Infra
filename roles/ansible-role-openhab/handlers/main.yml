@@ -34,8 +34,3 @@
   service:
     name: nginx
     state: restarted
-
-- name: Restart Grafana
-  service:
-    name: grafana-server
-    state: restarted
