@@ -187,13 +187,13 @@ all:
             - project: HOME
               targets:
               - - "{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:9100"
-                # - "{{ hostvars[groups['influxdb'][1]].inventory_hostname }}:9100"
-                #- "{{ hostvars[groups['grafana'][0]].inventory_hostname }}:9100"
-                # - "{{ hostvars[groups['grafana'][1]].inventory_hostname }}:9100"
-                # - "{{ hostvars[groups['sandbox'][0]].inventory_hostname }}:9100"
-                # - "{{ hostvars[groups['sandbox'][1]].inventory_hostname }}:9100"
-                # - "{{ hostvars[groups['sandbox'][2]].inventory_hostname }}:9100"
-                # - "{{ hostvars[groups['sandbox'][3]].inventory_hostname }}:9100"
+                - "foreman.core.home.gatwards.org:9100"
+                - "automation.core.home.gatwards.org:9100"
+                - "zwave1.iot.home.gatwards.org:9100"
+                - "weather.core.home.gatwards.org:9100"
+                - "ipa1.ipa.home.gatwards.org:9100"
+                - "ipa2.ipa.home.gatwards.org:9100"
+                # - "foreman.core.home.gatwards.org:9100"
 
             prometheus_snmp_exporter_targets: []
             prometheus_blackbox_exporter_targets: []
