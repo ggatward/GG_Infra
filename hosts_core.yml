@@ -193,7 +193,6 @@ all:
                 - "weather.core.home.gatwards.org:9100"
                 - "ipa1.ipa.home.gatwards.org:9100"
                 - "ipa2.ipa.home.gatwards.org:9100"
-                # - "foreman.core.home.gatwards.org:9100"
 
             prometheus_snmp_exporter_targets: []
             prometheus_blackbox_exporter_targets: []
