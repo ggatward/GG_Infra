@@ -193,6 +193,9 @@ all:
                 - "weather.core.home.gatwards.org:9100"
                 - "ipa1.ipa.home.gatwards.org:9100"
                 - "ipa2.ipa.home.gatwards.org:9100"
+                - "baremetal1.core.home.gatwards.org:9100"
+                - "baremetal2.core.home.gatwards.org:9100"
+                - "baremetal3.core.home.gatwards.org:9100"
 
             prometheus_snmp_exporter_targets: []
             prometheus_blackbox_exporter_targets: []
