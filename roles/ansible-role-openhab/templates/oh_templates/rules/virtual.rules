@@ -1,0 +1,110 @@
+val logName = "Virtual Devices"
+
+rule "Morning Announce Trigger"
+when
+    Time cron "0 30 6 ? * MON-FRI *" or
+    Time cron "0 20 7 ? * SAT,SUN *"
+then
+    logInfo(logName, "Arming vMorningTrigger...")
+    vMorningTrigger.postUpdate(ON)
+end
+
+
+// Good Morning Announcement
+rule "Good Morning Announcement"
+when
+    Item Lounge_MotionDetector changed from CLOSED to OPEN
+then
+    if (vMorningTrigger.state == ON) {
+        vMorningTrigger.postUpdate(OFF)
+        var Today = ""
+        switch now.getDayOfWeek{
+            case 1: Today = "Monday"
+            case 2: Today = "Tuesday"
+            case 3: Today = "Wednesday"
+            case 4: Today = "Thursday"
+            case 5: Today = "Friday"
+            case 6: Today = "Saturday"
+            case 7: Today = "Sunday"
+        }
+        var Month = ""
+        switch now.getMonthOfYear{
+            case 1: Month = "January"
+            case 2: Month = "February"
+            case 3: Month = "March"
+            case 4: Month = "April"
+            case 5: Month = "May"
+            case 6: Month = "June"
+            case 7: Month = "July"
+            case 8: Month = "August"
+            case 9: Month = "September"
+            case 10: Month = "October"
+            case 11: Month = "November"
+            case 12: Month = "December"
+        }
+
+        val currentTemp = String::format("%.0f", (HomeWx_outTemp.state as DecimalType).floatValue)
+        var string announceText = "Good Morning, It is " + Today + ", " + Month + " " + now.getDayOfMonth +
+            ". " + "The forecast for today is " + BoMWx_forecast_today.state + " with a high of " +
+            BoMWx_forecast_today_max.state + ". " + "It is currently " + currentTemp
+
+        if (vAnnouncementMute.state != ON) {
+            logInfo(logName, announceText)
+            say(announceText, "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+//            say(announceText, "voicerss:enUS", "sonos:PLAY1:{{ sonos_ids.portable1 }}", new PercentType(25))
+            // Speaker.postUpdate("LivingRoom")
+            // SayCommand.postUpdate("" + announceText)
+        } else {
+            logInfo(logName, "Morning announcement muted")
+        }
+
+        // Turn on the radio
+        if (Today != "Saturday" && Today != "Sunday") {
+            SonosLivingroom_Volume.sendCommand(22)
+            SonosLivingroom_Favourites.sendCommand("Mix1063")
+        }
+        if (Today == "Saturday" || Today == "Sunday") {
+            SonosLivingroom_Volume.sendCommand(25)
+            SonosLivingroom_Favourites.sendCommand("KIX")
+        }
+    }
+end
+
+
+// Rollerdoor announcements
+rule "Rollerdoor Announcements"
+when
+    Item Garage_RollerDoor changed
+then
+    if (Garage_RollerDoor.state == OPEN) {
+        say("The roller door is opening", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+    } else if (Garage_RollerDoor.state == CLOSED) {
+        say("The roller door is now closed", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+    }
+end
+
+
+// Virtual Appliance states
+rule "Washing Machine virtual status"
+when
+    Item Sonoff1_Power changed
+then
+    if (Sonoff1_Power.state > 2) {
+        vWasher.postUpdate(1)
+    } else if (Sonoff1_Power.state < 2) {
+        vWasher.postUpdate(2)
+        sendPushoverMessage(pushoverBuilder("The Washing Machine has finished").withDevice("ag_galaxys5").withTitle("Laundry notification"))
+    }
+end
+
+rule "Dryer virtual status"
+when
+    Item Sonoff2_Power changed
+then
+    if (Sonoff2_Power.state > 5) {
+        vDryer.postUpdate(1)
+    } else if (Sonoff2_Power.state == 0) {
+        vDryer.postUpdate(0)
+        sendPushoverMessage(pushoverBuilder("The Dryer has finished").withDevice("ag_galaxys5").withTitle("Laundry notification"))
+    }
+end

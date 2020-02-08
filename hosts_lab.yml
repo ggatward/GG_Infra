@@ -1,0 +1,273 @@
+all:
+  vars:
+    motd_system: Home
+    motd_sys_env: LAB
+
+    cis_level_1_exclusions: ['1.2.3','1.3.1','1.8','2.2.7','3.4.1','3.4.2','3.4.3','3.4.4','3.4.5','5.2.8','5.3.2']
+    cis_level_2_exclusions: ['6.1.1']
+      # 1.2.3   - GPG checking
+      # 1.3.1   - 'aide --init' on EL8 hangs
+      # 1.8     - Yum update *
+      # 2.2.7   - Removes ipa-client as a dependency of rpcbind/nfs-utils.
+      # 3.4.2-5 - hosts.allow and hosts.deny not configured
+      # 5.2.8   - Disable root ssh
+      # 5.3.2   - PAM config
+      # 6.1.1.  - Audit Sytem File Permissions
+    cis_chrony_servers: |+
+      server ntp1.core.home.gatwards.org iburst
+      server ntp2.core.home.gatwards.org iburst
+      server ntp3.core.home.gatwards.org iburst
+    cis_local_login_warning_banner: |+
+      ###############################################################
+      #  All connections to this system are monitored and recorded  #
+      #  Disconnect IMMEDIATELY if you are not an authorized user!  #
+      ###############################################################
+    cis_remote_login_warning_banner: "{{ cis_local_login_warning_banner }}"
+
+    # Common SSL parameters
+    tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
+
+    # InfluxDB is used by multiple groups, common params defined here
+#    influxdb_admin_password: "{{ vault_influxdb_admin_password }}"
+#    influxdb_enable_ssl: true
+#    influxdb_http_port: '8086'
+
+    # MQTT broker is used by multiple groups, common params defined here
+    mqtt_broker_fqdn: automation.core.home.gatwards.org
+    mqtt_broker_port: '1883'
+
+    # Location parameters used in multple groups
+    latitude: "{{ vault_latitude }}"
+    longitude: "{{ vault_longitude }}"
+    altitude: '698'
+
+
+  children:
+
+    # automation:
+    #   children:
+    #     openhab: {}
+    #     zwave: {}
+
+
+    influxdb:
+      hosts:
+        influxdb.lab.home.gatwards.org:
+          instance_ip: 172.22.4.112
+          unicast_src_ip: "{{ instance_ip }}"
+          unicast_peers:
+          - 172.22.4.113
+
+      vars:
+        motd_role: InfluxDB
+        ipaclient_ssl_create_certs: true
+        ipaclient_ssl_key_mode: '0644'
+        influxdb_admin_user: admin
+        influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
+        influxdb_enable_ssl: true
+        influxdb_http_port: '8086'
+        influxdb_udp_port: '8089'
+        influxdb_databases:
+        - host: "{{ ansible_fqdn }}"
+          name: 'prometheus'
+          state: present
+          retention_policy:
+            enabled: true
+            name: 1week
+            duration: 1w
+            replication: 1
+        influxdb_users:
+        - username: 'prometheus'
+          password: "{{ vault_influxdb_prometheus_password }}"
+          permissions:
+          - database: 'prometheus'
+            grants: ALL
+        - username: 'grafana'
+          password: "{{ vault_influxdb_grafana_password }}"
+          permissions:
+          - database: 'prometheus'
+            grants: READ
+        influxdb_subscriptions: []
+        # - name: SPLUNK
+        #   dest: udp://127.0.0.1:8191
+
+        influxdb_relay_install: false
+        influxdb_relay_http_port: '9086'
+        influxdb_relay_udp_port: '9089'
+        influxdb_relay_enable_ssl: true
+        influxdb_relay_ssl_cert: /etc/pki/tls/certs/influxdb-proxy.pem
+        influxdb_relay_vip: 172.22.4.xxx
+        influxdb_relay_outputs:
+        - name: influxdb1
+          location: "{{ hostvars[groups['influxdb'][0]].instance_ip }}:{{ influxdb_udp_port }}"
+        - name: influxdb2
+          location: "{{ hostvars[groups['influxdb'][1]].instance_ip }}:{{ influxdb_udp_port }}"
+        haproxy_http_port: '8186'
+        haproxy_ssl_ciphers: 'EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5'
+
+        prometheus_install: false
+        prometheus_alert_manager_install: false
+        prometheus_push_gateway_install: false
+        prometheus_snmp_exporter_install: false
+        prometheus_blackbox_exporter_install: false
+
+    prometheus_servers:
+      vars:
+        cis_nginx_install: { package: nginx, state: present, service: nginx, rstate: started, enabled: true, exception: 123 }
+
+      children:
+        prometheus:
+          hosts:
+            prometheus.lab.home.gatwards.org:
+              instance_ip: 172.22.4.63
+          vars:
+            motd_role: Prometheus Server
+            ipaclient_ssl_create_certs: true
+            ipaclient_ssl_key_mode: '0644'
+            prometheus_install: true
+            prometheus_node_exporter_install: true
+            prometheus_alert_manager_install: true
+            prometheus_push_gateway_install: true
+            prometheus_snmp_exporter_install: true
+            prometheus_blackbox_exporter_install: true
+            prometheus_config_alerting:
+            prometheus_config_rule_files:
+            prometheus_config_global_external_labels:
+              prom_cluster: PROM-LAB
+            prometheus_storage__tsdb__retention: '15d'
+            prometheus_storage__tsdb__retention__size: '50GB'
+            prometheus_node_exporter_targets:
+            - project: LAB
+              targets:
+              - - "{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:9100"
+                # - "{{ hostvars[groups['influxdb'][1]].inventory_hostname }}:9100"
+                - "{{ hostvars[groups['grafana'][0]].inventory_hostname }}:9100"
+                # - "{{ hostvars[groups['grafana'][1]].inventory_hostname }}:9100"
+                # - "{{ hostvars[groups['sandbox'][0]].inventory_hostname }}:9100"
+                # - "{{ hostvars[groups['sandbox'][1]].inventory_hostname }}:9100"
+                # - "{{ hostvars[groups['sandbox'][2]].inventory_hostname }}:9100"
+                # - "{{ hostvars[groups['sandbox'][3]].inventory_hostname }}:9100"
+
+            prometheus_snmp_exporter_targets: []
+            prometheus_blackbox_exporter_targets: []
+
+
+    grafana:
+      hosts:
+        grafana.lab.home.gatwards.org:
+          instance_ip: 172.22.4.144
+      vars:
+        motd_role: Grafana
+        ipaclient_ssl_create_certs: true
+        ipaclient_ssl_key_mode: '0644'
+
+        grafana_datasources:
+        - access: proxy
+          database: prometheus
+          editable: true
+          isDefault: true
+          name: Prometheus
+          type: influxdb
+          url: https://{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:{{ hostvars[groups['influxdb'][0]].influxdb_http_port }}
+          user: grafana
+          secureJsonData:
+            password: '{{ vault_influxdb_grafana_password }}'
+          basicAuth: true
+          basicAuthUser: grafana
+          basicAuthPassword: "{{ vault_influxdb_grafana_password }}"
+          withCredentials: true
+
+
+        # grafana_auth:
+        #   anonymous:
+        #     org_name: Main Organization
+        #     org_role: Viewer
+        #   basic:
+        #     enabled: true
+        #   disable_login_form: false
+        #   disable_signout_menu: false
+        #   ldap:
+        #     allow_sign_up: false
+        #     config_file: /etc/grafana/ldap.toml
+        #   oauth_auto_login: false
+        #   signout_redirect_url: ''
+
+
+
+    #       grafana_ldap:
+    #         group_mappings:
+    #         - groups:
+    #           - group_dn: cn=grafana-admins,cn=groups,cn=accounts,dc=grafana,dc=org
+    #             org_role: Admin
+    #           - group_dn: cn=grafana-editors,cn=groups,cn=accounts,dc=grafana,dc=org
+    #             org_role: Editor
+    #           - group_dn: '*'
+    #             org_role: Viewer
+    #           id: 1
+    #           name: Main Org.
+    #         servers:
+    #           attributes:
+    #             email: mail
+    #             member_of: memberOf
+    #             name: givenName
+    #             surname: sn
+    #             username: uid
+    #           bind_dn: uid=svc-grafana,cn=users,cn=accounts,dc=gatwards,dc=org
+    #           bind_password: grafana
+    #           group_search_base_dns:
+    #           - '{{ ldap_group_base }}'
+    #           group_search_filter: '{{ ldap_group_filter }}'
+    #           host: '{{ ldap_servers[0] }}'
+    #           port: 389
+    #           root_ca_cert: '{{ tls_cafile }}'
+    #           search_base_dns:
+    #           - '{{ ldap_user_base }}'
+    #           search_filter: '{{ ldap_user_filter }}'
+    #           ssl_skip_verify: true
+    #           start_tls: true
+    #           use_ssl: false
+    #         verbose_logging: false
+
+
+
+
+
+    sandbox:
+      hosts:
+        sandbox-cent7.lab.home.gatwards.org: {}
+        sandbox-cent8.lab.home.gatwards.org: {}
+        sandbox-cent7w.lab.home.gatwards.org: {}
+        sandbox-cent8w.lab.home.gatwards.org: {}
+        sandbox-rhel7.lab.home.gatwards.org: {}
+        sandbox-rhel8.lab.home.gatwards.org: {}
+        sandbox-rhel7w.lab.home.gatwards.org: {}
+        sandbox-rhel8w.lab.home.gatwards.org: {}
+        sandbox-f30w.lab.home.gatwards.org: {}
+
+    workstation:
+      hosts:
+        sandbox-cent7w.lab.home.gatwards.org: {}
+        sandbox-cent8w.lab.home.gatwards.org: {}
+        sandbox-f30w.lab.home.gatwards.org:
+          desktop_group: "Cinnamon Desktop"
+          install_spotify: true
+          disable_squashfs: false
+        # sandbox-rhel7w.lab.home.gatwards.org: {}
+        # sandbox-rhel8w.lab.home.gatwards.org: {}
+      vars:
+        motd_role: Workstation
+        setup_automounts: true
+        configure_printer: true
+        install_chrome: true
+        install_xrdp: true
+        install_playonlinux: false
+        install_spotify: false
+        #desktop_group: "Cinnamon Desktop"
+        browser_startup_url: 'https://google.com.au'
+        install_development: false
+        additional_ws_packages:
+        - vlc
+
+    ungrouped: {}
+
+    # weather: {}

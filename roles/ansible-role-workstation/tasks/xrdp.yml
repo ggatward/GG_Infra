@@ -1,0 +1,99 @@
+---
+- name: Install XRDP packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - xrdp
+    - xrdp-selinux
+
+- name: Enable XRDP services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+  - xrdp
+  - xrdp-sesman
+
+- name: Add RDP to firewall
+  firewalld:
+    state: enabled
+    port: 3389/tcp
+    immediate: yes
+    permanent: yes
+
+- name: Install XRDP Configuration
+  template:
+    src: xrdp.ini.j2
+    dest: /etc/xrdp/xrdp.ini
+
+- name: Install XRDP Logo
+  get_url:
+    url: "{{ gui_xrdp_logo }}"
+    dest: /usr/share/xrdp/xrdp_logo.bmp
+    owner: root
+    group: root
+    mode: 0644
+  when: gui_xrdp_logo is defined
+
+- name: Check installed SELinux policy
+  command: semodule -l
+  register: selinux_policies
+  changed_when: false
+
+- block:
+  - name: Install XRDP SElinux policy
+    copy:
+      src: xrdp_mkhomedir.te
+      dest: /tmp/xrdp_mkhomedir.te
+
+  - name: Build SELinux policy module
+    command: checkmodule -M -m -o /tmp/xrdp_mkhomedir.mod /tmp/xrdp_mkhomedir.te
+
+  - name: Build SELinux policy package
+    command: semodule_package -m /tmp/xrdp_mkhomedir.mod -o /tmp/xrdp_mkhomedir.pp
+
+  - name: Install SElinux policy
+    command: semodule -i /tmp/xrdp_mkhomedir.pp
+  when: '"xrdp_mkhomedir" not in selinux_policies.stdout'
+
+- name: Install polkit rules
+  copy:
+    src: 99-xrdp-colord.rules
+    dest: /etc/polkit-1/rules.d/99-xrdp-colord.rules
+    mode: 0644
+
+- name: Allow XRDP users
+  copy:
+    content: |
+      allowed_users = anybody
+    dest: /etc/X11/Xwrapper.config
+    mode: 0644
+
+
+#<% if rhel_compatible && os_major == 7 %>
+#   echo ">>> Applying krb5child SELinux policy"
+#   cat << EOF > /tmp/my-krb5child.te
+# module my-krb5child 1.0;
+#
+# require {
+#     type sssd_t;
+#     type kernel_t;
+#     class key { read view write };
+# }
+#
+# #============= sssd_t ==============
+# allow sssd_t kernel_t:key { read view write };
+# EOF
+#   checkmodule -M -m -o /tmp/my-krb5child.mod /tmp/my-krb5child.te
+#   semodule_package -m /tmp/my-krb5child.mod -o /tmp/my-krb5child.pp
+#   semodule -i /tmp/my-krb5child.pp
+
+#   <%# Fix libcolor %>
+#   echo ">>> Fix libcolor"
+#   rm -f /usr/lib64/gnome-settings-daemon-3.0/libcolor.so
+#   touch /usr/lib64/gnome-settings-daemon-3.0/libcolor.so
+#   chattr +i /usr/lib64/gnome-settings-daemon-3.0/libcolor.so
+# <% end %>

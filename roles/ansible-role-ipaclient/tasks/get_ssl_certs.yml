@@ -1,0 +1,51 @@
+---
+- name: Create dummy hosts in IPA for additional SANs
+  ipa_host:
+    ipa_user: "{{ ipaclient_enroll_user }}"
+    ipa_pass: "{{ ipaclient_enroll_pass }}"
+    fqdn: "{{ item }}"
+    force: true
+  with_items:
+  - "{{ ipaclient_ssl_subject_altnames }}"
+  when: ipaclient_ssl_subject_altnames|length > 0
+
+- name: Create HTTP service in IPA
+  ipa_service:
+    ipa_user: "{{ ipaclient_enroll_user }}"
+    ipa_pass: "{{ ipaclient_enroll_pass }}"
+    krbcanonicalname: HTTP/{{ item }}
+    hosts: "{{ ansible_fqdn }}"
+    state: present
+  with_items:
+  - "{{ ansible_fqdn }}"
+  - "{{ ipaclient_ssl_subject_altnames }}"
+
+# ipa host-add san.host.example.test --force                          (Dummy hostname)
+# ipa service-add test/san.host.example.test --force                  (Dummy service)
+# ipa service-add-host test/san.host.example.test --host `hostname`   (Link service to real host)
+
+- name: Check if SSL certs already exist
+  stat:
+    path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+  register: sslcerts
+  changed_when: false
+
+# TODO: Additional SANs
+- name: Request new SSL certs from IPA
+  command: ipa-getcert request -r -g {{ ipaclient_ssl_keylen }} -f /etc/pki/tls/certs/{{ ansible_fqdn }}.pem -k /etc/pki/tls/private/{{ ansible_fqdn }}.key -N CN={{ ansible_fqdn }} -K HTTP/{{ ansible_fqdn }}
+  when: not sslcerts.stat.exists
+
+- name: Wait for certs to be retrieved
+  wait_for:
+    path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+  when: not sslcerts.stat.exists
+
+- name: Set permissions on SSL certs
+  file:
+    path: "{{ item.path }}"
+    mode: "{{ item.perms }}"
+  with_items:
+  - path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+    perms: '0644'
+  - path: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+    perms: '{{ ipaclient_ssl_key_mode }}'

@@ -1,0 +1,293 @@
+sitemap ourhouse label="Our Home" {
+    Frame label="Inside" icon="groundfloor" {
+        Group item=LivingDining
+        Group item=Kitchen
+        Group item=Hallway
+        Group item=MasterBedroom
+        Group item=Wardrobe
+        Group item=Ensuite
+        Group item=MichaelsRoom
+        Group item=CaitlynsRoom
+        Group item=Bathroom
+        Group item=Toilet
+        Group item=Office
+        Group item=RumpusRoom
+        Group item=Garage
+        Group item=Laundry
+    }
+
+    Frame label="Outside" icon="garden" {
+        Group item=Alfresco
+        Group item=Deck
+        Group item=Backyard
+        Group item=FrontYard
+        Group item=Driveway
+        Group item=Shed
+        Text label="Irrigation" icon="water" {
+            Switch item=SprinklerSystemZone1
+            Switch item=SprinklerSystemZone2
+            Switch item=SprinklerSystemZone3
+            Switch item=SprinklerCycle
+            Switch item=SprinklerSystemSchedule
+        }
+    }
+
+    Frame label="Sonos" {
+        Text label="Livingroom" icon="player" {
+            Default item=SonosLivingroom_Control label="Player" icon="player"
+            Text icon="none"
+            Selection item=SonosLivingroom_MultiRoom label="Multiroom Control"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "Unlink"="Remove all players from group",
+                "Alfresco"="Add Alfresco to Group",
+                "Portable1"="Add Portable1 to Group",
+                "Standalone"="Standalone" ]
+            Selection item=SonosLivingroom_Favourites label="Favourites"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "KIX"="KIX Country",
+                "Mix1063"="Mix 106.3" ]
+            Text item=SonosLivingroom_MultiRoomMode label="Linked Multiroom Players: "
+            Switch item=SonosLivingroom_Repeat label="Repeat: " icon="sonos_repeat" visibility=[SonosLivingroom_Control=="PLAY"] mappings=[ALL="All", OFF="None", ON="This track"]
+            Switch item=SonosLivingroom_Shuffle label="Shuffle: " icon="sonos_shuffle" visibility=[SonosLivingroom_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
+            Slider item=SonosLivingroom_Volume label="Volume" icon="soundvolume"
+            Text item=SonosLivingroom_CurrentTitle label="Title: " icon="sonos_title" visibility=[SonosLivingroom_Control=="PLAY"]
+            Text item=SonosLivingroom_CurrentArtist label="Artist: " icon="sonos_artist" visibility=[SonosLivingroom_Control=="PLAY"]
+            Switch item=SonosLivingroom_Mute label="Mute: " icon="sonos_mute" visibility=[SonosLivingroom_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
+            Text item=SonosLivingroom_CurrentAlbum label="Album: " icon="sonos_album" visibility=[SonosLivingroom_Control=="PLAY"]
+            Image item=SonosLivingroom_CurrentAlbumArt label="Cover" visibility=[SonosLivingroom_Control=="PLAY"]
+            }
+
+        Text label="Alfresco" icon="player" {
+            Default item=SonosAlfresco_Control label="Player" icon="player"
+            Text icon="none"
+            Selection item=SonosAlfresco_MultiRoom label="Multiroom Control"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "Unlink"="Remove all players from group",
+                "Livingroom"="Add Livingroom to group",
+                "Portable1"="Add Portable1 to group",
+                "Standalone"="Standalone" ]
+            Selection item=SonosAlfresco_Favourites label="Favourites"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "KIX"="KIX Country",
+                "Mix1063"="Mix 106.3" ]
+            Text item=SonosAlfresco_MultiRoomMode label="Linked Multiroom Players: "
+            Switch item=SonosAlfresco_Repeat label="Repeat: " icon="sonos_repeat" visibility=[SonosAlfresco_Control=="PLAY"] mappings=[ALL="All", OFF="None", ON="This track"]
+            Switch item=SonosAlfresco_Shuffle label="Shuffle: " icon="sonos_shuffle" visibility=[SonosAlfresco_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
+            Slider item=SonosAlfresco_Volume label="Volume" icon="soundvolume"
+            Text item=SonosAlfresco_CurrentTitle label="Title: " icon="sonos_title" visibility=[SonosAlfresco_Control=="PLAY"]
+            Text item=SonosAlfresco_CurrentArtist label="Artist: " icon="sonos_artist" visibility=[SonosAlfresco_Control=="PLAY"]
+            Switch item=SonosAlfresco_Mute label="Mute: " icon="sonos_mute" visibility=[SonosAlfresco_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
+            Text item=SonosAlfresco_CurrentAlbum label="Album: " icon="sonos_album" visibility=[SonosAlfresco_Control=="PLAY"]
+            Image item=SonosAlfresco_CurrentAlbumArt label="Cover" visibility=[SonosAlfresco_Control=="PLAY"]
+            }
+
+        Text label="Portable1" icon="player" {
+            Default item=SonosPortable1_Control label="Player" icon="player"
+            Text icon="none"
+            Selection item=SonosPortable1_MultiRoom label="Multiroom Control"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "Unlink"="Remove all players from group",
+                "Alfresco"="Add Alfresco to group",
+                "Livingroom"="Add Livingroom to group",
+                "Standalone"="Standalone" ]
+            Selection item=SonosPortable1_Favourites label="Favourites"  icon="mediacontrol" mappings=[
+                "Empty"="",
+                "KIX"="KIX Country",
+                "Mix1063"="Mix 106.3" ]
+            Text item=SonosPortable1_MultiRoomMode label="Linked Multiroom Players: "
+            Switch item=SonosPortable1_Repeat label="Repeat: " icon="sonos_repeat" visibility=[SonosPortable1_Control=="PLAY"] mappings=[ALL="All", OFF="None", ON="This track"]
+            Switch item=SonosPortable1_Shuffle label="Shuffle: " icon="sonos_shuffle" visibility=[SonosPortable1_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
+            Slider item=SonosPortable1_Volume label="Volume" icon="soundvolume"
+            Text item=SonosPortable1_CurrentTitle label="Title: " icon="sonos_title" visibility=[SonosPortable1_Control=="PLAY"]
+            Text item=SonosPortable1_CurrentArtist label="Artist: " icon="sonos_artist" visibility=[SonosPortable1_Control=="PLAY"]
+            Switch item=SonosPortable1_Mute label="Mute: " icon="sonos_mute" visibility=[SonosPortable1_Control=="PLAY"] mappings=[ON="On", OFF="Off"]
+            Text item=SonosPortable1_CurrentAlbum label="Album: " icon="sonos_album" visibility=[SonosPortable1_Control=="PLAY"]
+            Image item=SonosPortable1_CurrentAlbumArt label="Cover" visibility=[SonosPortable1_Control=="PLAY"]
+            }
+    }
+
+    Frame label="Weather" {
+        Text label="Weather" icon="sun_clouds" {
+            Frame label="Current Weather" {
+                Text item=HomeWx_outTemp
+                Text item=HomeWx_windDir
+                Text item=HomeWx_windGust
+                Text item=HomeWx_windSpeed
+                Text item=HomeWx_outHumidity
+                Text item=HomeWx_pressure
+                Text item=HomeWx_dayRain
+                Text item=HomeWx_hourRain
+            }
+            Frame label="Forecast" {
+                Text item=BoMWx_forecast_today
+                Text item=BoMWx_forecast_today_max
+                Text item=BoMWx_forecast_tomorrow
+                Text item=BoMWx_forecast_tomorrow_max
+                Text item=BoMWx_forecast_tonight_min
+            }
+        }
+    }
+
+    Frame label="Location Tracking" {
+        Text label="Geoff" icon="man_2" {
+            Text item=GPS_GG_HomeDistance
+            Text item=GPS_GG_IsHome
+            Text item=GPS_GG_LastSeen
+            Text item=GPS_GG_Battery
+            Text item=GPS_GG_Accuracy
+            Switch item=GPS_GG_Moving
+            Mapview item=GPS_GG_Location height=8
+        }
+        Text label="Anna" icon="woman_2" {
+            Text item=GPS_AG_HomeDistance
+            Text item=GPS_AG_IsHome
+            Text item=GPS_AG_LastSeen
+            Text item=GPS_AG_Battery
+            Text item=GPS_AG_Accuracy
+            Switch item=GPS_AG_Moving
+            Mapview item=GPS_AG_Location height=8
+        }
+        Text label="Michael" icon="boy_2" {
+            Text item=GPS_MG_HomeDistance
+            Text item=GPS_MG_IsHome
+            Text item=GPS_MG_LastSeen
+            Text item=GPS_MG_Battery
+            Text item=GPS_MG_Accuracy
+            Switch item=GPS_MG_Moving
+            Mapview item=GPS_MG_Location height=8
+        }
+        Text label="Caitlyn" icon="girl_3" {
+            Text item=GPS_CG_HomeDistance
+            Text item=GPS_CG_IsHome
+            Text item=GPS_CG_LastSeen
+            Text item=GPS_CG_Battery
+            Text item=GPS_CG_Accuracy
+            Switch item=GPS_MG_Moving
+            Mapview item=GPS_CG_Location height=8
+        }
+    }
+
+    Frame label="Energy Usage" {
+        Text item=Solar_LiveImport label="Import/Export" icon="energy" visibility=[Solar_LiveImport>"0"] valuecolor=[>0="red"]
+        Text item=Solar_LiveExport label="Import/Export" icon="solarplant" visibility=[Solar_LiveExport>"0"] valuecolor=[>=0="green"]
+        Text label="Power Usage" icon="energy" {
+            Group item=gPowerLive label="Live Consumption"
+            Group item=gPowerUsed label="Total Consumption"
+        }
+        Text label="Solar Stats" icon="solarplant" {
+            Text item=Solar_DayConsumption
+            Text item=Solar_DayProduction
+            Text item=Solar_DayCoverage
+            Text item=Solar_DayImport
+            Text item=Solar_DayExport
+            Image refresh=60 url="http://automation.core.home.gatwards.org:3000/render/d-solo/a2s6rv1Wz/import-export?orgId=1&from=now-24h&to=now&panelId=4&width=1000&height=500&tz=Australia%2FSydney"
+
+            Text item=Solar_DaySelfConsumption
+        }
+    }
+
+
+
+
+    Frame label="By Device Groups" {
+        Group item=gDoorStatus icon="door"
+        // Text label="Doors" icon="door" {
+        //     // Default item=Shed_Door label="Shed" icon="door"
+        //     Default item=Dining_FrontDoor label="Front Door" icon="frontdoor"
+        //     // Default item=RumpusRoom_Door label="Rumpus Room" icon="door"
+        //     Default item=Garage_RollerDoor label="Roller Door" icon="garagedoor"
+        //     Default item=Garage_SideDoor label="Garage" icon="door"
+        //     // Default item=Laundry_Door label="Laundry" icon="door"
+        // }
+
+        Group item=gLights icon="light"
+
+        Text label="Temperature" icon="temperature" {
+            // Default item=MichaelsRoom_Temperature label="Michaels Bedroom"
+            // Default item=RumpusRoom_Temperature label="Rumpus Room"
+            // Default item=Garage_Temperature label="Garage"
+            // Default item=CaitlynsRoom_Temperature label="Caitlyns Bedroom"
+            Default item=Kitchen_Temperature label="Kitchen"
+            // Default item=MasterBedroom_Temperature label="Master Bedroom"
+            // Default item=Office_Temperature label="Office"
+        }
+
+        Group item=gSonoff icon="poweroutlet_au"
+
+        // Text label="Windows" icon="window" {
+        //     Default item=MichaelsRoom_Window label="Michaels Bedroom"
+        //     Default item=CaitlynsRoom_Window label="Caitlyns Bedroom"
+        // }
+
+        Group item=gMotion icon="motion1"
+
+        Text label="Occupancy" icon="presence" {
+            Default item=Dining_Occupancy label="Dining" icon="presence"
+            Default item=Garage_Occupancy label="Garage" icon="presence"
+            Default item=Hallway_Occupancy label="Hallway" icon="presence"
+            Default item=Lounge_Occupancy label="Living Room" icon="presence"
+            Default item=Bedroom1_Occupancy label="Master Bedroom" icon="presence"
+        }
+
+        // Text label="Fans" icon="fan_ceiling" {
+        //     Default item=MasterBedroom_Fan label="Master Bedroom"
+        // }
+    }
+
+
+
+//   Frame label="Network and Presence" icon="network"{
+//     Text label="Network and Presence"{
+//       Frame label="Presence" {
+//         Text item=Net_Geoffs_Phone icon="oneplus3" label="Geoffs Phone [MAP(presence.map):%s]"
+//         Text item=Net_Annas_Phone icon="oneplus3" label="Annas Phone [MAP(presence.map):%s]"
+//       }
+
+//       Frame label="SpeedTest" {
+//         Text item=SpeedtestSummary {
+//           Frame label="Results" {
+//             Text item=Speedtest_ResultDown
+//             Text item=Speedtest_ResultUp
+//             Text item=Speedtest_ResultPing
+//           }
+//           // Global Controls
+//           Frame label="Controls" icon="settings" {
+//             Text item=Speedtest_ResultDate
+//             Text item=Speedtest_Running label="Speedtest [%s]" visibility=[Speedtest_Running != "-"]
+//             Switch item=Speedtest_Rerun mappings=[ON="Start"]
+//           }
+//           Frame label="Statistics" icon="chart" {
+//             //TODO dokumentieren: icon wird nicht angezeigt
+//             Text label="" icon="speedtest_analytics8"
+//             //Image label="Speedtest" refresh=60000
+//             //    url="http://192.168.11.230:3000/render/dashboard-solo/db/w66a?panelId=5&width=700&height=350&from=now-48h&to=now"
+//           }
+//         }
+//       }
+//     }
+//   }
+
+    Frame label="Admin" icon="settings" {
+        Group item=Home label="All Devices" icon="house"
+//        Group item=gVirtual label="Virtual Devices" icon="settings"
+//        Group item=gELK label="ELK Alarm Devices" icon="alarm"
+        Group item=gReachable
+        Group item=gBattery
+    }
+
+
+
+//  Frame label="Admin" {
+//    Text label="Status" icon="chart" {
+//      Group item=Heating_ValveSettings valuecolor=[0="green"]
+//      Group item=Windows valuecolor=[0="green"]
+//      Group item=Bat_Binary valuecolor=[0="green"]
+//      Group item=Bat_Volts valuecolor=[0="green"]
+//      Group item=Bat_Percent valuecolor=[0="green"]
+//      Switch item=Sonoff_Action mappings=[restart="Restart", queryFW="Query FW", upgradeFW="Upgrade FW"]
+//      Switch item=Whg_Wartung_Trigger label="Wartungsroutinen" icon="pantry" mappings=[ON="Starten"]
+//    }
+//  }
+
+
+}

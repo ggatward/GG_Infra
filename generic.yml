@@ -3,14 +3,54 @@
   remote_user: svc-ansible
   become: true
   hosts: all
-  pre_tasks:
-    - name: Include vault vars
-      include_vars: vault.yml
-      no_log: true
-  tasks:
-    - include_role:
-        name: role_generic_os
+  vars_files:
+  - vault.yml
 
-    - include_role:
-        name: ansible-role-hardening
-      when: skip_hardening is not defined
+  tasks:
+  - import_role:
+      name: ansible-generic-os
+    tags:
+    - generic
+
+
+  - import_role:
+      name: ansible-role-ipaclient
+    tags:
+    - generic
+    - ipa
+    vars:
+      ipaclient_servers:
+      - ipa1.ipa.home.gatwards.org
+      - ipa2.ipa.home.gatwards.org
+      ipaclient_domain: ipa.home.gatwards.org
+      ipaclient_enroll_user: admin
+      ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
+      ipaclient_sssd_shortnames: true
+      ipaclient_krb5_dns_lookup_realm: 'true'
+      ipaclient_krb5_dns_lookup_kdc: 'true'
+      ipaclient_krb5_dns_canonicalize_hostname: 'true'
+      ipaclient_krb5_extra_domains:
+      - core.home.gatwards.org
+      - .core.home.gatwards.org
+      - lab.home.gatwards.org
+      - .lab.home.gatwards.org
+    when: ansible_lsb.id is not defined or (ansible_lsb.id is defined and ansible_lsb.id != 'Raspbian')
+
+  - name: Add NFS domain to idmap.conf
+    tags:
+    - generic
+    - ipa
+    lineinfile:
+      path: /etc/idmapd.conf
+      regexp: '^#?\s?Domain.*=.*'
+      line: "Domain = home.gatwards.org"
+      backrefs: true
+      state: present
+    when: ansible_lsb.id is not defined or (ansible_lsb.id is defined and ansible_lsb.id != 'Raspbian')
+
+
+  - import_role:
+      name: ansible-role-hw_vm_tools
+    tags:
+    - generic
+    - vmtools

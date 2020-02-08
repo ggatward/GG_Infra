@@ -1,0 +1,54 @@
+val logName = "SpeedTest"
+
+rule "Speedtest init"
+when
+    System started
+then
+    createTimer(now.plusSeconds(195)) [|
+        if (Speedtest_Rerun.state == NULL) Speedtest_Rerun.postUpdate(OFF)
+        if (Speedtest_Running.state == NULL) Speedtest_Running.postUpdate("-")
+        if (Speedtest_Summary.state == NULL || Speedtest_Summary.state == "") Speedtest_Summary.postUpdate("(unknown)")
+    ]
+end
+
+rule "Speedtest"
+when
+    Time cron "0 0 * * * ?" or
+    Item Speedtest_Rerun received command ON
+then
+    logInfo(logName,"SpeedTest started...")
+    Speedtest_Running.postUpdate("SpeedTest Running...")
+
+    // update timestamp for last execution
+    Speedtest_ResultDate.postUpdate(new DateTimeType())
+
+    // execute the script, you may have to change the path depending on your system
+    var String speedtest_CliOutput = executeCommandLine("/usr/bin/speedtest-cli --simple", 120*1000)
+
+    // for debugging:
+    //logInfo(logName,"SpeedTest output:\n" + speedtest_CliOutput + "\n\n")
+
+    Speedtest_Running.postUpdate("Results...")
+
+    // starts off with a fairly simple error check, should be enough to catch all problems I can think of
+    if (speedtest_CliOutput.startsWith("Ping") && speedtest_CliOutput.endsWith("Mbit/s")) {
+        var String[] results = speedtest_CliOutput.split("\\r?\\n")
+        var float ping = new java.lang.Float(results.get(0).split(" ").get(1))
+        var float down = new java.lang.Float(results.get(1).split(" ").get(1))
+        var float up   = new java.lang.Float(results.get(2).split(" ").get(1))
+        Speedtest_ResultPing.postUpdate(ping)
+        Speedtest_ResultDown.postUpdate(down)
+        Speedtest_ResultUp.postUpdate(up)
+        Speedtest_Summary.postUpdate(String::format("Down: %.1f Mbit/s  Up: %.1f Mbit/s (%.0f ms)", down, up, ping))
+        Speedtest_Running.postUpdate("-")
+        logInfo(logName,"SpeedTest finished.")
+    } else {
+        Speedtest_ResultPing.postUpdate(0)
+        Speedtest_ResultDown.postUpdate(0)
+        Speedtest_ResultUp.postUpdate(0)
+        Speedtest_Summary.postUpdate("(unknown)")
+        Speedtest_Running.postUpdate("Error during run")
+        logError(logName,"SpeedTest failed. Output:\n" + speedtest_CliOutput + "\n\n")
+    }
+    Speedtest_Rerun.postUpdate(OFF)
+end

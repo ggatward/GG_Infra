@@ -1,0 +1,193 @@
+---
+- name: Include distro-specific vars
+  include_vars:
+    file: "{{ ansible_distribution|lower }}.yml"
+
+- set_fact:
+    desktop_group: "{{ desktop_group_centos }}"
+  when:
+  - desktop_group is not defined
+  - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- set_fact:
+    desktop_group: "{{ desktop_group_fedora }}"
+  when:
+  - desktop_group is not defined
+  - ansible_distribution == 'Fedora'
+
+- name: Ensure GDM is installed
+  yum:
+    name: gdm
+    state: present
+  notify: reboot
+
+- debug:
+    msg: "Installing '{{ desktop_group }}'"
+
+# The yum module doesn't seem to handle groups very well - this is more reliable
+- name: Install Desktop packages
+  command: yum -y groupinstall '{{ desktop_group }}'
+  args:
+    warn: false
+
+- name: Disable non-GDM Desktop managers
+  service:
+    name: "{{ item }}"
+    enabled: false
+  with_items:
+  - lightdm
+  ignore_errors: true
+
+- name: Enable GDM
+  service:
+    name: gdm
+    enabled: true
+  notify: reboot
+
+- name: RPMFusion repos
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - https://download1.rpmfusion.org/free/{{ rpmfusion_distro }}/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+    - https://download1.rpmfusion.org/nonfree/{{ rpmfusion_distro }}/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm
+
+
+- name: Install common workstation packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages: "{{ common_packages }}"
+
+- name: Install additional workstation packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages: "{{ additional_ws_packages }}"
+
+- name: Remove packages
+  yum:
+    name: "{{ packages }}"
+    state: absent
+  vars:
+    packages:
+      - gnome-initial-setup
+
+# libvirt is installed within the 'Server with GUI' group - we may not want it though.
+- set_fact:
+    libvirt_state: 'present'
+  when: install_libvirt
+
+- set_fact:
+    libvirt_state: 'absent'
+  when: not install_libvirt
+
+- name: (Un)install libvirt
+  yum:
+    name: libvirt-daemon
+    state: "{{ libvirt_state }}"
+
+# Printer setup
+- block:
+  - name: Deploy printer PPD
+    copy:
+      src: FUJI-XEROX-DocuPrint-CM305-df.ppd
+      dest: /etc/cups/ppd/
+      owner: root
+      group: lp
+      mode: 0640
+
+  - name: Configure printer
+    copy:
+      src: printers.conf
+      dest: /etc/cups/printers.conf
+      owner: root
+      group: lp
+      mode: 0600
+    notify: restart_cups
+  when: configure_printer
+
+- name: Ensure config directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  with_items:
+  - /etc/dconf/db/local.d
+  - /etc/dconf/db/gdm.d
+
+- name: Configure GDM defaults
+  copy:
+    content: |
+      user-db:user
+      system-db:gdm
+      file-db:/usr/share/gdm/greeter-dconf-defaults
+    dest: /etc/dconf/profile/gdm
+
+- name: Install Desktop Logo
+  get_url:
+    url: "{{ gui_desktop_logo }}"
+    dest: /usr/share/pixmaps/logo/desktop-logo.png
+    owner: root
+    group: root
+    mode: 0644
+  when: gui_desktop_logo is defined
+
+- name: Fix default icon view level
+  copy:
+    content: |
+      [org/gnome/nautilus/icon-view]
+      default-zoom-level='standard'
+    dest: /etc/dconf/db/local.d/01-default-icon-view
+
+- name: Configure Firefox
+  blockinfile:
+    path: "{{ firefox_prefs_entry }}"
+    marker: '// {mark} ANSIBLE MANAGED BLOCK'
+    block: |
+      pref("general.config.obscure_value", 0);
+      pref("general.config.filename", "mozilla-custom.cfg");
+    state: present
+
+- name: Install Firefox Config
+  template:
+    src: mozilla-custom.cfg.j2
+    dest: "{{ firefox_prefs_dir }}/mozilla-custom.cfg"
+    owner: root
+    group: root
+    mode: 0644
+
+
+- include: desktop_hardening.yml
+  when: desktop_hardening
+
+- name: Apply GDM config
+  command: dconf update
+
+- name: Check current Target
+  command: systemctl get-default
+  register: current_target
+  changed_when: false
+
+- name: Enable Graphical Target
+  command: systemctl set-default graphical.target
+  when: '"graphical.target" not in current_target.stdout'
+
+- include: xrdp.yml
+  when: install_xrdp
+
+- include: google-chrome.yml
+  when: install_chrome
+
+- include: development.yml
+  when: install_development
+
+- include: playonlinux.yml
+  when: install_playonlinux
+
+- include: spotify.yml
+  when: install_spotify

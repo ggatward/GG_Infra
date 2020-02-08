@@ -1,0 +1,67 @@
+Group      gLocations      "GPS Locations"      (Home)
+Group      gLocationGG     "Geoff"              (gLocations)
+Group      gLocationAG     "Anna"               (gLocations)
+Group      gLocationMG     "Michael"            (gLocations)
+Group      gLocationCG     "Caitlyn"            (gLocations)
+
+Location	    GPS_GG_Location	                                        (gLocationGG)   {channel="gpstracker:tracker:GG:lastLocation"}
+Number          GPS_GG_Lat                                              (gInfluxdb)
+Number          GPS_GG_Lon                                              (gInfluxdb)
+DateTime	    GPS_GG_LastSeen	    "Last seen"		        <time>      (gLocationGG)   {channel="gpstracker:tracker:GG:lastReport"}
+Number		    GPS_GG_Battery	    "Geoff's Phone Battery"	<battery>   (gBattery)      {channel="gpstracker:tracker:GG:batteryLevel"}
+Number:Length	GPS_GG_Accuracy	    "GPS Accuracy [%d m]"	            (gLocationGG)   {channel="gpstracker:tracker:GG:gpsAccuracy"}
+Number          GPS_GG_HomeDistance "Distance from Home [%.1f km]"      (gLocationGG)   {channel="gpstracker:tracker:GG:homeDistance"}
+Switch          GPS_GG_Moving       "Notify on motion"      <siren>     (gLocationGG)
+Switch          GPS_GG_IsHome       "Home presence"                 {channel="gpstracker:tracker:GG:regionTrigger" [
+                                                                        profile="gpstracker:trigger-geofence",
+                                                                        regionName="Home"
+                                                                        ]
+                                                                    }
+Switch          GPS_GG_AtWork       "Work presence"                 {channel="gpstracker:tracker:GG:regionTrigger" [
+                                                                        profile="gpstracker:trigger-geofence",
+                                                                        regionName="Russell"
+                                                                        ]
+                                                                    }
+
+
+Location	    GPS_AG_Location	                                        (gLocationAG)   {channel="gpstracker:tracker:AG:lastLocation"}
+Number          GPS_AG_Lat                                              (gInfluxdb)
+Number          GPS_AG_Lon                                              (gInfluxdb)
+DateTime	    GPS_AG_LastSeen	    "Last seen"		        <time>      (gLocationAG)   {channel="gpstracker:tracker:AG:lastReport"}
+Number		    GPS_AG_Battery	    "Anna's Phone Battery"  <battery>   (gBattery)      {channel="gpstracker:tracker:AG:batteryLevel"}
+Number:Length	GPS_AG_Accuracy	    "GPS Accuracy [%d m]"	            (gLocationAG)   {channel="gpstracker:tracker:AG:gpsAccuracy"}
+Number          GPS_AG_HomeDistance "Distance from Home [%.1f km]"      (gLocationAG)   {channel="gpstracker:tracker:AG:homeDistance"}
+Switch          GPS_AG_Moving       "Notify on motion"      <siren>     (gLocationAG)
+Switch          GPS_AG_IsHome       "Home presence"                 {channel="gpstracker:tracker:AG:regionTrigger" [
+                                                                        profile="gpstracker:trigger-geofence",
+                                                                        regionName="Home"
+                                                                        ]
+                                                                    }
+
+Location	    GPS_MG_Location	                                        (gLocationMG)   {channel="gpstracker:tracker:MG:lastLocation"}
+Number          GPS_MG_Lat                                              (gInfluxdb)
+Number          GPS_MG_Lon                                              (gInfluxdb)
+DateTime	    GPS_MG_LastSeen	    "Last seen"		        <time>      (gLocationMG)   {channel="gpstracker:tracker:MG:lastReport"}
+Number		    GPS_MG_Battery	    "Michael's Phone Battery" <battery> (gBattery)      {channel="gpstracker:tracker:MG:batteryLevel"}
+Number:Length	GPS_MG_Accuracy	    "GPS Accuracy [%d m]"	            (gLocationMG)   {channel="gpstracker:tracker:MG:gpsAccuracy"}
+Number          GPS_MG_HomeDistance "Distance from Home [%.1f km]"      (gLocationMG)   {channel="gpstracker:tracker:MG:homeDistance"}
+Switch          GPS_MG_Moving       "Notify on motion"      <siren>     (gLocationMG)
+Switch          GPS_MG_IsHome       "Home presence"                 {channel="gpstracker:tracker:MG:regionTrigger" [
+                                                                        profile="gpstracker:trigger-geofence",
+                                                                        regionName="Home"
+                                                                        ]
+                                                                    }
+
+Location	    GPS_CG_Location	                                        (gLocationCG)      //{channel="gpstracker:tracker:CG:lastLocation"}
+Number          GPS_CG_Lat                                              (gInfluxdb)
+Number          GPS_CG_Lon                                              (gInfluxdb)
+DateTime	    GPS_CG_LastSeen	    "Last seen"		        <time>      (gLocationCG)   //{channel="gpstracker:tracker:CG:lastReport"}
+Number		    GPS_CG_Battery	    "Caitlyn's Phone Battery level" <battery> (gBattery) //{channel="gpstracker:tracker:CG:batteryLevel"}
+Number:Length	GPS_CG_Accuracy	    "GPS Accuracy [%d m]"	            (gLocationCG)   //{channel="gpstracker:tracker:CG:gpsAccuracy"}
+Number          GPS_CG_HomeDistance "Distance from Home [%.1f km]"      (gLocationCG)   //{channel="gpstracker:tracker:CG:homeDistance"}
+Switch          GPS_CG_Moving       "Notify on motion"      <siren>     (gLocationCG)
+Switch          GPS_CG_IsHome       "Home presence"                 //{channel="gpstracker:tracker:CG:regionTrigger" [
+                                                                    //    profile="gpstracker:trigger-geofence",
+                                                                    //    regionName="Home"
+                                                                    //    ]
+                                                                    //}

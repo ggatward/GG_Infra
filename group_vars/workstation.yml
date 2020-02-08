@@ -1,7 +1,0 @@
----
-# MOTD vars
-role: Workstation
-
-# Role overrides
-configure_printer: true
-install_vscode: true

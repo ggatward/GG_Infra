@@ -1,0 +1,57 @@
+---
+# Postgresql
+openhab_db_user: openhab2
+openhab_db_password: 'ChangeMe'
+openhab_db_name: openhab2
+openhab_db_host: 127.0.0.1
+postgresql_pgdata: /var/lib/pgsql/data
+
+influxdb_openhab_password: 'ChangeMe'
+
+# MQTT defaults
+mqtt_use_ssl: false
+mqtt_broker_port: '1883'
+mqtt_broker_ssl_port: '8883'
+mqtt_broker_owntracks: false
+mqtt_broker_owntracks_websockets: false
+mqtt_broker_owntracks_port: '8083'
+
+mqtt_broker_tls_cafile: /etc/pki/ca-trust/source/anchors/ca.pem
+mqtt_broker_tls_cert: /etc/pki/tls/certs/broker.pem
+mqtt_broker_tls_key: /etc/pki/tls/private/broker.key
+
+mqtt_users:
+  - user: openhab2
+    pass: 'ChangeMe'
+
+# OpenHAB configuration defaults
+openhab_package: standard
+openhab_remote_addons_enabled: true
+
+openhab_audio_sink: ''
+
+openhab_bindings:
+  - network
+  - ntp
+
+openhab_ui:
+  - basic
+  - paper
+  - habmin
+  - habpanel
+  - homebuilder
+
+openhab_action: []
+
+openhab_persistence:
+  - jdbc-postgresql
+  - rrd4j
+
+openhab_transformation:
+  - javascript
+  - map
+  - regex
+
+openhab_voice: []
+
+openhab_misc: []

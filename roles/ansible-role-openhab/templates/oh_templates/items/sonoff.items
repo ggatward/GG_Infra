@@ -1,0 +1,51 @@
+Group      gSonoff          "Sonoff Devices"    (Home)
+Group      gSonoffSw1       "Washing Machine"   (gSonoff)
+Group      gSonoffSw2       "Dryer"             (gSonoff)
+
+Switch Sonoff1_Switch          "Washing Machine Switch"                 <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff1:power" }
+String Sonoff1_DeviceState     "Washing Machine Sonoff Status [%s]"     <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff1:devicestate" }
+String Sonoff1_hostname        "Washing Machine Sonoff hostname"                            (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:hostname" }
+String Sonoff1_IP              "Washing Machine Sonoff IP"              <ip>                (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:ip" }
+String Sonoff1_FW              "Washing Machine Sonoff FW"              <selfinfo>          (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:fw" }
+String Sonoff1_WifiAp          "Washing Machine Sonoff Wifi AP"                             (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:wifi-ap" }
+String Sonoff1_WifiSSID        "Washing Machine Sonoff Wifi SSID"                           (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:wifi-ssid" }
+String Sonoff1_WifiChannel     "Washing Machine Sonoff Wifi Channel"                        (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:wifi-channel" }
+Number Sonoff1_WifiRssi        "Washing Machine Sonoff Wifi RSSI"       <network>           (gSonoffSw1,gWifiRSSI)    { channel="mqtt:topic:mosquitto:sonoff1:wifi-rssi" }
+String Sonoff1_Time            "Washing Machine Sonoff Sensor Time"                         (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:SensorTime" }
+String Sonoff1_PowStart        "Washing Machine Power Start"                                (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-startTime" }
+Number:Energy Sonoff1_PowTotal "Washing Machine Total Energy Used [%.2f kWh]" <poweroutlet_au> (gSonoffSw1,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff1:POW-Total" }
+Number Sonoff1_Voltage         "Washing Machine Sonoff Voltage [%.1f V]"                     (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-Voltage" }
+Number Sonoff1_Power           "Washing Machine Power [%.1f W]"         <poweroutlet_au>    (gSonoffSw1,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff1:POW-Power" }
+
+Switch Sonoff2_Switch          "Dryer Switch"                           <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff2:power" }
+String Sonoff2_DeviceState     "Dryer Sonoff Status [%s]"               <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff2:devicestate" }
+String Sonoff2_hostname        "Dryer Sonoff hostname"                                      (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:hostname" }
+String Sonoff2_IP              "Dryer Sonoff IP"                        <ip>                (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:ip" }
+String Sonoff2_FW              "Dryer Sonoff FW"                        <selfinfo>          (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:fw" }
+String Sonoff2_WifiAp          "Dryer Sonoff Wifi AP"                                       (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:wifi-ap" }
+String Sonoff2_WifiSSID        "Dryer Sonoff Wifi SSID"                                     (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:wifi-ssid" }
+String Sonoff2_WifiChannel     "Dryer Sonoff Wifi Channel"                                  (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:wifi-channel" }
+Number Sonoff2_WifiRssi        "Dryer Sonoff Wifi RSSI"                 <network>           (gSonoffSw2,gWifiRSSI)    { channel="mqtt:topic:mosquitto:sonoff2:wifi-rssi" }
+String Sonoff2_Time            "Dryer Sonoff Sensor Time"                                   (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:SensorTime" }
+String Sonoff2_PowStart        "Dryer Sonoff Power Start"                                   (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-startTime" }
+Number:Energy Sonoff2_PowTotal "Dryer Total Energy Used [%.2f kWh]"     <poweroutlet_au>    (gSonoffSw2,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff2:POW-Total" }
+Number Sonoff2_Voltage         "Dryer Sonoff Voltage [%.1f V]"                              (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-Voltage" }
+Number Sonoff2_Power           "Dryer Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw2,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff2:POW-Power" }
+
+
+
+// Topic = home/room/sonoff/itemX
+// Topic = home/laundry/sonoff/dryer
+// Full Topic = %topic%/%prefix%/
+// User = sonoff
+
+// Sonoff init commands for console
+// NTPSERVER1 172.22.1.2
+// NTPSERVER2 172.22.1.3
+// NTPSERVER3 172.22.1.4
+// TIMEDST 1,1,10,1,2,660
+// TIMESTD 1,1,4,1,2,600
+// TIMEZONE 99
+
+// POWERONSTATE 1  (For default ON)
+// POWERONSTATE 3  (default - last saved state)

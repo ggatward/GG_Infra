@@ -1,0 +1,20 @@
+[org/gnome/desktop/screensaver]
+lock-enabled=true
+{% if (ansible_distribution == 'Fedora' and ansible_distribution_major_version >= '29') or ( ansible_distribution == 'CentOS' and ansible_distribution_major_version >= '8' ) %}
+lock-delay=uint32 {{ screensaver_timeout }}
+{% else %}
+idle-activation-enabled=true
+lock-delay={{ screensaver_timeout }}
+{% endif %}
+
+[org/gnome/desktop/session]
+{% if (ansible_distribution == 'Fedora' and ansible_distribution_major_version >= '29') or ( ansible_distribution == 'CentOS' and ansible_distribution_major_version >= '8' ) %}
+idle-delay=uint32 {{ screensaver_timeout }}
+{% else %}
+idle-delay={{ screensaver_timeout }}
+{% endif %}
+
+{% if (ansible_distribution == 'Fedora' and ansible_distribution_major_version <= '28') or ( ansible_distribution == 'CentOS' and ansible_distribution_major_version <= '7' ) %}
+[org/gnome/desktop/lockdown]
+disable-lock-screen=false
+{% endif %}

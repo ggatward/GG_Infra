@@ -1,0 +1,9 @@
+
+solaredge:generic:inv1     [
+    tokenOrApiKey="{{ openhab_solaredge_api_key }}",
+    solarId="{{ openhab_solaredge_siteId }}",
+    meterInstalled=true,
+    usePrivateApi=true,
+    liveDataPollingInterval=5,
+    aggregateDataPollingInterval=15
+    ]

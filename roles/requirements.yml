@@ -1,32 +1,53 @@
 ---
-- src: https://github.com/ggatward/role_generic_os.git
+roles:
+- src: https://github.com/ggatward/ansible-role-generic-os.git
   scm: git
-  version: development
+
+- src: https://github.com/adfinis-sygroup/ansible-role-hw_vm_tools.git
+  scm: git
 
 - src: https://github.com/ggatward/ansible-role-hardening.git
   scm: git
-  version: development
 
-- src: https://github.com/ggatward/role_nagios_client.git
+- src: https://github.com/ggatward/linux_adbinding.git
   scm: git
-  version: development
 
-- src: git@github.com:ggatward/ansible-role-ansibletower.git
+- src: https://github.com/ggatward/Ansible-RHEL7-CIS-Benchmarks.git
   scm: git
-  version: development
 
-- src: git@github.com:ggatward/ansible-role-sat6.git
+- src: https://github.com/ggatward/Ansible-RHEL8-CIS-Benchmarks.git
   scm: git
-  version: development
 
-- src: git@github.com:ggatward/ansible-role-workstation.git
-  scm: git
-  version: development
-
-- src: git@github.com:ggatward/ansible-role-nagiosxi.git
-  scm: git
-  version: development
+# - src: git@github.com:ggatward/ansible-role-workstation.git
+#   scm: git
+#   version: development
 
 - src: git@github.com:ggatward/ansible-role-weewx.git
   scm: git
   version: development
+
+# - src: git@github.com:ggatward/ansible-role-openhab.git
+#   scm: git
+#   version: development
+
+- src: https://github.com/ggatward/ansible-influxdb.git
+  scm: git
+
+- src: https://github.com/mrlesmithjr/ansible-influxdb-relay.git
+  scm: git
+
+- src: https://github.com/mrlesmithjr/ansible-keepalived.git
+  scm: git
+
+- src: https://github.com/mrlesmithjr/ansible-haproxy.git
+  scm: git
+
+- name: ansible_nginx
+  src: https://github.com/geerlingguy/ansible-role-nginx.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-prometheus.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-grafana.git
+  scm: git

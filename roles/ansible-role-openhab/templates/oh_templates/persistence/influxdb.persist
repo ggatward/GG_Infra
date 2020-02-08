@@ -1,0 +1,13 @@
+Strategies {
+    everyMinute : "0 * * * * ?"
+    everyHour   : "0 0 * * * ?"
+    everyDay    : "0 0 0 * * ?"
+    default = everyChange
+}
+
+Items {
+    gPower*, gSpeedtest*, gZwave*                                       : strategy = everyChange, everyHour
+    gWeather*, gTemperature*                                            : strategy = everyChange
+    Net_GG_Online, Net_AG_Online, Net_MG_Online, Net_CG_Online          : strategy = everyChange
+    gInfluxdb*                                                          : strategy = everyChange
+}

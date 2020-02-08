@@ -1,0 +1,130 @@
+//
+val logName = "Owntracks Movement"
+
+var PointType ag_starting_location
+var PointType gg_starting_location
+var PointType mg_starting_location
+var PointType cg_starting_location
+var PointType ag_current_location
+var PointType gg_current_location
+var PointType mg_current_location
+var PointType cg_current_location
+
+
+rule "GG Moving switch on"
+when
+    Item GPS_GG_Moving received update ON
+then
+    gg_starting_location = GPS_GG_Location.state
+    logInfo(logName,"gg_starting_location set to " + gg_starting_location)
+end
+
+rule "AG Moving switch on"
+when
+    Item GPS_AG_Moving received update ON
+then
+    ag_starting_location = GPS_AG_Location.state
+    logInfo(logName,"ag_starting_location set to " + ag_starting_location)
+end
+
+rule "MG Moving switch on"
+when
+    Item GPS_MG_Moving received update ON
+then
+    mg_starting_location = GPS_MG_Location.state
+    logInfo(logName,"mg_starting_location set to " + mg_starting_location)
+end
+
+rule "CG Moving switch on"
+when
+    Item GPS_CG_Moving received update ON
+then
+    cg_starting_location = GPS_CG_Location.state
+    logInfo(logName,"cg_starting_location set to " + cg_starting_location)
+end
+
+
+
+rule "PostionParseGG"
+when
+    Item GPS_GG_Location changed
+then
+    GPS_GG_Lat.postUpdate(GPS_GG_Location.state.toString.split(',').get(0))
+    GPS_GG_Lon.postUpdate(GPS_GG_Location.state.toString.split(',').get(1))
+    gg_current_location = GPS_GG_Location.state
+
+    if (GPS_GG_Moving.state == ON){
+        if (gg_starting_location !== null) {
+            logInfo(logName,"gg_starting_location=" + gg_starting_location)
+            logInfo(logName,"gg_current_location=" + gg_current_location)
+            logInfo(logName,"gg_distance_delta=" + gg_starting_location.distanceFrom(gg_current_location))
+            if (gg_starting_location.distanceFrom(gg_current_location) > 300){
+                sendPushoverMessage(pushoverBuilder("Geoff is on the move").withDevice("gg_galaxys5").withTitle("Movement Alarm"))
+                postUpdate(GPS_GG_Moving, OFF)
+            }
+        }
+    }
+end
+
+rule "PostionParseAG"
+when
+    Item GPS_AG_Location changed
+then
+    GPS_AG_Lat.postUpdate(GPS_AG_Location.state.toString.split(',').get(0))
+    GPS_AG_Lon.postUpdate(GPS_AG_Location.state.toString.split(',').get(1))
+    ag_current_location = GPS_AG_Location.state
+
+    if (GPS_AG_Moving.state == ON){
+        if (ag_starting_location !== null) {
+            logInfo(logName,"ag_starting_location=" + ag_starting_location)
+            logInfo(logName,"ag_current_location=" + ag_current_location)
+            logInfo(logName,"ag_distance_delta=" + ag_starting_location.distanceFrom(ag_current_location))
+            if (ag_starting_location.distanceFrom(ag_current_location) > 300){
+                sendPushoverMessage(pushoverBuilder("Anna is on the move").withDevice("gg_galaxys5").withTitle("Movement Alarm"))
+                postUpdate(GPS_AG_Moving, OFF)
+            }
+        }
+    }
+end
+
+rule "PostionParseMG"
+when
+    Item GPS_MG_Location changed
+then
+    GPS_MG_Lat.postUpdate(GPS_MG_Location.state.toString.split(',').get(0))
+    GPS_MG_Lon.postUpdate(GPS_MG_Location.state.toString.split(',').get(1))
+    mg_current_location = GPS_MG_Location.state
+
+    if (GPS_MG_Moving.state == ON){
+        if (mg_starting_location !== null) {
+            logInfo(logName,"mg_starting_location=" + mg_starting_location)
+            logInfo(logName,"mg_current_location=" + mg_current_location)
+            logInfo(logName,"mg_distance_delta=" + mg_starting_location.distanceFrom(mg_current_location))
+            if (mg_starting_location.distanceFrom(mg_current_location) > 300){
+                sendPushoverMessage(pushoverBuilder("Michael is on the move").withDevice("gg_galaxys5").withTitle("Movement Alarm"))
+                postUpdate(GPS_MG_Moving, OFF)
+            }
+        }
+    }
+end
+
+rule "PostionParseCG"
+when
+    Item GPS_CG_Location changed
+then
+    GPS_CG_Lat.postUpdate(GPS_CG_Location.state.toString.split(',').get(0))
+    GPS_CG_Lon.postUpdate(GPS_CG_Location.state.toString.split(',').get(1))
+    cg_current_location = GPS_CG_Location.state
+
+    if (GPS_CG_Moving.state == ON){
+        if (cg_starting_location !== null) {
+            logInfo(logName,"cg_starting_location=" + cg_starting_location)
+            logInfo(logName,"cg_current_location=" + cg_current_location)
+            logInfo(logName,"cg_distance_delta=" + cg_starting_location.distanceFrom(cg_current_location))
+            if (cg_starting_location.distanceFrom(cg_current_location) > 300){
+                // pushover("Anna is on the move")
+                postUpdate(GPS_CG_Moving, OFF)
+            }
+        }
+    }
+end

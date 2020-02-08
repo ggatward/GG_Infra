@@ -1,0 +1,7 @@
+
+- targets:
+  - automation.core.home.gatwards.org:9100
+  - foreman.core.home.gatwards.org:9100
+
+  labels:
+    job: "node"

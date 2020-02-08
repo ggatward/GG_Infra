@@ -1,0 +1,58 @@
+// /*
+// 	Items:
+// 	String callerid_raw
+// 	DateTime callerid_time
+// 	String callerid_phone
+// 	String callerid_name
+// 	String callerid_message
+// */
+
+// import java.text.DateFormat
+// import java.text.SimpleDateFormat
+// import java.util.Date
+
+// rule "Caller ID"
+// when
+// 	Item callerid_raw changed
+// then
+// 	var raw = callerid_raw.state.toString
+// 	logInfo("CallerID", "..parsing")
+//         logInfo("CallerID", raw)
+// 	if (raw.contains("CID:")) {
+// 		//CID: *DATE*02062018*TIME*2321*LINE*POTS*NMBR*XXXXXXXXXX*MESG*NONE*NAME*SMITH JOHN*
+// //                logInfo("CallerID", raw)
+// 		var parts = raw.split("\\*")
+// 		var callerDateTimeString = parts.get(2) + parts.get(4)
+// 		val callerNumberRaw = parts.get(8)
+// 		var callerMessage = parts.get(10)
+// 		var callerName = parts.get(12)
+
+// 		if (callerMessage == "NONE")
+// 			callerMessage = ""
+
+// 		val String callerNumber = callerNumberRaw.substring(0, 4) + "-" + callerNumberRaw.substring(4,7) + "-" + callerNumberRaw.substring(7)
+
+// 		var DateFormat format = new SimpleDateFormat("MMddyyyyHHmm");
+// 		var Date callerDateTime = now
+
+// 		try {
+// 			callerDateTime = format.parse(callerDateTimeString);
+// 		}
+// 		catch(Throwable t) {
+// 			logError("CallerID", "Unable to parse date: " + callerDateTimeString)
+// 		}
+
+// 		sendCommand(callerid_time, DateTimeType.valueOf(new SimpleDateFormat(DateTimeType.DATE_PATTERN).format(callerDateTime)))
+// 		sendCommand(callerid_phone, callerNumber)
+// 		sendCommand(callerid_name, callerName)
+// 		sendCommand(callerid_message, callerMessage)
+
+//                 // Announce caller
+// //		val String toHabPanelVoice = "Call from " + callerName + " (" + callerNumber + ") on " + new SimpleDateFormat("hh:mm a").format(callerDateTime) + " {" + callerMessage + "}"
+// //		sendCommand(hp_s_voicer, toHabPanelVoice)
+
+//                 // Activate HABPanel dashboard overlay
+// //		sendCommand(hp_s_activateDashboard, "Caller ID")
+
+// 	}
+// end

@@ -1,0 +1,170 @@
+---
+# InfluxDB relay & keepalived
+- name: Configure InfluxDB Relay
+  remote_user: svc-ansible
+  become: true
+  hosts: influxdb
+
+  tasks:
+  - name: Create influxdb-relay cert bundle
+    tags:
+    - influxdb-relay
+    shell: 'cat /etc/pki/tls/certs/{{ ansible_fqdn }}.pem /etc/pki/tls/private/{{ ansible_fqdn }}.key > /etc/pki/tls/certs/influxdb-proxy.pem'
+    args:
+      creates: /etc/pki/tls/certs/influxdb-proxy.pem
+
+  - name: Set cert bundle permissions
+    tags:
+    - influxdb-relay
+    file:
+      path: /etc/pki/tls/certs/influxdb-proxy.pem
+      owner: root
+      group: root
+      mode: '0644'
+
+  - import_role:
+      name: ansible-influxdb-relay
+    tags:
+    - influxdb-relay
+    vars:
+      influxdb_relay_servers:
+      - name: influxdb-http
+        bind_addr: "{{ influxdb_relay_vip }}"
+        bind_port: "{{ influxdb_relay_http_port }}"
+        outputs:
+        - name: influxdb1
+          location: https://{{ hostvars[groups['influxdb'][0]].ansible_fqdn }}:{{ influxdb_http_port }}
+        - name: influxdb2
+          location: https://{{ hostvars[groups['influxdb'][1]].ansible_fqdn }}:{{ influxdb_http_port }}
+        protocol: http
+      - name: influxdb-udp
+        bind_addr: "{{ influxdb_relay_vip }}"
+        bind_port: "{{ influxdb_relay_udp_port }}"
+        outputs: "{{ influxdb_relay_outputs }}"
+        protocol: udp
+
+
+  - import_role:
+      name: ansible-keepalived
+    tags:
+    - influxdb-relay
+    - keepalived
+    vars:
+      keepalived_config: true
+      keepalived_router_info:
+      - name: influxdb-relay
+        check_script:
+        - name: chk_influxdb_relay
+          script: '/usr/local/bin/check-relay.sh'
+          interval: 2
+          weight: 2
+        master_node: "{{ groups['influxdb'][0] }}"
+        router_id: 50
+        router_pri_backup: 100
+        router_pri_master: 101
+        vip_int: '{{ ansible_ens192.device }}'
+        vip_addresses:
+        - "{{ influxdb_relay_vip }}"
+        use_unicast: true
+        nopreempt: false
+
+  - name: Deploy keepalived check script
+    tags:
+    - influxdb-relay
+    - keepalived
+    copy:
+      content: |
+        #!/bin/sh
+        if [ $(ps -ef | grep -v grep | grep -c influxdb-relay) -eq 0 ]; then exit 1; else exit 0; fi
+      dest: /usr/local/bin/check-relay.sh
+      mode: '0755'
+
+  - name: Open InfluxDB Relay firewall ports
+    tags:
+    - influxdb-relay
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - "{{ influxdb_relay_http_port }}/tcp"
+    - "{{ influxdb_relay_udp_port }}/udp"
+
+
+- name: Configure HAProxy
+  remote_user: svc-ansible
+  become: true
+  hosts: influxdb
+
+  tasks:
+  - name: Create HAProxy cert bundle
+    tags:
+    - haproxy
+    shell: 'cat /etc/pki/tls/certs/{{ ansible_fqdn }}.pem /etc/pki/tls/private/{{ ansible_fqdn }}.key > /etc/pki/tls/certs/haproxy.pem'
+    args:
+      creates: /etc/pki/tls/certs/haproxy.pem
+
+  - name: Set cert bundle permissions
+    tags:
+    - haproxy
+    file:
+      path: /etc/pki/tls/certs/haproxy.pem
+      owner: root
+      group: root
+      mode: '0644'
+
+  - import_role:
+      name: ansible-haproxy
+    tags:
+    - haproxy
+    vars:
+      haproxy_config: true
+      haproxy_lb_vip: "{{ influxdb_relay_vip }}"
+      haproxy_load_balancer_ssl:
+        bundled_cert: /etc/pki/tls/certs/haproxy.pem
+        enabled: true
+        generate_keys: false  # Don't generate new certs, we are using signed certs already
+        protocols:
+        - 'TLSv1.2'
+      haproxy_configs:
+      - name: 'influxdb-http'
+        backend_checks: true
+        backend_name: 'influxdb-servers'
+        backend_servers_bind_port: "{{ influxdb_http_port }}"
+        backend_servers:
+        - "{{ hostvars[groups['influxdb'][0]].instance_ip }}"
+        - "{{ hostvars[groups['influxdb'][1]].instance_ip }}"
+        balance: 'roundrobin'
+        default_server_options:
+        - name: 'inter'
+          value: 2s
+        - name: 'downinter'
+          value: 5s
+        - name: 'fall'
+          value: '3'
+        - name: 'rise'
+          value: '2'
+        - name: 'ssl verify'
+          value: 'none'
+        enabled: true
+        frontend_bind_address: "{{ haproxy_lb_vip }}"
+        frontend_bind_port: "{{ haproxy_http_port }}"
+        frontend_name: 'influxdb-http-in'
+        frontend_ssl: true
+        mode: 'http'
+        options:
+        - 'forwarder'
+        - 'httpchk GET /ping'
+        stickiness: true
+
+  - name: Open HAProxy firewall port
+    tags:
+    - haproxy
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - "{{ haproxy_http_port }}/tcp"

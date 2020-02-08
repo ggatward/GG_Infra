@@ -1,10 +1,20 @@
 ---
 # Do all infra setups
 
+# Provision VM instance
+
+# Bootstrap VM instance (as root)
+#- import_playbook: bootstrap_instance.yml
+
 - import_playbook: generic.yml
-- import_playbook: tang.yml
+
+- import_playbook: hardening.yml
+
+- import_playbook: monitoring.yml
+
+- import_playbook: node_exporter.yml
+  when: "'prometheus' not in group_names"
+
 - import_playbook: weather.yml
-#- import_playbook: workstation.yml
-- import_playbook: sat6.yml
-#- import_playbook: ansibletower.yml
-#- import_playbook: nagios.yml
+- import_playbook: automation.yml
+# - import_playbook: workstation.yml

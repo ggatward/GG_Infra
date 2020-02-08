@@ -1,0 +1,92 @@
+---
+
+- name: Create skel directories
+  file:
+    path: /etc/skel/.bash/git-aware-prompt
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Copy git-aware-prompt to skel
+  copy:
+    src: "{{ item }}"
+    dest: /etc/skel/.bash/git-aware-prompt
+  with_fileglob: "git-aware-prompt/*"
+
+- name: Deploy default bashrc to skel
+  copy:
+    src: bashrc
+    dest: /etc/skel/.bashrc
+    mode: 0644
+    owner: root
+    group: root
+
+# VSCode configuration
+- name: Import VScode GPG keys
+  rpm_key:
+    key: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+    validate_certs: yes
+
+- name: Deploy VScode repo config
+  copy:
+    src: vscode.repo
+    dest: /etc/yum.repos.d/vscode.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install Development Packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - code
+    - ansible
+    - terminator
+
+
+- name: List existing VSCode plugins
+  become_user: geoff
+  shell: "code --list-extensions"
+  register: code_ext
+  changed_when: false
+
+- name: Install VSCode plugins
+  become_user: geoff
+  shell: "code --install-extension {{ item }}"
+  with_items:
+    - dhoeric.ansible-vault
+    - file-icons.file-icons
+    - Gruntfuggly.todo-tree
+    - haaaad.ansible
+    - humao.rest-client
+    - jetmartin.bats
+    - jpogran.puppet-vscode
+    - ms-python.python
+    - openhab.openhab
+    - redhat.vscode-yaml
+    - Skorfulose.splunk
+    - vscoss.vscode-ansible
+    - mhutchie.git-graph
+    - oderwat.indent-rainbow
+    - 2gua.rainbow-brackets
+  when: item not in code_ext.stdout
+
+- name: Create VSCode config dir
+  become_user: geoff
+  file:
+    path: /home/geoff/.config/Code/User
+    state: directory
+    owner: geoff
+    group: geoff
+
+- name: Deploy VSCode config
+  become_user: geoff
+  copy:
+    src: settings.json
+    dest: /home/geoff/.config/Code/User/settings.json
+    owner: geoff
+    group: geoff

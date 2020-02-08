@@ -1,0 +1,10 @@
+---
+
+- import_playbook: influxdb.yml
+
+- import_playbook: influxdb-relay.yml
+  when: influxdb_relay_install is defined and influxdb_relay_install|bool
+
+- import_playbook: prometheus.yml
+
+- import_playbook: grafana.yml

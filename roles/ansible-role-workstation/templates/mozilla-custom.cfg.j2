@@ -1,0 +1,141 @@
+// Mozilla Firefox Autoconfig
+
+try {
+    // Set default browser
+    lockPref("browser.shell.checkDefaultBrowser", true);
+
+    // disable updates
+    lockPref("browser.search.update", false);
+    lockPref("extensions.update.autoUpdateDefault", false);
+    lockPref("extensions.update.enabled", false);
+
+    // disable firefox account tab
+    lockPref("identity.fxaccounts.enabled", false);
+
+    // bypass welcome tab
+    lockPref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);
+
+    // don't restore default bookmarks
+    lockPref("browser.bookmarks.restore_default_bookmarks", false);
+
+    // disable search suggestions
+    lockPref("browser.search.suggest.enabled", false);
+    lockPref("browser.urlbar.searchSuggestionsChoice", false);
+    lockPref("browser.urlbar.suggest.searches", false);
+
+    // set country code & disable geolocation
+    //lockPref("geo.enabled", false);
+    //lockPref("browser.search.countryCode", "AU");
+    //lockPref("browser.search.region", "AU");
+
+    // don't try to resolve external
+    //lockPref("browser.fixup.alternate.lockPrefix", "");
+    //lockPref("keyword.enabled", false);
+
+    // Disable disk cache
+    defaultPref("browser.cache.disk.capacity", 0);
+    lockPref("browser.cache.disk.enable", false);
+
+    // Set Proxy
+    lockPref("config.use_system_prefs", false);
+    lockPref("network.proxy.autoconfig_url", "{{ browser_proxy_autoconfig_url }}");
+    lockPref("network.proxy.type", 2);
+
+    // Misc - TO CHECK
+    //lockPref("media.peerconnection.enabled", false);
+
+    // Require extensions to be signed
+    lockPref("xpinstall.signatures.required", false);
+
+    // Disable form auto-completion
+    lockPref("signon.autofillForms", false);
+    lockPref("signon.autofillForms.http", false);
+    lockPref("signon.rememberSignons", false);
+
+    // Disable Activity stream
+    lockPref("browser.newtabpage.activity-stream.showTopSites", false);
+    lockPref("browser.newtabpage.activity-stream.feeds.snippets", false);
+    lockPref("browser.newtabpage.activity-stream.disableSnippets", true);
+    lockPref("browser.newtabpage.activity-stream.feeds.section.highlights", false);
+
+    // Don't show WhatsNew on first run after every update
+    lockPref("browser.startup.homepage_override.mstone","ignore");
+
+    // Set default homepage
+    if (getPref("xxx.runonce") == null) {
+        pref("browser.startup.homepage", "{{ browser_startup_url }}");
+    }
+    pref("xxx.runonce", true);
+
+    lockPref("browser.throbber.url", "{{ browser_startup_url }}");
+    defaultPref("browser.startup.homepage_override", false);
+    lockPref("startup.homepage_override_url", "{{ browser_startup_url }}");
+    lockPref("startup.homepage_welcome_url", "");
+
+    // Turn off password caching
+    lockPref("signon.rememberSignons", false);
+
+    // Show protocol being used
+    lockPref("browser.urlbar.trimURLs", false);
+
+    // SSLv2 is not secure - also disable certain ciphers
+    lockPref("security.enable_ssl2", false);
+    lockPref("security.ssl3.rsa_null_md5", false);
+    lockPref("security.ssl3.rsa_nul_sha", false);
+    lockPref("security.ssl3.rsa_rc4_128_md5", false);
+    lockPref("security.ssl3.rsa_rc4_128_sha", false);
+    lockPref("security.ssl3.rsa_rc4_40_md5", false);
+    lockPref("security.ssl3.rsa_rc4_20_md5", false);
+    lockPref("security.ssl3.rsa_1024_des_cbc_sha", false);
+    lockPref("security.ssl3.rsa_1024_rc4_56_sha", false);
+
+
+    // ack rights
+    //lockPref("browser.rights.3.shown", true);
+
+    // Prevent users disabling this warning
+    pref("security.warn_leaving_secure", true);
+    lockPref("security.warn_viewing_mixed", true);
+
+    // Enable TLS 1.2
+    pref("security.tls.version.max", 3);
+
+    // Disable SSLv3.0
+    lockPref("security.tls.version.min", 1);
+
+    // Load plugins from plugins directory
+    lockPref("plugins.load_appdir_plugins", true);
+
+    // Disable health reporting
+    lockPref("app.shield.optoutstudies.enabled", false);
+    lockPref("datareporting.healthreport.service.enabled", false);
+    lockPref("datareporting.healthreport.uploadEnabled", false);
+    lockPref("datareporting.policy.dataSubmissionEnabled", false);
+
+    // Disable Telemetry
+    lockPref("beacon.enabled", false);
+    lockPref("toolkit.telemetry.enabled", false);
+    lockPref("toolkit.telemetry.prompted", 2);
+
+    // Disable crash reporter
+    lockPref("toolkit.crashreporter.enabled", false);
+
+    // Disable extension blocking (eg Java)
+    pref("extensions.blocklist.enabled", false);
+
+    // delete cookies on exit
+    lockPref("network.cookie.lifetimePolicy", 2);
+
+    // enable krb5 authentication
+    //lockPref("network.negotiate-auth.delegation-uris", ".example.com");
+    //lockPref("network.negotiate-auth.trusted-uris", ".example.com");
+
+    // set default lockPrefix
+    //lockPref("browser.fixup.alternate.suffix", ".example.com");
+
+
+
+} catch (e) {
+    // Some other error in the config file
+    displayError("Error loading Mozilla Autoconfig", e);
+}

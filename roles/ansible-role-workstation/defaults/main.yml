@@ -1,0 +1,35 @@
+---
+
+desktop_group_centos: 'Server with GUI'
+desktop_group_fedora: 'GNOME'
+
+# Apply hardening to desktop
+desktop_hardening: true
+screensaver_timeout: '300'
+
+browser_proxy_autoconfig_url: 'http://config.example.com/pac/proxy.pac'
+browser_startup_url: 'https://google.com.au/'
+
+# Additional packages to install
+additional_ws_packages: []
+
+# Set up printing?
+configure_printer: false
+
+# XRDP
+install_xrdp: false
+
+# libvirt / kvm
+install_libvirt: false
+
+# Chrome browser
+install_chrome: false
+
+# Development packages (git/VScode)
+install_development: false
+
+# PlayOnLinux WINE environment
+install_playonlinux: false
+
+# Spotify client
+install_spotify: false

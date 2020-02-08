@@ -1,6 +1,0 @@
----
-# MOTD vars
-sys_env: LAB
-
-sat6_tower_user: svc-tower-sat6
-sat6_tower_pass: "{{ vault_sat6_tower_pass }}"

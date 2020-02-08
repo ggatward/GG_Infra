@@ -1,0 +1,73 @@
+---
+- name: Disable username selection
+  template:
+    src: 00-login-screen.j2
+    dest: /etc/dconf/db/gdm.d/00-login-screen
+
+- name: Enforce Screensaver
+  template:
+    src: 02-screensaver.j2
+    dest: /etc/dconf/db/local.d/02-screensaver
+
+- name: Lock Screensaver
+  copy:
+    content: |
+      {% if ansible_distribution == 'Fedora' or (( ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat') and ansible_distribution_major_version >= '8' ) %}
+      /org/gnome/desktop/session/idle-delay" >> /etc/dconf/db/local.d/locks/screensaver
+      /org/gnome/desktop/screensaver/lock-enabled" >> /etc/dconf/db/local.d/locks/screensaver
+      /org/gnome/desktop/screensaver/lock-delay" >> /etc/dconf/db/local.d/locks/screensaver
+      {% else %}
+      /org/gnome/desktop/screensaver/idle-activation-enabled
+      {% endif %}
+    dest: /etc/dconf/db/local.d/locks/screensaver
+
+- name: Lock idle-delay
+  copy:
+    content: |
+      /org/gnome/desktop/session/idle-delay
+    dest: /etc/dconf/db/local.d/locks/session
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat') and ansible_distribution_major_version <= '7'
+
+- name: Lock Lockscreen
+  copy:
+    content: |
+      /org/gnome/desktop/lockdown/disable-lock-screen
+    dest: /etc/dconf/db/local.d/locks/lockdown
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat') and ansible_distribution_major_version <= '7'
+
+
+
+- block:
+  - name: Configure login warning banner
+    copy:
+      content: |
+        sleep 1
+        zenity --title "WARNING" --no-wrap --question --text "$(cat /etc/issue)\n\nContinue?\n"
+        if [ $? -ne 0 ]; then gnome-session-quit --no-prompt; fi
+      dest: /usr/local/bin/xwarn.sh
+      mode: 0755
+
+  - name: Configure GDM autostart
+    copy:
+      content: |
+        [Desktop Entry]
+        Type=Application
+        Name=Login Warning
+        Exec=/usr/local/bin/xwarn.sh
+        OnlyShowIn=GNOME;MATE;Unity;Cinnamon;[Desktop Entry]
+        Type=Application
+        Name=Login Warning
+        Exec=/usr/local/bin/xwarn.sh
+        OnlyShowIn=GNOME;MATE;Unity;Cinnamon;
+      dest: /etc/xdg/autostart/xwarn.desktop
+  when: ansible_distribution == 'Fedora' or (( ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat') and ansible_distribution_major_version >= '8' )
+
+- name: Configure login warning banner
+  copy:
+    content: |
+      sleep 1
+      zenity --title "WARNING" --no-wrap --question --text "$(cat /etc/issue)\n\nContinue?\n"
+      if [ $? -ne 0 ]; then exit 1; fi
+    dest: /etc/X11/xinit/xinitrc.d/xwarn.sh
+    mode: 0755
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat') and ansible_distribution_major_version <= '7'

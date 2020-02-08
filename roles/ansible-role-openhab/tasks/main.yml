@@ -1,0 +1,23 @@
+---
+# tasks file for role-openhab
+
+- include_tasks: openhab.yml
+  tags:
+  - openhab
+
+- include_tasks: postgresql.yml
+  tags:
+  - postgresql
+
+- include_tasks: mosquitto.yml
+  tags:
+  - mqtt
+
+- include_tasks: zwave.yml
+  tags:
+  - zwave
+
+- include_tasks: openhab_config.yml
+  tags:
+  - openhab
+  - config

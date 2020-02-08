@@ -1,0 +1,4 @@
+ipaclient_install_command: '/usr/sbin/ipa-client-install'
+ipaclient_packages:
+- freeipa-client
+# - dbus-python

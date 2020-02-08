@@ -1,0 +1,68 @@
+---
+# tasks file for ansible-generic-os
+- block:
+  - block:
+    - name: Set EL7 OS GPG location
+      set_fact:
+        osgpg: RPM-GPG-KEY-CentOS-7
+      when: ansible_distribution == 'CentOS'
+
+    - name: Set EL7 required packages
+      set_fact:
+        required_pkgs:
+        - python
+        - policycoreutils-python
+    when: ansible_distribution_major_version == '7'
+
+  - block:
+    - name: Set EL8 OS GPG location
+      set_fact:
+        osgpg: RPM-GPG-KEY-centosofficial
+      when: ansible_distribution == 'CentOS'
+
+    - name: Set EL8 required packages
+      set_fact:
+        required_pkgs:
+        - authselect-compat
+        - python3
+        - policycoreutils-python-utils
+    when: ansible_distribution_major_version == '8'
+
+  - name: Import OS GPG keys
+    rpm_key:
+      key: /etc/pki/rpm-gpg/{{ osgpg }}
+      state: present
+
+  - name: Install pre-requisite packages
+    yum:
+      name: "{{ required_pkgs }}"
+      state: present
+
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+
+
+# - name: Install common hardware utils
+#   package:
+#     name: "{{ packages }}"
+#     state: present
+#   when: ansible_virtualization_type == 'host'
+#   vars:
+#     packages:
+#       - pciutils
+#       - usbutils
+
+- name: Deploy MOTD
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Deploy root profile
+  template:
+    src: bashrc.j2
+    dest: /root/.bashrc
+    mode: 0644
+    owner: root
+    group: root

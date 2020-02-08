@@ -1,0 +1,27 @@
+---
+
+- name: Deploy Google Chrome repo (RHEL/CentOS)
+  copy:
+    src: google-chrome.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- block:
+  - name: Deploy Google Chrome repo (Fedora)
+    yum:
+      name: fedora-workstation-repositories
+      state: present
+
+  - name: Enable Google Chrome repo (Fedora)
+    command: dnf config-manager --set-enabled google-chrome
+    args:
+      warn: false
+  when: ansible_distribution == 'Fedora'
+
+- name: Install Google Chrome
+  yum:
+    name: google-chrome-stable
+    state: present

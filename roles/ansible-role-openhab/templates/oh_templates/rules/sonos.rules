@@ -1,0 +1,221 @@
+
+// val Number NotificationVolume = 20
+
+// rule "Say Announcement"
+// when
+//     Item SayCommand received update
+// then
+//     var string AudioSink
+//     switch AudioSink {
+//         case Speaker.state.toString=="LivingRoom" : AudioSink="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
+//         case Speaker.state.toString=="Alfresco" : AudioSink="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}"
+//         case Speaker.state.toString=="Portable1" : AudioSink= "sonos:PLAY1:{{ sonos_ids.portable1 }}"
+//         default:AudioSink="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
+//     }
+//     gSonosNotification.allMembers.filter(s | s.state!=NotificationVolume ).forEach [item | item.sendCommand(NotificationVolume)]
+//     say(SayCommand.state.toString, "voicerss:enUS", AudioSink)
+// end
+
+// rule "IntialNotificationVolumeSetting"
+// when
+//     System started
+// then
+//     gSonosNotification.allMembers.forEach [item | item.sendCommand(NotificationVolume)]
+//     logInfo("IntialNotificationVolumeSetting","NotificationVolume set!")
+// end
+
+
+
+rule "Livingroom Favourites"
+when
+    Item SonosLivingroom_Favourites received command
+then
+    if(receivedCommand.toString=="Mix1063") {
+        SonosLivingroom_Radio.sendCommand("Mix 106.3")
+        SonosLivingroom_Favourites.sendCommand("Empty")
+    }
+    if(receivedCommand.toString=="KIX") {
+        SonosLivingroom_Radio.sendCommand("KIX")
+        SonosLivingroom_Favourites.sendCommand("Empty")
+    }
+end
+
+rule "Alfresco Favourites"
+when
+    Item SonosAlfresco_Favourites received command
+then
+    if(receivedCommand.toString=="Mix1063") {
+        SonosAlfresco_Radio.sendCommand("Mix 106.3")
+        SonosAlfresco_Favourites.sendCommand("Empty")
+    }
+    if(receivedCommand.toString=="KIX") {
+        SonosAlfresco_Radio.sendCommand("KIX")
+        SonosAlfresco_Favourites.sendCommand("Empty")
+    }
+end
+
+rule "Portable1 Favourites"
+when
+    Item SonosPortable1_Favourites received command
+then
+    if(receivedCommand.toString=="Mix1063") {
+        SonosPortable1_Radio.sendCommand("Mix 106.3")
+        SonosPortable1_Favourites.sendCommand("Empty")
+    }
+    if(receivedCommand.toString=="KIX") {
+        SonosPortable1_Radio.sendCommand("KIX")
+        SonosPortable1_Favourites.sendCommand("Empty")
+    }
+end
+
+//-------------------------------------------------------------
+
+rule "Livingroom Multiroom"
+when
+    Item SonosLivingroom_MultiRoom received command
+then
+    var string tmp
+    logInfo("SonosGrouping","LR MultiRoom Selected to " + receivedCommand.toString)
+    if(receivedCommand.toString=="Standalone") {
+        logInfo("SonosGrouping","Setting Livingroom to StandAlone")
+        SonosLivingroom_StandAlone.sendCommand("ON")
+        SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Unlink") {
+        logInfo("SonosGrouping","Unlinking all slaves")
+        SonosLivingroom_Remove.sendCommand("{{ sonos_ids.alfresco }}")
+        SonosLivingroom_Remove.sendCommand("{{ sonos_ids.portable1 }}")
+        SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
+        SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
+        SonosPortable1_MultiRoomMode.postUpdate("Standalone")
+        SonosAlfresco_ClearQueue.sendCommand(ON)
+        SonosPortable1_ClearQueue.sendCommand(ON)
+        SonosAlfresco_ClearQueue.sendCommand(OFF)
+        SonosPortable1_ClearQueue.sendCommand(OFF)
+        SonosLivingroom_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Alfresco") {
+        logInfo("SonosGrouping","Linking L->P")
+        SonosLivingroom_Add.sendCommand("{{ sonos_ids.alfresco }}")
+        if(SonosLivingroom_MultiRoomMode.state=="Standalone") {
+            tmp = "Alfresco"
+        } else {
+            tmp = SonosLivingroom_MultiRoomMode.state + " Alfresco"
+        }
+        SonosLivingroom_MultiRoomMode.postUpdate("" + tmp)
+        SonosAlfresco_MultiRoomMode.postUpdate("Slave of Livingroom")
+        SonosLivingroom_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Portable1") {
+        logInfo("SonosGrouping","Linking L->P")
+        SonosLivingroom_Add.sendCommand("{{ sonos_ids.portable1 }}")
+        if(SonosLivingroom_MultiRoomMode.state=="Standalone") {
+            tmp = "Portable1"
+        } else {
+            tmp = SonosLivingroom_MultiRoomMode.state + " Portable1"
+        }
+        SonosLivingroom_MultiRoomMode.postUpdate("" + tmp)
+        SonosPortable1_MultiRoomMode.postUpdate("Slave of Livingroom")
+        SonosLivingroom_MultiRoom.sendCommand("Empty")
+    } else {
+        logInfo("SonosGrouping","EMPTY")
+    }
+end
+
+rule "Alfresco Multiroom"
+when
+    Item SonosAlfresco_MultiRoom received command
+then
+    var string tmp
+    logInfo("SonosGrouping","LR MultiRoom Selected to " + receivedCommand.toString)
+    if(receivedCommand.toString=="Standalone") {
+        logInfo("SonosGrouping","Setting Alfresco to StandAlone")
+        SonosAlfresco_StandAlone.sendCommand("ON")
+        SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
+        SonosAlfresco_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Unlink") {
+        logInfo("SonosGrouping","Unlinking all slaves from Alfresco")
+        SonosAlfresco_Remove.sendCommand("{{ sonos_ids.alfresco }}")
+        SonosAlfresco_Remove.sendCommand("{{ sonos_ids.livingroom }}")
+        SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
+        SonosPortable1_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_ClearQueue.sendCommand(ON)
+        SonosPortable1_ClearQueue.sendCommand(ON)
+        SonosLivingroom_ClearQueue.sendCommand(OFF)
+        SonosPortable1_ClearQueue.sendCommand(OFF)
+        SonosAlfresco_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Livingroom") {
+        logInfo("SonosGrouping","Linking Alfresco -> Livingroom")
+        SonosAlfresco_Add.sendCommand("{{ sonos_ids.livingroom }}")
+        if(SonosAlfresco_MultiRoomMode.state=="Standalone") {
+            tmp = "Livingroom"
+        } else {
+            tmp = SonosAlfresco_MultiRoomMode.state + " Livingroom"
+        }
+        SonosAlfresco_MultiRoomMode.postUpdate("" + tmp)
+        SonosLivingroom_MultiRoomMode.postUpdate("Slave of Alfresco")
+        SonosAlfresco_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Portable1") {
+        logInfo("SonosGrouping","Linking Alfresco -> Portable1")
+        SonosAlfresco_Add.sendCommand("{{ sonos_ids.portable1 }}")
+        if(SonosAlfresco_MultiRoomMode.state=="Standalone") {
+            tmp = "Portable1"
+        } else {
+            tmp = SonosAlfresco_MultiRoomMode.state + " Portable1"
+        }
+        SonosAlfresco_MultiRoomMode.postUpdate("" + tmp)
+        SonosPortable1_MultiRoomMode.postUpdate("Slave of Alfresco")
+        SonosAlfresco_MultiRoom.sendCommand("Empty")
+    } else {
+        logInfo("SonosGrouping","EMPTY")
+    }
+end
+
+rule "Portable1 Multiroom"
+when
+    Item SonosPortable1_MultiRoom received command
+then
+    var string tmp
+    logInfo("SonosGrouping","LR MultiRoom Selected to " + receivedCommand.toString)
+    if(receivedCommand.toString=="Standalone") {
+        logInfo("SonosGrouping","Setting Portable1 to StandAlone")
+        SonosPortable1_StandAlone.sendCommand("ON")
+        SonosPortable1_MultiRoomMode.postUpdate("Standalone")
+        SonosPortable1_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Unlink") {
+        logInfo("SonosGrouping","Unlinking all slaves from Portable1")
+        SonosPortable1_Remove.sendCommand("{{ sonos_ids.alfresco }}")
+        SonosPortable1_Remove.sendCommand("{{ sonos_ids.livingroom }}")
+        SonosPortable1_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
+        SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
+        SonosLivingroom_ClearQueue.sendCommand(ON)
+        SonosAlfresco_ClearQueue.sendCommand(ON)
+        SonosLivingroom_ClearQueue.sendCommand(OFF)
+        SonosAlfresco_ClearQueue.sendCommand(OFF)
+        SonosPortable1_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Livingroom") {
+        logInfo("SonosGrouping","Linking Portable1 -> Livingroom")
+        SonosPortable1_Add.sendCommand("{{ sonos_ids.livingroom }}")
+        if(SonosPortable1_MultiRoomMode.state=="Standalone") {
+            tmp = "Livingroom"
+        } else {
+            tmp = SonosPortable1_MultiRoomMode.state + " Livingroom"
+        }
+        SonosPortable1_MultiRoomMode.postUpdate("" + tmp)
+        SonosLivingroom_MultiRoomMode.postUpdate("Slave of Portable1")
+        SonosPortable1_MultiRoom.sendCommand("Empty")
+    } else if(receivedCommand.toString=="Alfresco") {
+        logInfo("SonosGrouping","Linking Portable1 -> Alfresco")
+        SonosPortable1_Add.sendCommand("{{ sonos_ids.alfresco }}")
+        if(SonosPortable1_MultiRoomMode.state=="Standalone") {
+            tmp = "Alfresco"
+        } else {
+            tmp = SonosPortable1_MultiRoomMode.state + " Alfresco"
+        }
+        SonosPortable1_MultiRoomMode.postUpdate("" + tmp)
+        SonosAlfresco_MultiRoomMode.postUpdate("Slave of Portable1")
+        SonosPortable1_MultiRoom.sendCommand("Empty")
+    } else {
+        logInfo("SonosGrouping","EMPTY")
+    }
+end

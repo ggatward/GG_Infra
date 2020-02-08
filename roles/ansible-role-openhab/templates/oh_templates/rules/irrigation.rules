@@ -1,0 +1,86 @@
+// Translate switch action to MQTT command
+rule "Sprinkler zone1"
+when
+    Item SprinklerSystemZone1 received command
+then
+    if(receivedCommand == ON) {
+        SprinklerSystemZone1MQTT.sendCommand('Z1ON')
+        // SprinklerSystemZone1.postUpdate(ON)
+    } else {
+        SprinklerSystemZone1MQTT.sendCommand('Z1OFF')
+        // SprinklerSystemZone1.postUpdate(OFF)
+    }
+end
+
+rule "Sprinkler zone2"
+when
+    Item SprinklerSystemZone2 received command
+then
+    if(receivedCommand == ON) {
+        SprinklerSystemZone2MQTT.sendCommand('Z2ON')
+        // SprinklerSystemZone2.postUpdate(ON)
+    } else {
+        SprinklerSystemZone2MQTT.sendCommand('Z2OFF')
+        // SprinklerSystemZone2.postUpdate(OFF)
+    }
+end
+
+rule "Sprinkler zone3"
+when
+    Item SprinklerSystemZone3 received command
+then
+    if(receivedCommand == ON) {
+        SprinklerSystemZone3MQTT.sendCommand('Z3ON')
+        // SprinklerSystemZone3.postUpdate(ON)
+    } else {
+        SprinklerSystemZone3MQTT.sendCommand('Z3OFF')
+        // SprinklerSystemZone3.postUpdate(OFF)
+    }
+end
+
+
+
+
+
+//If sprinkler system schedule is on then water each zone at 6 am for 10 min
+rule "Sprinkler System Schedule"
+when
+    Time cron "0 0 6 1/1 * ? *"
+then
+    if(SprinklerSystemSchedule.state == ON) {
+        // sendBroadcastNotification("SPRINKLER SYSTEM: Daily Watering Active")
+        sendCommand(SprinklerSystemZone1, ON)
+        createTimer(now.plusMinutes(10)) [|
+            sendCommand( SprinklerSystemZone1, OFF)
+            sendCommand( SprinklerSystemZone2, ON)
+            createTimer(now.plusMinutes(10)) [|
+                sendCommand( SprinklerSystemZone2, OFF)
+                // sendCommand( SprinklerSystemZone3, ON)
+                // createTimer(now.plusMinutes(1)) [|
+                //     sendCommand( SprinklerSystemZone3, OFF)
+                // ]
+            ]
+        ]
+    }
+end
+
+//If 10 Minute Cycle Switch Is On then water each zone for 10 min
+rule "10 Minute Cycle"
+when
+    Item SprinklerCycle received update ON
+then
+    // sendBroadcastNotification("SPRINKLER SYSTEM: 20 Minute Cycle Active")
+    sendCommand(SprinklerSystemZone1, ON)
+    createTimer(now.plusMinutes(10)) [|
+        sendCommand(SprinklerSystemZone1, OFF)
+        sendCommand(SprinklerSystemZone2, ON)
+        createTimer(now.plusMinutes(10)) [|
+            sendCommand(SprinklerSystemZone2, OFF)
+            // sendCommand(SprinklerSystemZone3, ON)
+            // createTimer(now.plusMinutes(1)) [|
+            //     sendCommand(SprinklerSystemZone3, OFF)
+            // ]
+        ]
+    ]
+    sendCommand(SprinklerCycle, OFF)
+end
