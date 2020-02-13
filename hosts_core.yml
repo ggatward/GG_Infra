@@ -29,15 +29,11 @@ all:
     # Common SSL parameters
     tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
 
-    # InfluxDB parameters used by multiple playbooks
-    influxdb_enable_ssl: true
-    #influxdb_host: influxdb.core.home.gatwards.org       # --> Requires SSL SAN to be set
-    influxdb_host: prometheus.core.home.gatwards.org
-    influxdb_http_port: '8086'
+    # InfluxDB is used by multiple groups, common params defined here
+    influxdb_host: influxdb.core.home.gatwards.org
 
     # MQTT broker is used by multiple groups, common params defined here
-    mqtt_broker_fqdn: automation.core.home.gatwards.org
-    mqtt_broker_port: '1883'
+    mqtt_broker_fqdn: mqtt.core.home.gatwards.org
 
     # Location parameters used in multple groups
     latitude: "{{ vault_latitude }}"
@@ -46,6 +42,27 @@ all:
 
 
   children:
+    influxdb:
+      hosts:
+        influxdb.core.home.gatwards.org:
+      vars:
+        influxdb_databases:
+        - name: 'prometheus'
+          retention_policy:
+            name: 1week
+            duration: 1w
+            replication: 1
+        - name: 'openhab'
+          retention_policy:
+            name: 1week
+            duration: 1w
+            replication: 1
+
+    ntp:
+      hosts:
+        ntp1.core.home.gatwards.org {}
+
+
     automation:
       children:
         openhab:
@@ -83,80 +100,7 @@ all:
         cis_httpd_install: { package: httpd, state: present, service: httpd, rstate: started, enabled: true, exception: 123 }
 
 
-    influxdb:
-      hosts:
-        prometheus.core.home.gatwards.org:
-          instance_ip: 172.22.1.69
-          unicast_src_ip: "{{ instance_ip }}"
-          unicast_peers:
-          - 172.22.1.69
 
-      vars:
-        motd_role: InfluxDB
-        ipaclient_ssl_create_certs: true
-        ipaclient_ssl_key_mode: '0644'
-        influxdb_admin_user: admin
-        influxdb_admin_password: '{{ vault_influxdb_admin_password }}'
-        influxdb_udp_port: '8089'
-        influxdb_databases:
-        - host: "{{ ansible_fqdn }}"
-          name: 'prometheus'
-          state: present
-          retention_policy:
-            enabled: true
-            name: 1week
-            duration: 1w
-            replication: 1
-        - host: "{{ ansible_fqdn }}"
-          name: 'openhab'
-          state: present
-          retention_policy:
-            enabled: true
-            name: 1week
-            duration: 1w
-            replication: 1
-        influxdb_users:
-        - username: 'prometheus'
-          password: "{{ vault_influxdb_prometheus_password }}"
-          permissions:
-          - database: 'prometheus'
-            grants: ALL
-        - username: 'openhab'
-          password: "{{ vault_influxdb_openhab_password }}"
-          permissions:
-          - database: 'openhab'
-            grants: ALL
-        - username: 'grafana_prometheus'
-          password: "{{ vault_influxdb_grafana_password }}"
-          permissions:
-          - database: 'prometheus'
-            grants: READ
-        - username: 'grafana_openhab'
-          password: "{{ vault_influxdb_grafana_password }}"
-          permissions:
-          - database: 'openhab'
-            grants: READ
-        influxdb_subscriptions: []
-
-        influxdb_relay_install: false
-        influxdb_relay_http_port: '9086'
-        influxdb_relay_udp_port: '9089'
-        influxdb_relay_enable_ssl: true
-        influxdb_relay_ssl_cert: /etc/pki/tls/certs/influxdb-proxy.pem
-        influxdb_relay_vip: 172.22.1.xxx
-        influxdb_relay_outputs:
-        - name: influxdb1
-          location: "{{ hostvars[groups['influxdb'][0]].instance_ip }}:{{ influxdb_udp_port }}"
-        - name: influxdb2
-          location: "{{ hostvars[groups['influxdb'][1]].instance_ip }}:{{ influxdb_udp_port }}"
-        haproxy_http_port: '8186'
-        haproxy_ssl_ciphers: 'EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5'
-
-        prometheus_install: false
-        prometheus_alert_manager_install: false
-        prometheus_push_gateway_install: false
-        prometheus_snmp_exporter_install: false
-        prometheus_blackbox_exporter_install: false
 
     prometheus_servers:
       vars:
@@ -348,4 +292,9 @@ all:
         bomxml2mqtt_pass: "{{ vault_bomxml2mqtt_pass }}"
         bomxml2mqtt_topic: weather/bomxml/
 
-    ungrouped: {}
+    docker:
+      children:
+        docker_nas:
+          hosts:
+            nas1.core.home.gatwards.org:
+              ansible_python_interpreter: /usr/bin/python

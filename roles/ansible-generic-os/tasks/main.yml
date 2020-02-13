@@ -37,19 +37,7 @@
     yum:
       name: "{{ required_pkgs }}"
       state: present
-
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
-
-
-# - name: Install common hardware utils
-#   package:
-#     name: "{{ packages }}"
-#     state: present
-#   when: ansible_virtualization_type == 'host'
-#   vars:
-#     packages:
-#       - pciutils
-#       - usbutils
 
 - name: Deploy MOTD
   template:

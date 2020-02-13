@@ -1,6 +1,4 @@
 ---
-# Do all infra setups
-
 # Provision VM instance
 
 # Bootstrap VM instance (as root)
@@ -10,11 +8,13 @@
 
 - import_playbook: hardening.yml
 
-- import_playbook: monitoring.yml
+- import_playbook: influxdb.yml
 
-- import_playbook: node_exporter.yml
-  when: "'prometheus' not in group_names"
+#- import_playbook: monitoring.yml
 
-- import_playbook: weather.yml
-- import_playbook: automation.yml
+# - import_playbook: node_exporter.yml
+#   when: "'prometheus' not in group_names"
+
+#- import_playbook: weather.yml
+#- import_playbook: automation.yml
 # - import_playbook: workstation.yml
