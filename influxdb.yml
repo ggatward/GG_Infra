@@ -1,112 +1,88 @@
 ---
-- name: Configure InfluxDB
+- name: Provision InfluxDB container
   remote_user: svc-ansible
   become: true
-  hosts: influxdb
+  hosts: docker_nas
   vars_files:
   - vault.yml
 
   tasks:
-  - import_role:
-      name: ansible-influxdb
+  - name: Ensure InfluxDB config paths exist
     tags:
-    - monitoring
     - influxdb
-    vars:
-      influxdb_redhat_pre_reqs:
-      - python3-pip
-      - python3-requests
-      influxdb_config: true
-      influxdb_http:
-        auth_enabled: true
-        bind_address: ""
-        bind_port: "{{ influxdb_http_port }}"
-        bind_socket: /var/run/influxdb.sock
-        enabled: true
-        https_enabled: "{{ influxdb_enable_ssl }}"
-        https_certificate: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
-        https_private_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
-        log_enabled: true
-        max_connection_limit: 0
-        max_row_limit: 0
-        pprof_enabled: true
-        realm: InfluxDB
-        shared_secret: ""
-        unix_socket_enabled: false
-        write_tracing: false
-      influxdb_udp:
-        batch_pending: 10
-        batch_size: 5000
-        batch_timeout: 1s
-        bind_address: ""
-        bind_port: "{{ influxdb_udp_port }}"
-        database: prometheus
-        enabled: true
-        read_buffer: 0
-        retention_policy: ""
-
-  # Flush handlers to force restart on initial installation
-  - name: Flush Handlers
-    tags:
-    - monitoring
-    - influxdb
-    meta: flush_handlers
-
-  - name: Wait for InfluxDB
-    tags:
-    - monitoring
-    - influxdb
-    wait_for:
-      port: "{{ influxdb_http_port }}"
-
-  # Not done inside role
-  - name: Open InfluxDB firewall ports
-    tags:
-    - monitoring
-    - influxdb
-    firewalld:
-      port: "{{ item }}"
-      immediate: yes
-      permanent: yes
-      state: enabled
+    - docker
+    file:
+      path: "{{ item }}"
+      state: directory
     with_items:
-    - "{{ influxdb_http_port }}/tcp"
-    - "{{ influxdb_udp_port }}/udp"
+    - /volume2/docker/influxdb/config
+    - /volume2/docker/influxdb/data
 
-  # Not done inside role
-  - name: Create InfluxDB users
+  - name: Deploy InfluxDB configuration
     tags:
-    - monitoring
     - influxdb
-    influxdb_user:
-      login_username: "{{ influxdb_admin_user }}"
-      login_password: "{{ influxdb_admin_password }}"
-      hostname: "{{ ansible_fqdn }}"
-      ssl: "{{ influxdb_enable_ssl | default(false) }}"
-      user_name: "{{ item.0.username }}"
-      user_password: "{{ item.0.password }}"
-      grants:
-      - database: "{{ item.1.database }}"
-        privilege: '{{ item.1.grants }}'
-    with_subelements:
-    - "{{ influxdb_users }}"
-    - permissions
-    no_log: true
+    - docker
+    template:
+      src: influxdb.conf.j2
+      dest: /volume2/docker/influxdb/config/influxdb.conf
+      owner: root
+      group: root
+      mode: 0644
+    register: influxdb_config
 
-  - name: Get existing subscriptions
+  - name: Deploy InfluxDB container
     tags:
-    - monitoring
     - influxdb
-    command: /bin/influx -ssl -unsafeSsl -username {{ influxdb_admin_user }} -password '{{ influxdb_admin_password }}' -database prometheus -execute 'show subscriptions'
-    register: subscriptions
-    changed_when: false
+    - docker
+    include_tasks: tasks/deploy_container.yml
+    vars:
+      name: influxdb
+      image: influxdb
+      # restart_policy: unless-stopped
+      published_ports:
+      - '8086:8086'
+      volumes:
+      - /volume2/docker/influxdb/config/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - /volume2/docker/influxdb/data:/var/lib/influxdb
 
-  - name: Create subscriptions
+  - name: Restart InfluxDB container
     tags:
-    - monitoring
     - influxdb
-    command: /bin/influx -ssl -unsafeSsl -username {{ influxdb_admin_user }} -password '{{ influxdb_admin_password }}' -database prometheus -execute "create subscription {{ item.name }} on prometheus.autogen DESTINATIONS ALL '{{ item.dest }}'"
-    with_items: "{{ influxdb_subscriptions }}"
-    when:
-    - influxdb_subscriptions is defined
-    - item.dest not in subscriptions.stdout
+    - docker
+    docker_container:
+      name: influxdb
+      state: restart
+    when: influxdb_config.changed
+
+
+- name: Configure InfluxDB
+  remote_user: svc-ansible
+  become: true
+  hosts: docker_nas
+
+  tasks:
+  - name: Install prerequisites
+    tags:
+    - influxdb
+    pip:
+      name: influxdb
+      state: present
+
+  - name: Create Databases
+    tags:
+    - influxdb
+    influxdb_database:
+      database_name: "{{ item.name }}"
+      hostname: influxdb.core.home.gatwards.org
+    with_items: "{{ hostvars[groups['influxdb'][0]].influxdb_databases }}"
+
+  - name: Configure retention policies
+    tags:
+    - influxdb
+    influxdb_retention_policy:
+      database_name: "{{ item.name }}"
+      hostname: influxdb.core.home.gatwards.org
+      duration: "{{ item.retention_policy.duration }}"
+      policy_name: "{{ item.retention_policy.name }}"
+      replication: 1
+    with_items: "{{ hostvars[groups['influxdb'][0]].influxdb_databases }}"

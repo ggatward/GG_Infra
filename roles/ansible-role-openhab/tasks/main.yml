@@ -9,10 +9,6 @@
   tags:
   - postgresql
 
-- include_tasks: mosquitto.yml
-  tags:
-  - mqtt
-
 - include_tasks: zwave.yml
   tags:
   - zwave

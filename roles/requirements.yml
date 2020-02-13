@@ -9,9 +9,6 @@ roles:
 - src: https://github.com/ggatward/ansible-role-hardening.git
   scm: git
 
-- src: https://github.com/ggatward/linux_adbinding.git
-  scm: git
-
 - src: https://github.com/ggatward/Ansible-RHEL7-CIS-Benchmarks.git
   scm: git
 
@@ -29,12 +26,6 @@ roles:
 # - src: git@github.com:ggatward/ansible-role-openhab.git
 #   scm: git
 #   version: development
-
-- src: https://github.com/ggatward/ansible-influxdb.git
-  scm: git
-
-- src: https://github.com/mrlesmithjr/ansible-influxdb-relay.git
-  scm: git
 
 - src: https://github.com/mrlesmithjr/ansible-keepalived.git
   scm: git

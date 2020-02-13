@@ -1,6 +1,6 @@
 ---
 - name: Install node_exporter
-  hosts: all
+  hosts: all,!docker
   become: true
 
   tasks:

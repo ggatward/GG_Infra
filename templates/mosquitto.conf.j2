@@ -127,59 +127,22 @@ user mosquitto
 # =================================================================
 
 #bind_address
-port {{ mqtt_broker_port }}
+port 1883
 protocol mqtt
 #use_username_as_clientid
-
-# =================================================================
-# Extra listeners
-# =================================================================
-
-{% if mqtt_use_ssl %}
-listener {{ mqtt_broker_ssl_port }}
-protocol mqtt
-use_username_as_clientid true
-cafile {{ mqtt_broker_tls_cafile }}
-certfile {{ mqtt_broker_tls_cert }}
-keyfile {{ mqtt_broker_tls_key }}
-# crlfile
-require_certificate true
-use_identity_as_username true
-#tls_version tlsv1.2
-#Restrict ciphers - we still need to allow TLS1.0 and 1.1 for IoT clients with firmware limitations
-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:AES256-GCM-SHA384:AES256-SHA256:ECDHE-RSA-AES256-SHA:AES256-SHA
-{% endif %}
-
-#===============================================================
-
-{% if mqtt_broker_owntracks %}
-listener {{ mqtt_broker_owntracks_port }}
-protocol {% if mqtt_broker_owntracks_websockets %}websockets{% else %}mqtt
-use_username_as_clientid true
-{% endif %}
-cafile {{ mqtt_broker_tls_cafile }}
-certfile {{ mqtt_broker_tls_cert }}
-keyfile {{ mqtt_broker_tls_key }}
-# crlfile
-require_certificate true
-use_identity_as_username true
-#tls_version tlsv1.2
-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:AES256-GCM-SHA384:AES256-SHA256
-{% endif %}
-
 
 # =================================================================
 # Persistence
 # =================================================================
 
 persistence false
-
+persistence_location /mosquitto/data/
 
 # =================================================================
 # Logging
 # =================================================================
 
-log_dest syslog
+log_dest file /mosquitto/log/mosquitto.log
 log_timestamp true
 
 log_type error
@@ -251,7 +214,7 @@ allow_anonymous true     # Needs to be true for several Arduino based devices to
 #
 # See the TLS client require_certificate and use_identity_as_username options
 # for alternative authentication options.
-password_file /etc/mosquitto/pwfile
+#password_file /mosquitto/config/pwfile
 
 
 # Control access to topics on the broker using an access control list
@@ -315,4 +278,4 @@ password_file /etc/mosquitto/pwfile
 # in the main file. This option will only be processed from the main
 # configuration file. The directory specified must not contain the
 # main configuration file.
-#include_dir
+#include_dir /mosquitto/config/mosquitto.d

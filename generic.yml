@@ -2,22 +2,23 @@
 - name: Generic Infrastructure
   remote_user: svc-ansible
   become: true
-  hosts: all
+  hosts: all,!docker
   vars_files:
   - vault.yml
 
   tasks:
-  - import_role:
-      name: ansible-generic-os
+  - name: Generic configurations
     tags:
     - generic
+    import_role:
+      name: ansible-generic-os
 
-
-  - import_role:
-      name: ansible-role-ipaclient
+  - name: Configure IPA client
     tags:
     - generic
     - ipa
+    import_role:
+      name: ansible-role-ipaclient
     vars:
       ipaclient_servers:
       - ipa1.ipa.home.gatwards.org
@@ -48,9 +49,9 @@
       state: present
     when: ansible_lsb.id is not defined or (ansible_lsb.id is defined and ansible_lsb.id != 'Raspbian')
 
-
-  - import_role:
-      name: ansible-role-hw_vm_tools
+  - name: Install platform tools
     tags:
     - generic
-    - vmtools
+    - platform_tools
+    import_role:
+      name: ansible-role-hw_vm_tools
