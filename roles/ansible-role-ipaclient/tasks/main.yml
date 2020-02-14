@@ -1,11 +1,6 @@
 ---
 # tasks file for ansible-role-ipaclient
 
-# - name: Assert supported distribution
-#   assert:
-#     that:
-#       - ansible_distribution + '-' + ansible_distribution_major_version in ipaclient_supported_distributions
-
 - name: Assert required variables
   assert:
     that:

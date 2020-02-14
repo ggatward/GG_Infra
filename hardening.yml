@@ -3,34 +3,22 @@
   remote_user: svc-ansible
   become: true
   hosts: all,!docker
-  # vars_files:
-  # - vault.yml
 
   tasks:
-  - name: Apply CIS hardening
-    tags:
-    - hardening
-    - cis
-    import_role:
-      name: Ansible-RHEL{{ ansible_distribution_major_version }}-CIS-Benchmarks
-    when:
-    - ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
-    # - ansible_distribution_major_version == '8'
+  - block:
+    - name: Apply CIS hardening for EL8
+      import_role:
+        name: Ansible-RHEL8-CIS-Benchmarks
+      tags:
+      - hardening
+      - cis
+      when: ansible_distribution_major_version == '8'
 
-  # - import_role:
-  #     name: Ansible-RHEL8-CIS-Benchmarks
-  #   tags:
-  #   - hardening
-  #   - cis
-  #   when:
-  #   - ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
-  #   - ansible_distribution_major_version == '8'
-
-  # - import_role:
-  #     name: Ansible-RHEL7-CIS-Benchmarks
-  #   tags:
-  #   - hardening
-  #   - cis
-  #   when:
-  #   - ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
-  #   - ansible_distribution_major_version == '7'
+    - name: Apply CIS hardening for EL7
+      import_role:
+        name: Ansible-RHEL7-CIS-Benchmarks
+      tags:
+      - hardening
+      - cis
+      when: ansible_distribution_major_version == '7'
+    when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
