@@ -42,6 +42,14 @@ all:
 
 
   children:
+    raspberry:
+      hosts:
+#        rpi-util1.core.home.gatwards.org: {}
+        rpi-util2.core.home.gatwards.org: {}
+#        rpi-util3.core.home.gatwards.org: {}
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+
     influxdb:
       hosts:
         influxdb.core.home.gatwards.org:
