@@ -1,0 +1,9 @@
+---
+# tasks file for ansible-role-gpsd
+- name: Install GPSd Server
+  include_tasks: gpsd_server.yml
+  when: gpsd_install_server
+
+- name: Install GPSd Client
+  include_tasks: gpsd_client.yml
+  when: gpsd_install_client

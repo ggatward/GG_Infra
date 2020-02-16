@@ -1,0 +1,47 @@
+---
+# Enable and configure PPS support in kernel
+- name: Install PPS tools
+  package:
+    name: pps-tools
+    state: present
+  notify: reboot
+
+- name: Configure kernel for PPS support
+  lineinfile:
+    path: /boot/config.txt
+    regexp: '^dtoverlay=pps-gpio'
+    line: dtoverlay=pps-gpio,gpiopin=4
+  notify: reboot
+
+# Console redirect by default uses /dev/ttyAMA0 - this is where the GPS sits.
+- name: Remove serial console config
+  replace:
+    path: /boot/cmdline.txt
+    regexp: 'console=serial0,115200'
+  notify: reboot
+
+- name: Set permissions on serial devices
+  file:
+    path: "{{ item }}"
+    group: dialout
+    mode: '660'
+  with_items: "{{ gpsd_devices }}"
+  ignore_errors: true
+
+- block:
+  - name: Remove default systemd files
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+    - /lib/systemd/system/gpsd.service
+    - /lib/systemd/system/gpsdctl@.service
+    - /etc/init.d/gpsd
+    notify: systemd_reload
+
+  - name: Install new systemd files
+    template:
+      src: gpsd.service.j2
+      dest: /etc/systemd/system/gpsd.service
+    notify: systemd_reload
+  when: gpsd_run_as_root

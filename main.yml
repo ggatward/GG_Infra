@@ -8,7 +8,7 @@
 
 - import_playbook: hardening.yml
 
-- import_playbook: influxdb.yml
+- import_playbook: general_services.yml
 
 #- import_playbook: monitoring.yml
 

@@ -1,0 +1,40 @@
+---
+- name: Install GPSd
+  package:
+    name: gpsd
+    state: present
+
+- name: Include RPi additional actions
+  include_tasks: rpi_configs.yml
+  #when:
+
+- name: Configure GPSd
+  template:
+    src: gpsd.conf.j2
+    dest: "{{ gpsd_config }}"
+  notify: Restart gpsd
+
+- block:
+  - name: Set GPSd to listen on all interfaces
+    file:
+      path: /etc/systemd/system/gpsd.socket.d
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: Deploy systemd override
+    copy:
+      content: |
+        [Socket]
+        # First blank ListenStream clears the system defaults
+        ListenStream=
+        ListenStream=/var/run/gpsd.sock
+        ListenStream=2947
+      dest: /etc/systemd/system/gpsd.socket.d/socket.conf
+      owner: root
+      group: root
+      mode: '0644'
+    #notify: reload gpsd
+    notify: Restart gpsd
+  when: gpsd_listen_all_interfaces

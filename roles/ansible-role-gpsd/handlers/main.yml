@@ -1,0 +1,17 @@
+---
+# handlers file for ansible-role-gpsd
+- name: Restart gpsd
+  service:
+    name: gpsd.service
+    state: restarted
+    daemon_reload: true
+  with_items:
+  - gpsd.service
+  - gpsd.socket
+
+- name: systemd_reload
+  systemd:
+    daemon_reload: true
+
+- name: reboot
+  reboot:

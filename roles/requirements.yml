@@ -1,10 +1,7 @@
 ---
 roles:
-- src: https://github.com/ggatward/ansible-role-generic-os.git
-  scm: git
-
-- src: https://github.com/adfinis-sygroup/ansible-role-hw_vm_tools.git
-  scm: git
+# - src: https://github.com/ggatward/ansible-role-generic-os.git
+#   scm: git
 
 - src: https://github.com/ggatward/ansible-role-hardening.git
   scm: git
@@ -14,6 +11,18 @@ roles:
 
 - src: https://github.com/ggatward/Ansible-RHEL8-CIS-Benchmarks.git
   scm: git
+
+- src: https://github.com/adfinis-sygroup/ansible-role-hw_vm_tools.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-prometheus.git
+  scm: git
+
+- src: https://github.com/ericsysmin/ansible-role-chrony.git
+  scm: git
+
+
+
 
 # - src: git@github.com:ggatward/ansible-role-workstation.git
 #   scm: git
@@ -27,18 +36,17 @@ roles:
 #   scm: git
 #   version: development
 
-- src: https://github.com/mrlesmithjr/ansible-keepalived.git
-  scm: git
+# - src: https://github.com/mrlesmithjr/ansible-keepalived.git
+#   scm: git
 
-- src: https://github.com/mrlesmithjr/ansible-haproxy.git
-  scm: git
+# - src: https://github.com/mrlesmithjr/ansible-haproxy.git
+#   scm: git
 
-- name: ansible_nginx
-  src: https://github.com/geerlingguy/ansible-role-nginx.git
-  scm: git
+# - name: ansible_nginx
+#   src: https://github.com/geerlingguy/ansible-role-nginx.git
+#   scm: git
 
-- src: https://github.com/ggatward/ansible-prometheus.git
-  scm: git
 
-- src: https://github.com/ggatward/ansible-grafana.git
-  scm: git
+
+# - src: https://github.com/ggatward/ansible-grafana.git
+#   scm: git

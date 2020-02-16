@@ -1,0 +1,8 @@
+---
+# tasks file for influxdb-docker
+- name: Install prerequisites
+  pip:
+    name: influxdb
+    state: present
+
+- include_tasks: deploy.yml

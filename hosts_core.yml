@@ -44,7 +44,7 @@ all:
   children:
     raspberry:
       hosts:
-#        rpi-util1.core.home.gatwards.org: {}
+        rpi-util1.core.home.gatwards.org: {}
         rpi-util2.core.home.gatwards.org: {}
 #        rpi-util3.core.home.gatwards.org: {}
       vars:
@@ -66,10 +66,10 @@ all:
             duration: 1w
             replication: 1
 
-    ntp:
-      hosts:
-        ntp1.core.home.gatwards.org {}
-
+    # ntp:
+    #   hosts:
+    #     rpi-util1.core.home.gatwards.org:
+    #     #rpi-util2.core.home.gatwards.org:
 
     automation:
       children:

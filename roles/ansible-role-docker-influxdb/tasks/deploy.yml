@@ -1,0 +1,30 @@
+---
+# tasks file for influxdb-docker
+- name: Ensure InfluxDB config paths exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ docker_persistent_store_root }}"
+  - "{{ docker_persistent_store_root }}/config"
+  - "{{ docker_persistent_store_root }}/data"
+
+- name: Deploy InfluxDB configuration
+  template:
+    src: influxdb.conf.j2
+    dest: "{{ docker_persistent_store_root }}/config/influxdb.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_container
+
+- name: Deploy InfluxDB container
+  docker_container:
+    name: influxdb
+    image: influxdb
+    restart_policy: unless-stopped
+    published_ports:
+    - '8086:8086'
+    volumes:
+    - "{{ docker_persistent_store_root }}/config/influxdb.conf:/etc/influxdb/influxdb.conf:ro"
+    - "{{ docker_persistent_store_root }}/data:/var/lib/influxdb"
