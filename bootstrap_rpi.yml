@@ -31,6 +31,9 @@
     register: pi_hostname
     when: inventory_hostname not in rpi_hostname.stdout_lines
 
+  - name: Set timezone
+    command: timedatectl set-timezone Australia/Sydney
+
   - name: Create Ansible account
     user:
       name: svc-ansible
@@ -70,6 +73,14 @@
     command: raspi-config nonint do_expand_rootfs
     register: rootfs
     when: root_fs.stdout != "0.00GB"
+
+  - name: Install base packages we expect
+    package:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - firewalld
 
   - name: Reboot
     reboot:

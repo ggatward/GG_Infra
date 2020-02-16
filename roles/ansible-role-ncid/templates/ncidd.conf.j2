@@ -1,0 +1,451 @@
+# NCID - Network CallerID Server Config File
+
+# File last changed: Jan 19, 2020
+
+################################
+# Definitions and Line formats #
+################################
+
+# lines can be blank, or start with the words: send, set, #
+#
+# A line is divided into words, separated by spaces
+#
+# A word is either a string of non-blank characters, everything
+# between double quotes, or an equal sign.
+#
+# SEND LINE FORMAT:
+#   send DATATYPE [DATATYPE] ...
+#        where DATATYPE = cidlog, cidinfo
+#
+# SET LINE FORMAT:
+#   set ITEM = VALUE [ITEM = VALUE] ...
+#       where ITEM = announce, audiofmt, blacklist, cidalias, cidinput,
+#                    cidlog, cidlogmax, datalog, dialdelay,
+#                    gencid, hangup, hupmode, hupname, huprmd, ignore1,
+#                    initcid, initstr, ifaddr, lineid, lockfile, pickup, pidfile,
+#                    port, regex, send, ttyclocal, ttyport, ttyspeed,
+#                    verbose, whitelist
+
+##########################
+# Log file verbose level #
+##########################
+
+# Set the verbose level
+# The default value is 1, the range is 1-7
+# verbose levels 8 and 9 are only for the command line
+# set verbose = 3
+
+############################
+# Log and Info for Clients #
+############################
+
+# Send the call log to a client when connected
+# The default is not to send the call log file
+send cidlog
+
+# Send call info (LINE and RING) to a client at each ring
+# The default is not to send the call info line
+send cidinfo
+
+#####################
+# NCID Network Port #
+#####################
+
+# The default TCP/IP port is 3333
+set port = {{ ncid_tcp_port }}
+
+# The default TCP/IP port accepts client connections from everywhere
+set ifaddr = {{ ncid_tcp_ifaddr }}
+
+
+#####################
+# PID and Log Files #
+#####################
+
+# Set pidfile to /var/run/ncidd.pid in rc and init scripts
+# The default is no PID file
+# set pidfile = /var/run/ncidd.pid
+
+# The default CID call log file: /var/log/cidcall.log
+# (also make the change in /usr/etc/logrotate.d/ncidd
+#  and also /usr/etc/ncid/ncidrotate.conf)
+# set cidlog = /var/log/cidcall.log
+
+# Set the maximum size in bytes for the CID log file
+# The default is 110,000 bytes and the maximum is 100,000,000
+# Do not include commas when setting cidlogmax
+# set cidlogmax = 500000
+
+# The default tty data log file: /var/log/ciddata.log
+# the log file must exist, ncidd will not create it
+#  (also make the change in /usr/etc/logrotate.d/ncidd
+#   and also /usr/etc/ncid/ncidrotate.conf)
+# set datalog = /var/log/ciddata.log
+
+######################################
+# Gateway and modem or serial device #
+######################################
+
+# Normally a modem or other serial device is required to capture CID
+# information, but gateways can also be used.
+#
+# cidinput is used to configure the Caller ID input source
+# cidinput replaces the obsolete noserial and nomodem variables
+#
+# Use the following table to set cidinput:
+#
+# cidinput = 0: Caller ID from a modem and optional gateways
+# cidinput = 1: Caller ID from a serial or USB device and optional gateways
+# cidinput = 2: Caller ID from a gateway with modem support
+# cidinput = 3: Caller ID from gateways without modem support
+#
+# default: cidinput = 0
+# set cidinput = 0
+# set cidinput = 1
+# set cidinput = 2
+# set cidinput = 3
+
+#############################################################
+## NOTE: if cidinput = 3, nothing needs to be configured   ##
+##       beyond this point.  It means there is no modem or ##
+##       serial device, or if present it will be ignored.  ##
+#############################################################
+
+####################
+# HANGUP EXTENSION #
+####################
+
+# ncidd can call a hangup extension (external script or program)
+# as a way to provide additional functionality.
+#
+# Summary of the three hangup settings:
+#   set hupname -- the name of the hangup script or program
+#   set hupmode -- enables the hangup extension with a hangup mode
+#                  and disables it if hupmode = 0.
+#   set huprmd  -- optional voice file to be played if hupmode = 3
+#
+# Only the name of the hangup extension name is required for "hupname".
+# The hangup name must begin with "hangup-"
+#   examples: hangup-on-telemarketers
+#             hangup-debt-collector
+#             hangup-mesg
+#
+# If your extension is not in the default path, specify a full path name.
+# The default hangup path: /usr/share/ncid/extensions/
+# The default hangup name: hangup-nohangup
+# set hupname = hangup-fakenum
+#
+# The server hangup extension is enabled by "hupmode"
+# It has the same modes as "hangup": 0, 1, 2, 3
+# It requires cidinput to be 0 or 2.
+# See the "Automatic Call Hangup" section below for mode descriptions.
+# hupmode = 0        Default: do not execute the hangup extension
+# set hupmode = 1
+
+# The hangup extension can return a voice recording file name to play.
+# If a voice recording file name is not returned, the "huprmd" file
+# is used.  If "huprmd" is not set, the "announce" voice file is used.
+# Only the name of the voice file is required when you set "huprmd".
+#
+# If your recording name is not in the default path, specify a full path name.
+# The default recording path: /usr/share/ncid/recordings/
+# The default recording name: the same as the "announce" recording name
+# set huprmd = NotInService.rmd
+
+########################################
+# Alias, Blacklist and Whitelist Files #
+########################################
+
+# The default CID alias file: /usr/etc/ncid/ncidd.alias
+# set cidalias = /usr/etc/ncid/ncidd.alias
+
+# The default blacklist file: /usr/etc/ncid/ncidd.blacklist
+# set blacklist = /usr/etc/ncid/ncidd.blacklist
+#
+# The default whitelist file: /usr/etc/ncid/ncidd.whitelist
+# set whitelist = /usr/etc/ncid/ncidd.whitelist
+
+# The alias, blacklist and whitelist files use simple expressions
+# to match on a Caller ID
+#
+# Posix regular expressions can be used instead of simple expressions
+# see https://en.wikipedia.org/wiki/Regular_expression and
+# Regex Cheat Sheet](https://www.rexegg.com/regex-quickstart.html)
+#
+# Perl regular expressions can also be used if ncidd has been compiled
+# with libpcre (which is automatic if pcre.h is available).
+# see https://www.pcre.org/ and http://perldoc.perl.org/perlre.html and
+# https://www.debuggex.com/cheatsheet/regex/pcre
+#
+# regex = 0           Default: use simple expressions
+# regex = 1           use Posix regular expressions
+# regex = 2           use Perl regular expressions
+# set regex = 1
+
+# An alias that includes a telephone number depends on the number
+# received from a call.  In the US and Canada, a leading 1 is not
+# always part of the telephone number.  For instance, Vonage always
+# includes the 1 on incoming calls but on outgoing calls the 1 is
+# optional.
+# If the ignore1 option is set, a leading 1 is ignored in both
+# the caller number and the alias definition.
+#
+# The ignore1 option is only for use in the US and Canada.
+#
+# ignore1 = 0 default: the leading 1 is required in the alias,
+#                      blacklist and whitelist files
+# ignore1 = 1          ignore the leading 1 in a call and in
+#                      the alias, blacklist and whitelist files
+# set ignore1 = 1
+
+############################
+# Telephone Line Indicator #
+############################
+
+# The line indicator is set to "POTS" (Plain Old Telephone Service).
+# Set the line indicator to the last 4 digits of your number if you
+# have more than one telephone line.
+#
+# If you want to enable hangup using the internal modem for Caller ID
+# from a device that cannot hangup you must set the modem line indicator
+# to the device line indicator.
+#
+# Refer to the "Automatic Call Hangup" section for more information.
+#
+# lineid default: POTS
+# set lineid = POTS
+
+################
+# Dial Timeout #
+################
+
+# If a client has ncidd dial a number, the server delays <number> seconds
+# before hanging up.  The range is from 2 seconds to 10 seconds.
+
+# dialdelay = 5       Default: in seconds
+# set dialdelay = 4
+
+#########################
+# Automatic Call Hangup #
+#########################
+
+# The automatic call hangup feature requires a modem to hangup
+# the call.  Hangup is performed by having the modem: go
+# off-hook; delay a bit; make an announcement or send a FAX
+# tone; go back on-hook.
+#
+# The Caller ID information for a hangup may be obtained from the
+# internal modem or device and gateways.  Because NCID supports
+# multiple phone lines, it needs to know which line is connected
+# to both the modem and the device used for Caller ID in order to
+# terminate a call.  The line # indicator does this.  To enable
+# hangup on a device, not the internal modem you need to
+# "set lineid = <device line id>.
+#
+# Refer to the "Telephone Line Indicator" section for more information.
+
+# The server will hangup a call when it receives the Caller ID
+# provided the name or number is in the blacklist file, but not
+# in the whitelist file.
+
+# Set hangup to a 0 to disable the automatic hangup
+#
+# hangup = 0          Default: do not terminate a call
+# set hangup = 0
+
+# For any of the following hangup settings, cidinput must be 0 or 2.
+
+# Set hangup to a 1 if you would like ncidd to terminate a
+# call that has its name or number in a blacklist file but
+# not in a whitelist file.
+#
+# hangup = 1          terminate the call
+# set hangup = 1
+
+# Set hangup to a 2 if you would like ncidd to pickup and generate
+# FAX tones before terminating a call that has its name or number
+# in a blacklist file but not in a whitelist file.  Not all modems
+# support FAX.  If FAX is not supported the server will switch to
+# "hangup = 1" and generate a warning in the server log file.
+#
+# hangup = 2          generate FAX tones, then terminate the call
+# set hangup = 2
+#
+# Modems that support FAX normally require a pickup command before
+# sending the FAX command to start the FAX tones.  Some older modems
+# will not generate FAX tones if a pickup command is sent.  If no FAX
+# tones are heard, do not send the pickup command.
+#
+# pickup = 1          Default: send the pickup command
+# pickup = 0          do not send the pickup command
+# set pickup = 0
+
+# Set hangup to a 3 if you would like to play an announcement
+# before terminating a call that has its name or number
+# in a blacklist file but not in a whitelist file.  Not all modems
+# support VOICE.  If VOICE is not supported the server will switch
+# to "hangup = 1" and generate a warning in the server log file.
+#
+# hangup = 3          play an announcement then terminate the call
+# set hangup = 3
+#
+# Default announce file: 8-bit unsigned PCM at a 8000 Hz sample rate
+# Default announce file: DisconnectedNotInService.rmd
+# The announce file is located in /usr/share/ncid/recordings
+#   unless a full path is given in 'set announce'
+# Choose one of these announce files:
+# set announce = CallingDeposit.rmd
+# set announce = CannotBeCompleted.rmd
+# set announce = NotInService.rmd
+# set announce = DisconnectedNotInService.rmd
+#
+# Set the audio data format to one of the Modem Sampling Methods
+# returned by the modem command: AT+VSM=?
+#
+#   The default announce file expects:
+#       Manufacturer: CONEXANT
+#       Modem Identifier: CX93001-EIS_V0.2013-V92
+#           NOTE: only CX93001 is important the rest of the line can change
+#       Modem Sampling Method: 130,"UNSIGNED PCM",8,0,8000,0,0
+#       Modem Sampling Method slected: 130
+#
+#   The default announce file will also work with:
+#       Manufacturer: U.S. Robotics
+#       Modem Identifier: U.S. Robotics 56K FAX USB V1.2.23
+#           NOTE: the version must be v1.2.23 or later
+#       Modem audio data formats: 128,"8-BIT LINEAR",(7200,8000,11025)
+#       Modem audio data format slected: 128,8000
+#
+# default: audiofmt = "AT+VSM=130"   # CONEXANT
+# set audiofmt = "AT+VSM=128,8000"   # U.S. Robotics
+
+#####################
+# TTY Configuration #
+#####################
+
+## Required if cidinput is 0, 1 or 2.
+
+# The default tty port for Operating System compiles:
+# A Linux compile is either debian, fedora, redhat, raspbian, or ubuntu
+#   /dev/ttyACM0              # general: USB modem 0
+#   /dev/com1                 # cygwin: serial modem
+#   /dev/cuaU0                # FreeBSD: serial modem
+#   /dev/cu.usbmodem24680241  # Mac OS X: USB modem
+#   /dev/ttyACM0              # Linux: USB modem 0
+#
+set ttyport = {{ ncid_ttyport }}
+
+# The default tty port speed: 115200
+# The tty speed can be one of: 115200, 38400, 19200, 9600, 4800, 2400, 1200
+set ttyspeed = {{ ncid_ttyspeed }}
+
+# Ignore tty control signals for internal modems and 3 wire serial cables
+#   Disable tty control signals: ttyclocal = 1
+#   Enable tty control signals: ttyclocal = 0 (default)
+# set ttyclocal = 1
+
+# The lockfile name is generated automatically for the following distributions
+# when tty port is /dev/modem:
+#    Fedora : /var/lock/lockdev/LCK..modem
+#    FreeBSD: /var/spool/lock/LCK..modem
+#    Mac    : /var/spool/uucp/LCK..modem
+#    Ubuntu : /var/lock/LCK..modem
+#
+# The default lockfile name when not build to a distribution
+# and the tty port is /dev/modem:
+#    Default: /var/lock/LCK..modem
+#
+# You can also set the lockfile manually for a OS not distributed
+# when tty port is /dev/modem:
+#    Debian : /var/lock/LCK..modem
+#
+# set lockfile = /var/lock/lockdev/LCK..ttyS0
+
+########################
+# Modem Initialization #
+########################
+
+# initstr is required if cidinput = 0 or 2
+
+# see http://www.modemhelp.org for help with init strings
+
+# The default modem initialization is: "AT Z S0=0 E1 V1 Q0"
+# set initstr = "ATE1V1Q0"
+#
+# If minicom can talk to the modem but ncidd fails, use the Minicom init string
+# Minicom initialization string is "AT S7=45 S0=0 L1 V1 X4 &c1 E1 Q0"
+# set initstr = "ATS7=45S0=0L1V1X4&c1E1Q0"
+#
+# Alternate modem initialization string
+# set initstr = "AT&FE1V1Q0+VIP"
+
+# Modem initialization string for the Mac Motorola UbiSoft modem
+# set initstr = "AT+FCLASS=8;+VCID=1" # default Mac OS X internal modem
+
+# Modem initialization string for the US Robotics 5637, v.92 56k USB modem
+# set initstr = "ATQ0 V1 E1 S0=0 &C1 &D2 +FCLASS=0"
+
+# The U.S.Robotics USR5631 56K Faxmodem has a +GCI command to set the
+# country code to adjust parameters for a particular telephone network
+# (perhaps other modems do also).  See the following on how to set +GCI
+#   http://www.usr.com/support/5631/5631-ug/generic.htm
+#   doc/Modem-init (has a copy of the information needed to set +GCI)
+
+# Addon strings to set modem for Distinctive Ring:
+#   http://www.modemsite.com/56k/dring.asp
+#
+# 3Com/USR/TI chipset: ATS41=1
+#   Reported Ring Codes: RING A, RING B, RING C
+# Rockwell/Conexant chipset: AT-SDR=7
+#   Reported Ring Codes: RING 1, RING 2, RING 3
+#   Also reported DROF/DRON messages instead of ring codes
+# Lucent/Agere chipset: AT+VDR=1,0
+#   Reported DROF/DRON messages: DRON=5 DROF=11, DRON=5 DROF=34
+#
+# Example adds 3Com DR to the default modem initialization
+# set initstr = "ATE1V1Q0S41=1"
+
+# "RPLY: dial - dial failed, modem returned NO DIALTONE"
+# Use this to disable dialtone detection for dialing a number in HR (Croatia)
+# set initstr = "ATX3"
+
+# initcid is required if cidinput is set to 0
+
+# The default for ncidd is to try two CID strings to setup
+# CallerID: "AT+VCID=1" and if that fails: "AT#CID=1".
+# set initcid = "AT#CID=1"
+#
+# Alternate CID strings to try if default does not work:
+# set initcid = "AT+FCLASS=8;+VCID=1"
+# set initcid = "AT-STE=1;+VCID=1"
+# set initcid = "AT-STE=1;#CID=1"
+#
+# Alternate CID mode for Caller ID using SDMF or MDMF format
+# set initcid = "AT+VCID=2"
+#
+# CID init string to skip sending any CID string to modem
+# Useful if NCID is used only as a visual call indicator
+# set initcid = ""
+#
+# CID string for the Conexant Systems (Rockwell) when using
+# Distinctive Ring and missing calls that give a DDN_NMBR
+# instead of NMBR:
+# set initcid = "AT+VDR=1,0;E1V1Q0S24=0"
+#
+# CID init string for a particular country (example shows B5 for the US
+# See the incomplete Country Code lists at
+# http://ncid.sourceforge.net/doc/NCID-UserManual.html#modems_top
+# set initcid = "ATE1V1Q0+GCI=B5"
+
+################################
+# Generate a generic Caller ID #
+################################
+
+# Generate a generic Caller ID at ring 2 if one is not received
+# from the modem either because the telco is not sending it or
+# because the modem does not support it.  This feature requires
+# the modem to indicate each time the modem rings.
+
+# gencid = 0 default: never generate a generic Caller ID
+# gencid = 1          generate a generic Caller ID when needed
+# set gencid = 1

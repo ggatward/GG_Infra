@@ -1,0 +1,28 @@
+---
+
+- name: Set Issue banner
+  template:
+    src: issue.j2
+    dest: /etc/issue
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Remove local users
+  user:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - ftp
+    - operator
+    - games
+  ignore_errors: true
+
+- name: SSH Server hardening
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    mode: 0600
+    owner: root
+    group: root
+  notify: restart sshd

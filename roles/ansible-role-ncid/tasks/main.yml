@@ -1,0 +1,17 @@
+---
+# tasks file for ansible-role-ncidd
+- name: Copy ncid package
+  copy:
+    src: ncid_1.11-1_armhf.deb
+    dest: /tmp
+
+- name: Install ncid
+  apt:
+    deb: /tmp/ncid_1.11-1_armhf.deb
+    state: present
+
+- name: Deploy ncid configuration
+  template:
+    src: ncidd.conf.j2
+    dest: /etc/ncid/ncidd.conf
+  notify: restart ncid

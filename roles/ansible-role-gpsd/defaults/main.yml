@@ -1,0 +1,12 @@
+---
+# defaults file for ansible-role-gpsd
+gpsd_config: /etc/default/gpsd
+gpsd_devices:
+- /dev/ttyAMA0
+gpsd_options: '-n'
+
+gpsd_run_as_root: false
+gpsd_listen_all_interfaces: false
+
+gpsd_install_server: true
+gpsd_install_client: true

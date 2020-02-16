@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+
+START_DAEMON="true"
+GPSD_OPTIONS="{{ gpsd_options }}"
+DEVICES="{{ gpsd_devices | join(' ') }}"
+USBAUTO="true"
+GPSD_SOCKET="/var/run/gpsd.sock"

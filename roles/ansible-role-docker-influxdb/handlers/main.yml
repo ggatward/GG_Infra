@@ -1,0 +1,6 @@
+---
+# handlers file for influxdb-docker
+- name: restart_container
+  docker_container:
+    name: influxdb
+    state: restart

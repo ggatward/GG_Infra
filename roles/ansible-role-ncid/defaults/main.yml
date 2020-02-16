@@ -1,0 +1,8 @@
+---
+# defaults file for ansible-role-ncidd
+
+ncid_tcp_ifaddr: '0.0.0.0'
+ncid_tcp_port: '3333'
+
+ncid_ttyport: /dev/ttyACM0
+ncid_ttyspeed: '115200'

@@ -1,0 +1,99 @@
+---
+- name: Configure Time Server
+  remote_user: svc-ansible
+  become: true
+  hosts: rpi-util1.core.home.gatwards.org
+
+  tasks:
+  - name: Configure GPSd
+    tags:
+    - gpsd
+    - ntp
+    import_role:
+      name: ansible-role-gpsd
+    vars:
+      gpsd_devices:
+      - /dev/ttyAMA0
+      - /dev/pps0
+      gpsd_run_as_root: true
+      gpsd_listen_all_interfaces: true
+
+  - name: Configure Chrony Server
+    tags:
+    - chrony
+    - ntp
+    import_role:
+      name: ansible-role-chrony
+    vars:
+      chrony_config_server:
+      - 0.pool.ntp.org
+      chrony_config_extra_options:
+        allow: 172.22.0.0/21
+        local: stratum 10
+        refclock: SHM 0 delay 0.2 refid GPS
+        #refclock: PPS /dev/pps0 refid PPS
+
+  - name: Update firewall rules (ports)
+    tags:
+    - chrony
+    - gpsd
+    - ntp
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - 2947/tcp
+    - 3333/tcp
+
+  - name: Update firewall rules (services)
+    tags:
+    - chrony
+    - gpsd
+    - ntp
+    firewalld:
+      service: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - ntp
+
+####################################################################################
+
+- name: Provision InfluxDB container
+  remote_user: svc-ansible
+  become: true
+  hosts: docker_nas
+  vars_files:
+  - vault.yml
+
+  tasks:
+  - name: Configure InfluxDB
+    tags:
+    - influxdb
+    - docker
+    import_role:
+      name: ansible-role-docker-influxdb
+
+  - name: Create Databases
+    tags:
+    - influxdb
+    - docker
+    influxdb_database:
+      database_name: "{{ item.name }}"
+      hostname: influxdb.core.home.gatwards.org
+    with_items: "{{ hostvars[groups['influxdb'][0]].influxdb_databases }}"
+
+  - name: Configure retention policies
+    tags:
+    - influxdb
+    - docker
+    influxdb_retention_policy:
+      database_name: "{{ item.name }}"
+      hostname: influxdb.core.home.gatwards.org
+      duration: "{{ item.retention_policy.duration }}"
+      policy_name: "{{ item.retention_policy.name }}"
+      replication: 1
+    with_items: "{{ hostvars[groups['influxdb'][0]].influxdb_databases }}"

@@ -1,0 +1,4 @@
+---
+# defaults file for influxdb-docker
+
+docker_persistent_store_root: /volume2/docker/influxdb

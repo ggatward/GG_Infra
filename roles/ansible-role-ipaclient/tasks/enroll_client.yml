@@ -12,13 +12,6 @@
     line: "nameserver {{ ipaclient_dns_server }}"
     dest: /etc/resolv.conf
 
-- name: Update apt cache
-  become: true
-  when: ansible_pkg_mgr  == 'apt'
-  apt:
-    update_cache: true
-    cache_valid_time: 3600
-
 - name: Install required packages
   become: true
   with_items: "{{ ipaclient_packages }}"

@@ -3,20 +3,47 @@
   remote_user: svc-ansible
   become: true
   hosts: all,!docker
-  vars_files:
-  - vault.yml
+  # vars_files:
+  # - vault.yml
 
   tasks:
+  - name: Update apt cache
+    tags:
+    - always
+    become: true
+    when: ansible_pkg_mgr  == 'apt'
+    apt:
+      update_cache: true
+      cache_valid_time: 3600
+
   - name: Generic configurations
     tags:
     - generic
     import_role:
       name: ansible-generic-os
 
+  - name: Install platform tools
+    tags:
+    - generic
+    - platform_tools
+    import_role:
+      name: ansible-role-hw_vm_tools
+
+####################################################################
+
+- name: Authentication
+  remote_user: svc-ansible
+  become: true
+  hosts: all,!docker
+  vars_files:
+  - vault.yml
+
+  tasks:
   - name: Configure IPA client
     tags:
     - generic
     - ipa
+    - auth
     import_role:
       name: ansible-role-ipaclient
     vars:
@@ -40,6 +67,7 @@
     tags:
     - generic
     - ipa
+    - auth
     lineinfile:
       path: /etc/idmapd.conf
       regexp: '^#?\s?Domain.*=.*'
@@ -47,9 +75,55 @@
       backrefs: true
       state: present
 
-  - name: Install platform tools
+####################################################################
+
+- name: Monitoring
+  remote_user: svc-ansible
+  hosts: all,!docker
+  become: true
+
+  tasks:
+  - import_role:
+      name: ansible-prometheus
     tags:
-    - generic
-    - platform_tools
-    import_role:
-      name: ansible-role-hw_vm_tools
+    - monitoring
+    - node_exporter
+    vars:
+      prometheus_install: false
+      prometheus_node_exporter_install: true
+      prometheus_collector_____enabled_collectors:
+      - 'collector.arp'
+      - 'collector.bcache'
+      - 'collector.bonding'
+      - 'collector.cpu'
+      - 'collector.cpufreq'
+      - 'collector.edac'
+      - 'collector.entropy'
+      - 'collector.filefd'
+      - 'collector.hwmon'
+      - 'collector.ipvs'
+      - 'collector.loadavg'
+      - 'collector.mdadm'
+      - 'collector.meminfo'
+      - 'collector.netdev'
+      - 'collector.netstat'
+      - 'collector.nfs'
+      - 'collector.nfsd'
+      - 'collector.stat'
+      - 'collector.time'
+      - 'collector.vmstat'
+      - 'collector.diskstats' # disabled by default
+      - 'collector.filesystem' # disabled by default
+      - 'collector.mountstats' # disabled by default
+      - 'collector.systemd' # disabled by default
+      - 'collector.textfile' # disabled by default
+
+  - name: Open Prometheus node_exporter firewall port
+    tags:
+    - monitoring
+    - node_exporter
+    firewalld:
+      port: '9100/tcp'
+      immediate: yes
+      permanent: yes
+      state: enabled
