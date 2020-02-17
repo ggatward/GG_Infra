@@ -1,2 +1,22 @@
 ---
 # defaults file for ansible-role-extra-hardening
+
+# defaults for SSH
+ssh_listen_address: 0.0.0.0
+ssh_port: 22
+ssh_AddressFamily: inet
+ssh_PermitRootLogin: 'no'
+ssh_MaxAuthTries: 3
+ssh_ClientAlive_Interval: 172800
+ssh_ClientAliveCountMax: 0
+ssh_LoginGraceTime: 60
+ssh_Banner: /etc/issue
+ssh_HostKeyAlgorithms: ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa
+ssh_KexAlgorithms: ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1
+ssh_Ciphers: aes256-ctr
+ssh_MACs: hmac-sha2-512,hmac-sha2-256
+ssh_AllowTcpForwarding: 'yes'
+ssh_X11Forwarding: 'no'
+
+# RPI
+sftp_server: /usr/lib/openssh/sftp-server
