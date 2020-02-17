@@ -1,8 +1,9 @@
 ---
 # Provision VM instance
 
-# Bootstrap VM instance (as root)
-#- import_playbook: bootstrap_instance.yml
+# Bootstrap
+#- import_playbook: bootstrap_instance.yml    # (as root)
+#- import_playbook: bootstrap_rpi.yml         # (as pi)
 
 - import_playbook: generic.yml
 
@@ -11,9 +12,6 @@
 - import_playbook: general_services.yml
 
 #- import_playbook: monitoring.yml
-
-# - import_playbook: node_exporter.yml
-#   when: "'prometheus' not in group_names"
 
 #- import_playbook: weather.yml
 #- import_playbook: automation.yml

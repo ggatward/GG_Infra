@@ -66,11 +66,6 @@ all:
             duration: 1w
             replication: 1
 
-    # ntp:
-    #   hosts:
-    #     rpi-util1.core.home.gatwards.org:
-    #     #rpi-util2.core.home.gatwards.org:
-
     automation:
       children:
         openhab:

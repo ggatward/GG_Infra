@@ -1,0 +1,75 @@
+# {{ ansible_managed }}
+
+ListenAddress {{ ssh_listen_address }}
+Port {{ ssh_port }}
+Protocol 2
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+
+KexAlgorithms {{ ssh_KexAlgorithms}}
+Ciphers {{ ssh_Ciphers }}
+MACs {{ ssh_MACs }}
+
+AddressFamily {{ ssh_AddressFamily }}
+
+AllowTcpForwarding {{ ssh_AllowTcpForwarding }}
+GatewayPorts no
+PermitRootLogin {{ ssh_PermitRootLogin }}
+HostbasedAuthentication no
+IgnoreRhosts yes
+PermitEmptyPasswords no
+Banner {{ ssh_Banner }}
+LoginGraceTime {{ ssh_LoginGraceTime }}
+X11Forwarding {{ ssh_X11Forwarding }}
+
+# Logging:
+SyslogFacility AUTHPRIV
+#LogLevel INFO
+
+
+# Authentication:
+#StrictModes yes
+MaxAuthTries {{ ssh_MaxAuthTries }}
+#MaxSessions 10
+#RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile	.ssh/authorized_keys
+AuthorizedKeysCommand none
+#AuthorizedKeysCommandUser nobody
+#PasswordAuthentication yes
+ChallengeResponseAuthentication no
+
+# Kerberos options
+#KerberosAuthentication no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+#KerberosGetAFSToken no
+#KerberosUseKuserok yes
+
+# GSSAPI options
+GSSAPIAuthentication yes
+GSSAPICleanupCredentials yes
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+
+# WARNING: 'UsePAM no' is not supported in Red Hat Enterprise Linux and may cause several
+# problems.
+UsePAM yes
+
+# Accept locale-related environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+AllowAgentForwarding no
+UsePrivilegeSeparation sandbox
+
+ClientAliveInterval {{ ssh_ClientAlive_Interval }}
+ClientAliveCountMax {{ ssh_ClientAliveCountMax }}
+PrintLastLog no
+
+Subsystem	sftp	{{ sftp_server }}
+
+PermitUserEnvironment no

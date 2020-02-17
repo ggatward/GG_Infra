@@ -3,8 +3,6 @@
   remote_user: svc-ansible
   become: true
   hosts: all,!docker
-  # vars_files:
-  # - vault.yml
 
   tasks:
   - name: Update apt cache
@@ -79,7 +77,7 @@
 
 - name: Monitoring
   remote_user: svc-ansible
-  hosts: all,!docker
+  hosts: all,!docker,!prometheus
   become: true
 
   tasks:
