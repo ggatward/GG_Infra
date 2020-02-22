@@ -60,6 +60,7 @@
     with_items:
     - ntp
 
+
 ####################################################################################
 
 - name: Provision InfluxDB container
@@ -76,6 +77,8 @@
     - docker
     import_role:
       name: ansible-role-docker-influxdb
+    vars:
+      docker_persistent_store_root: /volume2/docker/influxdb
 
   - name: Create Databases
     tags:

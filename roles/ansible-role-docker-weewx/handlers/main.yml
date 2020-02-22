@@ -2,6 +2,6 @@
 # handlers file for influxdb-docker
 - name: restart_container
   docker_container:
-    name: influxdb
+    name: weewx
     state: started
     restart: true

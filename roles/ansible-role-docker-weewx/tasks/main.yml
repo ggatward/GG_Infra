@@ -1,0 +1,38 @@
+---
+# tasks file for influxdb-docker
+- name: Ensure config paths exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ docker_persistent_store_root }}"
+  - "{{ docker_persistent_store_root }}/config"
+  - "{{ docker_persistent_store_root }}/config/home"
+  - "{{ docker_persistent_store_root }}/skins"
+  - "{{ docker_persistent_store_root }}/logs"
+  - "{{ docker_persistent_store_root }}/data"
+
+- name: Deploy configuration
+  template:
+    src: weewx.conf.j2
+    dest: "{{ docker_persistent_store_root }}/config/home/weewx.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_container
+
+- name: Deploy container
+  docker_container:
+    name: weewx
+    image: mitct02/weewx:{{ weewx_version }}
+    restart_policy: "{{ docker_restart_policy }}"
+    volumes:
+    - "{{ docker_persistent_store_root }}/config:/home/weewx/conf"
+    - "{{ weewx_web_mount }}:/home/weewx/public_html"
+    # - "{{ docker_persistent_store_root }}/skins:/home/weewx/skins"
+    - "{{ docker_persistent_store_root }}/logs:/var/log"
+    - "{{ docker_persistent_store_root }}/data:/var/lib/weewx/"
+
+    env:
+      TZ: "Australia/Sydney"
+      CONF: home
