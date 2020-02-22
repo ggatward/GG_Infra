@@ -1,0 +1,28 @@
+---
+# defaults file for weewx-docker
+
+docker_persistent_store_root: /volume2/docker/weewx
+docker_restart_policy: unless-stopped
+
+weewx_version: 3.9.2
+weewx_location: Location
+weewx_latitude: "12.3456"
+weewx_longitude: "123.4567"
+weewx_altitude: 2300
+weewx_altitude_units: foot
+weewx_register: 'false'
+weewx_vantage_iss_id: 1
+weewx_vantage_url: weatherlink.example.com
+weewx_vantage_tcp_port: 22222
+weewx_cwop_enable: 'false'
+weewx_cwop_station: STTION
+weewx_cwop_passcode: 'ChangeMe'
+weewx_wunderground_enable: 'false'
+weewx_wunderground_station: STATION
+weewx_wunderground_password: 'ChangeMe'
+weewx_wunderground_rapidfire: 'True'
+weewx_use_mqtt: false
+weewx_mqtt_url: "mqtt://mqtt.example.com:1883/"
+weewx_mqtt_topic: weather/weewx
+weewx_mqtt_units: METRIC
+weewx_web_mount: /var/www/html/weewx
