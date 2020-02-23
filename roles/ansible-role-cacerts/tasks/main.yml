@@ -1,0 +1,24 @@
+---
+# tasks file for ansible-role-cacerts
+
+- name: Source OS family vars
+  include_vars: "{{ ansible_distribution_file_variety }}.yml"
+
+- name: Prepare system for CA updates
+  command: "{{ ca_update_command }} enable"
+  when: ansible_distribution_file_variety == 'RedHat'
+
+- name: Create CA path
+  file:
+    path: "{{ ca_path }}"
+    state: directory
+
+- name: Copy certificates to local CA path
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ca_path }}"
+    mode: '0644'
+  with_fileglob: files/*
+
+- name: Reconfigure system CA certs
+  command: "{{ ca_update_command }}"

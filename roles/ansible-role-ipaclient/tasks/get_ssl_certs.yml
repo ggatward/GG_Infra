@@ -3,6 +3,7 @@
   ipa_service:
     ipa_user: "{{ ipaclient_enroll_user }}"
     ipa_pass: "{{ ipaclient_enroll_pass }}"
+    ipa_host: "{{ ipaclient_servers[0] }}"
     krbcanonicalname: HTTP/{{ item }}
     hosts: "{{ ansible_fqdn }}"
     state: present
@@ -10,8 +11,9 @@
   - "{{ ansible_fqdn }}"
 
 - name: Get Admin Keytab
-  shell: kinit {{ ipaclient_enroll_user }} <<< '{{ ipaclient_enroll_pass }}'
-  no_log: true
+  #shell: "kinit {{ ipaclient_enroll_user }} <<< '{{ ipaclient_enroll_pass }}'"
+  shell: echo '{{ ipaclient_enroll_pass }}' | kinit {{ ipaclient_enroll_user }}
+#  no_log: true
 
 - block:
   # ipa host-add san.host.example.test --force
@@ -46,17 +48,25 @@
     - "{{ ipaclient_ssl_subject_altnames }}"
   when: ipaclient_ssl_subject_altnames|length > 0
 
+- name: Ensude SSL cert directories exist
+  file:
+    path: "{{ ipaclient_ssl_dir }}/{{ item }}"
+    state: directory
+  with_items:
+  - certs
+  - private
+
 - name: Check if SSL certs already exist
   stat:
-    path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+    path: "{{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem"
   register: sslcerts
   changed_when: false
 
 - name: Request new SSL certs from IPA
   command: >
     ipa-getcert request -r -g {{ ipaclient_ssl_keylen }}
-    -f /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
-    -k /etc/pki/tls/private/{{ ansible_fqdn }}.key
+    -f {{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem
+    -k {{ ipaclient_ssl_dir }}/private/{{ ansible_fqdn }}.key
     -N CN={{ ansible_fqdn }}
     -K HTTP/{{ ansible_fqdn }}
     {% for san in ipaclient_ssl_subject_altnames %}
@@ -66,7 +76,7 @@
 
 - name: Wait for certs to be retrieved
   wait_for:
-    path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+    path: "{{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem"
   when: not sslcerts.stat.exists
 
 - name: Destroy admin keytab
@@ -77,7 +87,7 @@
     path: "{{ item.path }}"
     mode: "{{ item.perms }}"
   with_items:
-  - path: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+  - path: "{{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem"
     perms: '0644'
-  - path: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+  - path: "{{ ipaclient_ssl_dir }}/private/{{ ansible_fqdn }}.key"
     perms: '{{ ipaclient_ssl_key_mode }}'
