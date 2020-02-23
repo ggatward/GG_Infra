@@ -1,0 +1,12 @@
+---
+packages:
+- openhab2
+- java-1.8.0-openjdk
+- python-psycopg2
+- python-pip
+- httpd-tools
+- python2-speedtest-cli
+
+pip_packages:
+- speedtest-cli
+- APScheduler

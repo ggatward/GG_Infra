@@ -1,47 +1,3 @@
-
-// /* Alfresco */
-// String SonosAlfresco_Add                     "Add [%s]"                  <sonos_add>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:add"}
-// Switch SonosAlfresco_SetAlarm                "Set Alarm"                 <sonos_alarm>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:alarm"}
-// String SonosAlfresco_AlarmProperties         "Alarm Properties [%s]"     <sonos_alarm_prop>   (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:alarmproperties"}
-// Switch SonosAlfresco_AlarmIsrunning          "Alarm is running"          <sonso_alarm_run>    (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:alarmrunning"}
-// Player SonosAlfresco_Control                 "Control"                   <sonos_control>      (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:control"}
-// String SonosAlfresco_CurrentAlbum            "Album [%s]"                <sonos_album>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currentalbum"}
-// String SonosAlfresco_CurrentArtist           "Artist [%s]"               <sonos_artist>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currentartist"}
-// String SonosAlfresco_CurrentTitle            "Title [%s]"                <sonos_title>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttitle"}
-// String SonosAlfresco_CurrentTrack            "Track [%s]"                <sonos_track>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttrack"}
-// Image  SonosAlfresco_Current_CoverArt        "Cover"                                          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currentalbumart"}
-// Switch SonosAlfresco_Shuffle                 "Shuffle"                   <sonos_shuffle>      (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:shuffle"}
-// String SonosAlfresco_Repeat                  "Repeat [%s]"               <sonos_repeat>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:repeat"}
-// String SonosAlfresco_Favorite                "Favorite [%s]"             <sonos_favorite>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:favorite"}
-// Switch SonosAlfresco_Led                     "Led"                       <sonos_led>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:led"}
-// Switch SonosAlfresco_LocalCoordinator        "Local Coordinator"         <sonos_coordinator>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:localcoordinator"}
-// Switch SonosAlfresco_Mute                    "Mute"                      <sonos_mute>         (gSonosAlfresco,gSonosMute) {channel="sonos:CONNECTAMP:alfresco:mute"}
-// String SonosAlfresco_NotificationSound       "Notification Sound [%s]"   <sonos_notification> (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:notificationsound"}
-// Dimmer SonosAlfresco_Notificationsoundvolume "Notification Sound Volume" <soundvolume>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:notificationvolume"}
-// String SonosAlfresco_PlayPlaylist            "Play Playlist [%s]"        <sonos_playlist>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playlist"}
-// Switch SonosAlfresco_PlayQueue               "Play Queue"                <sonos_que>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playqueue"}
-// Number SonosAlfresco_PlayTrack               "Play Track"                <sonos_play_track>   (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playtrack"}
-// String SonosAlfresco_PlayURI                 "Play URI [%s]"             <sonos_play_uri>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:playuri"}
-// Switch SonosAlfresco_PublicAddress           "Public Address"            <sonos_publiv>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:publicaddress"}
-// String SonosAlfresco_Radio                   "Radio [%s]"                <sonos_radio>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:radio"}
-// String SonosAlfresco_Remove                  "Remove [%s]"               <sonos_remove>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:remove"}
-// Switch SonosAlfresco_Restore                 "Restore"                   <sonos_restore>      (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:restore"}
-// Switch SonosAlfresco_RestoreAll              "Restore All"               <sonos_restore_all>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:restoreall"}
-// Switch SonosAlfresco_Save                    "Save"                      <sonos_save>         (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:save"}
-// Switch SonosAlfresco_SaveAll                 "Save All"                  <sonos_save_all>     (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:saveall"}
-// Number SonosAlfresco_Snooze                  "Snooze"                    <sonos_snooze>       (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:snooze"}
-// Switch SonosAlfresco_StandAlone              "Stand Alone"               <sonos_stand_alone>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:standalone"}
-// String SonosAlfresco_State                   "State [%s]"                <sonos_state>        (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:state"}
-// Switch SonosAlfresco_Stop                    "Stop"                      <sonos_stop>         (gSonosAlfresco,gSonosStop) {channel="sonos:CONNECTAMP:alfresco:stop", autoupdate="false"}
-// Dimmer SonosAlfresco_Volume                  "Volume"                    <soundvolume>        (gSonosAlfresco,gSonosVolu) {channel="sonos:CONNECTAMP:alfresco:volume"}
-// String SonosAlfresco_ZoneGroupID             "Zone Group ID [%s]"        <sonos_zone>         (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:zonegroupid"}
-// String SonosAlfresco_ZoneName                "Zone Name [%s]"            <sonos_zone>         (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:zonename"}
-// String SonosAlfresco_Coordinator             "Coordinator [%s]"          <sonos_coordinator>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:coordinator"}
-// Number SonosAlfresco_SleepTimer              "Sleep Timer"               <sonos_sleep_timer>  (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:sleeptimer"}
-// String SonosAlfresco_CurrentAVtransportURI   "AV transport URI [%s]"     <sonos_uri>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttransporturi"}
-// String SonosAlfresco_CurrenttrackURI         "track URI [%s]"            <sonos_uri>          (gSonosAlfresco)            {channel="sonos:CONNECTAMP:alfresco:currenttrackuri"}
-
-
 Group gSonos "Sonos"       <sonos_control>      (Home)
 Group:Dimmer:AVG gSonosNotification             (gSonos)
 Group:Dimmer:AVG gSonosVolume					(gSonos)
@@ -50,70 +6,70 @@ Group:Number:COUNT("PLAY") gSonosState		    (gSonos)
 String  SayCommand
 String  Speaker
 
-Dimmer	SonosLivingroom_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:volume" }
-Player	SonosLivingroom_Control		        <player>        (gSonosState)		     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:control" }
-Switch  SonosLivingroom_ClearQueue      			        (gSonos)	             { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:clearqueue" }
-Image   SonosLivingroom_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:currentalbumart" }
-String  SonosLivingroom_CurrentArtist		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:currentartist" }
-String  SonosLivingroom_CurrentTitle		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:currenttitle" }
-String  SonosLivingroom_CurrentAlbum		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:currentalbum" }
-String	SonosLivingroom_Add						        	(gSonos)		         { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:add" }
-String	SonosLivingroom_Coordinator					        (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:coordinator" }
-String	SonosLivingroom_LocalCoordinator                    (gSonos)                 { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:localcoordinator" }
-Switch  SonosLivingroom_Mute						     	(gSonos)		     	 { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:mute" }
-Dimmer  SonosLivingroom_NotificationSoundVolume             (gSonosNotification)     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:notificationvolume"}
-String  SonosLivingroom_PlayURI					         	(gSonos)		  	     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:playuri" }
-String  SonosLivingroom_Radio                               (gSonos)                 { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:radio" }
-String	SonosLivingroom_Remove					        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:remove" }
-String  SonosLivingroom_Repeat					        	(gSonos)                 { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:repeat" }
-Switch  SonosLivingroom_Shuffle					         	(gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:shuffle" }
-Switch	SonosLivingroom_StandAlone				        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}:standalone" }
+Dimmer	SonosLivingroom_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:volume" }
+Player	SonosLivingroom_Control		        <player>        (gSonosState)		     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:control" }
+Switch  SonosLivingroom_ClearQueue      			        (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:clearqueue" }
+Image   SonosLivingroom_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:currentalbumart" }
+String  SonosLivingroom_CurrentArtist		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:currentartist" }
+String  SonosLivingroom_CurrentTitle		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:currenttitle" }
+String  SonosLivingroom_CurrentAlbum		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:currentalbum" }
+String	SonosLivingroom_Add						        	(gSonos)		         { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:add" }
+String	SonosLivingroom_Coordinator					        (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:coordinator" }
+String	SonosLivingroom_LocalCoordinator                    (gSonos)                 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:localcoordinator" }
+Switch  SonosLivingroom_Mute						     	(gSonos)		     	 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:mute" }
+Dimmer  SonosLivingroom_NotificationSoundVolume             (gSonosNotification)     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:notificationvolume"}
+String  SonosLivingroom_PlayURI					         	(gSonos)		  	     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:playuri" }
+String  SonosLivingroom_Radio                               (gSonos)                 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:radio" }
+String	SonosLivingroom_Remove					        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:remove" }
+String  SonosLivingroom_Repeat					        	(gSonos)                 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:repeat" }
+Switch  SonosLivingroom_Shuffle					         	(gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:shuffle" }
+Switch	SonosLivingroom_StandAlone				        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:standalone" }
 String  SonosLivingroom_MultiRoomMode		"[%s]"        	(gSonos)
 String	SonosLivingroom_MultiRoom			<mediacontrol>	(gSonos)
 String	SonosLivingroom_Favourites                          (gSonos)
 
 
-Dimmer	SonosAlfresco_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:volume" }
-Player	SonosAlfresco_Control		        <player>		(gSonosState)		     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:control" }
-Switch  SonosAlfresco_ClearQueue      			            (gSonos)	             { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:clearqueue" }
-Image   SonosAlfresco_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:currentalbumart" }
-String  SonosAlfresco_CurrentArtist			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:currentartist" }
-String  SonosAlfresco_CurrentTitle			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:currenttitle" }
-String  SonosAlfresco_CurrentAlbum			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:currentalbum" }
-String	SonosAlfresco_Add						        	(gSonos)		         { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:add" }
-String	SonosAlfresco_Coordinator					        (gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:coordinator" }
-String	SonosAlfresco_LocalCoordinator                      (gSonos)                 { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:localcoordinator" }
-Switch  SonosAlfresco_Mute						       	    (gSonos)		     	 { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:mute" }
-Dimmer  SonosAlfresco_NotificationSoundVolume               (gSonosNotification)     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:notificationvolume"}
-String  SonosAlfresco_PlayURI					         	(gSonos)		  	     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:playuri" }
-String  SonosAlfresco_Radio                                 (gSonos)                 { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:radio" }
-String	SonosAlfresco_Remove					        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:remove" }
-String  SonosAlfresco_Repeat					        	(gSonos)                 { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:repeat" }
-Switch  SonosAlfresco_Shuffle					         	(gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:shuffle" }
-Switch	SonosAlfresco_StandAlone				        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}:standalone" }
+Dimmer	SonosAlfresco_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:volume" }
+Player	SonosAlfresco_Control		        <player>		(gSonosState)		     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:control" }
+Switch  SonosAlfresco_ClearQueue      			            (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:clearqueue" }
+Image   SonosAlfresco_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:currentalbumart" }
+String  SonosAlfresco_CurrentArtist			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:currentartist" }
+String  SonosAlfresco_CurrentTitle			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:currenttitle" }
+String  SonosAlfresco_CurrentAlbum			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:currentalbum" }
+String	SonosAlfresco_Add						        	(gSonos)		         { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:add" }
+String	SonosAlfresco_Coordinator					        (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:coordinator" }
+String	SonosAlfresco_LocalCoordinator                      (gSonos)                 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:localcoordinator" }
+Switch  SonosAlfresco_Mute						       	    (gSonos)		     	 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:mute" }
+Dimmer  SonosAlfresco_NotificationSoundVolume               (gSonosNotification)     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:notificationvolume"}
+String  SonosAlfresco_PlayURI					         	(gSonos)		  	     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:playuri" }
+String  SonosAlfresco_Radio                                 (gSonos)                 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:radio" }
+String	SonosAlfresco_Remove					        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:remove" }
+String  SonosAlfresco_Repeat					        	(gSonos)                 { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:repeat" }
+Switch  SonosAlfresco_Shuffle					         	(gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:shuffle" }
+Switch	SonosAlfresco_StandAlone				        	(gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:standalone" }
 String  SonosAlfresco_MultiRoomMode			"[%s]"       	(gSonos)
 String	SonosAlfresco_MultiRoom			    <mediacontrol>	(gSonos)
 String	SonosAlfresco_Favourites                            (gSonos)
 
 
-Dimmer	SonosPortable1_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:volume" }
-Player	SonosPortable1_Control		        <player>		(gSonosState)		     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:control" }
-Switch  SonosPortable1_ClearQueue      			            (gSonos)	             { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:clearqueue" }
-Image   SonosPortable1_CurrentAlbumArt				        (gSonos)	             { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:currentalbumart" }
-String  SonosPortable1_CurrentArtist		                (gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:currentartist" }
-String  SonosPortable1_CurrentTitle			                (gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:currenttitle" }
-String  SonosPortable1_CurrentAlbum			                (gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:currentalbum" }
-String	SonosPortable1_Add						        	(gSonos)		         { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:add" }
-String	SonosPortable1_Coordinator					        (gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:coordinator" }
-String	SonosPortable1_LocalCoordinator                     (gSonos)                 { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:localcoordinator" }
-Switch  SonosPortable1_Mute						       	    (gSonos)		     	 { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:mute" }
-Dimmer  SonosPortable1_NotificationSoundVolume              (gSonosNotification)     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:notificationvolume"}
-String  SonosPortable1_PlayURI					         	(gSonos)		  	     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:playuri" }
-String  SonosPortable1_Radio                                (gSonos)                 { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:radio" }
-String	SonosPortable1_Remove					        	(gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:remove" }
-String  SonosPortable1_Repeat					        	(gSonos)                 { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:repeat" }
-Switch  SonosPortable1_Shuffle					         	(gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:shuffle" }
-Switch	SonosPortable1_StandAlone				        	(gSonos)			     { channel="sonos:PLAY1:{{ sonos_ids.portable1 }}:standalone" }
+Dimmer	SonosPortable1_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:volume" }
+Player	SonosPortable1_Control		        <player>		(gSonosState)		     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:control" }
+Switch  SonosPortable1_ClearQueue      			            (gSonos)	             { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:clearqueue" }
+Image   SonosPortable1_CurrentAlbumArt				        (gSonos)	             { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:currentalbumart" }
+String  SonosPortable1_CurrentArtist		                (gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:currentartist" }
+String  SonosPortable1_CurrentTitle			                (gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:currenttitle" }
+String  SonosPortable1_CurrentAlbum			                (gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:currentalbum" }
+String	SonosPortable1_Add						        	(gSonos)		         { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:add" }
+String	SonosPortable1_Coordinator					        (gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:coordinator" }
+String	SonosPortable1_LocalCoordinator                     (gSonos)                 { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:localcoordinator" }
+Switch  SonosPortable1_Mute						       	    (gSonos)		     	 { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:mute" }
+Dimmer  SonosPortable1_NotificationSoundVolume              (gSonosNotification)     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:notificationvolume"}
+String  SonosPortable1_PlayURI					         	(gSonos)		  	     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:playuri" }
+String  SonosPortable1_Radio                                (gSonos)                 { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:radio" }
+String	SonosPortable1_Remove					        	(gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:remove" }
+String  SonosPortable1_Repeat					        	(gSonos)                 { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:repeat" }
+Switch  SonosPortable1_Shuffle					         	(gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:shuffle" }
+Switch	SonosPortable1_StandAlone				        	(gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:standalone" }
 String  SonosPortable1_MultiRoomMode		"[%s]"          (gSonos)
 String	SonosPortable1_MultiRoom			<mediacontrol>	(gSonos)
 String	SonosPortable1_Favourites                           (gSonos)

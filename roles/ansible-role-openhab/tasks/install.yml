@@ -1,0 +1,61 @@
+---
+
+- name: Install openhab repo
+  yum_repository:
+    name: openhab
+    description: openHAB 2.x Stable
+    baseurl: https://dl.bintray.com/openhab/rpm-repo2/stable
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://bintray.com/user/downloadSubjectPublicKey?username=openhab
+  tags:
+  - openhab
+  when: ansible_distribution_file_variety == 'RedHat'
+
+
+- block:
+  - name: Install openhab APT key
+    apt_key:
+      url: https://bintray.com/user/downloadSubjectPublicKey?username=openhab
+
+  - name: Install openhab repos
+    tags:
+    - openhab
+    apt_repository:
+      repo: 'deb https://dl.bintray.com/openhab/apt-repo2 stable main'
+      update_cache: true
+  when: ansible_distribution_file_variety == 'Debian'
+
+- name: Install packages
+  package:
+    name: "{{ packages }}"
+    state: present
+  tags:
+  - openhab
+
+- name: Install PIP packages
+  pip:
+    name: "{{ pip_packages }}"
+    state: present
+  tags:
+  - openhab
+
+- name: Set SELinux bools
+  seboolean:
+    name: httpd_can_network_connect
+    persistent: true
+    state: true
+  tags:
+  - openhab
+  when: ansible_distribution_file_variety == 'RedHat'
+
+- name: Enable services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+  with_items:
+  - openhab2
+  tags:
+  - openhab

@@ -5,7 +5,7 @@
 // Doing it this way, all devices use the generic naming (zwave:device:<bridgename>:nodeX) so can be defined easily.
 
 Bridge zwave:serial_zstick:controller "ZWave Controller" [
-    port="/dev/zwave",
+    port="{{ openhab_zwave_device }}",
     controller_softreset="false",
     controller_master="true",
     heal_enable="true",

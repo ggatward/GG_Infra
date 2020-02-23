@@ -1,7 +1,5 @@
 ---
 roles:
-# - src: https://github.com/ggatward/ansible-role-generic-os.git
-#   scm: git
 
 - src: https://github.com/ggatward/Ansible-RHEL7-CIS-Benchmarks.git
   scm: git
@@ -25,13 +23,7 @@ roles:
 #   scm: git
 #   version: development
 
-- src: git@github.com:ggatward/ansible-role-weewx.git
-  scm: git
-  version: development
 
-# - src: git@github.com:ggatward/ansible-role-openhab.git
-#   scm: git
-#   version: development
 
 # - src: https://github.com/mrlesmithjr/ansible-keepalived.git
 #   scm: git
@@ -42,8 +34,6 @@ roles:
 # - name: ansible_nginx
 #   src: https://github.com/geerlingguy/ansible-role-nginx.git
 #   scm: git
-
-
 
 # - src: https://github.com/ggatward/ansible-grafana.git
 #   scm: git

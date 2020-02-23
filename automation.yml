@@ -3,8 +3,9 @@
   remote_user: svc-ansible
   become: true
   hosts: docker_nas
-  vars_files:
-  - vault.yml
+  # vars_files:
+  # - vault.yml
+
   tasks:
   - name: Ensure Mosquitto config paths exist
     tags:
@@ -39,7 +40,7 @@
     vars:
       name: mosquitto
       image: eclipse-mosquitto
-      # restart_policy: unless-stopped
+      restart_policy: unless-stopped
       published_ports:
       - '1883:1883'
       volumes:
@@ -53,33 +54,6 @@
       name: mosquitto
       state: restart
     when: mqtt_config.changed
-
-
-  - name: Deploy custom MQTT scripts
-    tags:
-    - automation
-    - weather
-    - mqtt
-    template:
-      src: bomxml2mqtt.py.j2
-      dest: /usr/local/bin/bomxml2mqtt.py
-      owner: root
-      group: root
-      mode: 0755
-
-  - name: Deploy custom MQTT cron
-    tags:
-    - automation
-    - weather
-    - mqtt
-    cron:
-      name: bomxml
-      cron_file: bomxml
-      hour: '0,3,6,9,12,15,18,21'
-      minute: '02'
-      job: '/usr/local/bin/bomxml2mqtt.py >/dev/null 2>&1'
-      state: present
-      user: root
 
 ###################################################################
 
@@ -99,6 +73,7 @@
     tags:
     - ncid
     - automation
+    - firewall
     firewalld:
       port: "{{ item }}"
       immediate: yes
@@ -107,169 +82,121 @@
     with_items:
     - 3333/tcp
 
-####################################################################
-
-# Nginx (SSL frontend)
-# - name: Configure Nginx for OpenHAB
-#   remote_user: svc-ansible
-#   become: true
-#   hosts: openhab
-#   vars_files:
-#   - vault.yml
-
-#   tasks:
-#   - name: Set SELinux booleans for nginx
-#     tags:
-#     - automation
-#     - nginx
-#     seboolean:
-#       state: true
-#       name: httpd_can_network_connect
-#       persistent: yes
-
-#   - import_role:
-#       name: ansible_nginx
-#     tags:
-#     - automation
-#     - nginx
-#     vars:
-#       nginx_yum_repo_enabled: false
-#       nginx_vhosts:
-#       - listen: "443 ssl http2"
-#         server_name: "{{ ansible_fqdn }}"
-#         extra_parameters: |
-#           location / {
-#             proxy_pass http://localhost:8080/;
-#             proxy_set_header Host               $http_host;
-#             proxy_set_header X-Real-IP          $remote_addr;
-#             proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-#             proxy_set_header X-Forwarded-Proto  $scheme;
-#           }
-#           ssl_session_cache         shared:SSL:10m;
-#           ssl_session_timeout       1h;
-#           ssl_session_tickets       on;
-#           ssl_certificate           "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem";
-#           ssl_certificate_key       "/etc/pki/tls/private/{{ ansible_fqdn }}.key";
-#           ssl_protocols             TLSv1.2;
-#           ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
-#           ssl_prefer_server_ciphers on;
-#           add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
 #####################################################################
 
-# - name: Install OpenHAB
-#   remote_user: svc-ansible
-#   become: true
-#   hosts: openhab
-#   vars_files:
-#   - vault.yml
+- name: Install OpenHAB
+  remote_user: svc-ansible
+  become: true
+  hosts: automation
+  vars_files:
+  - vault.yml
 
-#   tasks:
-#   - name: Deploy script to create client certs in IPA
-#     tags:
-#     - automation
-#     - mqtt
-#     copy:
-#       src: create_certs.sh
-#       dest: /usr/local/bin
-#       owner: root
-#       group: root
-#       mode: 0755
+  tasks:
+  - import_role:
+      name: ansible-role-openhab
+    tags:
+    - automation
+    - openhab
+    - config
+    vars:
+      # Get sensitive vars from the vault
+      openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
+      openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
+      openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
+      openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
+      openhab_pushover_api_key: "{{ vault_openhab_pushover_api_key }}"
+      openhab_pushover_user_key1: "{{ vault_openhab_pushover_user_key1 }}"
+      openhab_sonos_ids:
+        livingroom: "{{ vault_sonos_livingroom }}"
+        alfresco: "{{ vault_sonos_alfresco }}"
+        portable1: "{{ vault_sonos_portable1 }}"
+      openhab_audio_sink: "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}"
+      openhab_latlon: "{{ latitude }},{{ longitude }}"
+      openhab_mqtt_broker_fqdn: mqtt.iot.home.gatwards.org
+      openhab_influxdb_host: influxdb.iot.home.gatwards.org
+      openhab_influxdb_db: 'openhab'
+      openhab_elk_ip: 172.22.2.10
 
-  # - import_role:
-  #     name: ansible-role-openhab
-  #   tags:
-  #   - automation
-  #   - openhab
-  #   - config
-  #   - postgresql
-  #   - mqtt
-  #   - zwave
-  #   vars:
-  #     openhab_influxdb_db: 'openhab'
-  #     openhab_influxdb_user: 'openhab'
-  #     openhab_influxdb_password: "{{ vault_influxdb_openhab_password }}"
-  #     # Postgresql
-  #     openhab_db_user: openhab2
-  #     openhab_db_password: "{{ vault_openhab_db_password }}"
-  #     openhab_db_name: openhab2
-  #     openhab_db_host: 127.0.0.1
-  #     postgresql_pgdata: /var/lib/pgsql/data
-  #     # MQTT defaults
-  #     mqtt_use_ssl: true
-  #     mqtt_broker_tls_cafile: "{{ tls_cafile }}"
-  #     mqtt_broker_tls_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
-  #     mqtt_broker_tls_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
-  #     mqtt_users:
-  #     - user: openhab2
-  #       pass: "{{ vault_openhab_mqtt_password }}"
-  #     - user: bomxml
-  #       pass: "{{ vault_bomxml2mqtt_pass }}"
-  #     - user: sonoff
-  #       pass: "{{ vault_sonoff_mqtt_password }}"
-  #     # Get sensitive vars from the vault
-  #     openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
-  #     openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
-  #     openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
-  #     openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
-  #     openhab_pushover_api_key: "{{ vault_openhab_pushover_api_key }}"
-  #     openhab_pushover_user_key1: "{{ vault_openhab_pushover_user_key1 }}"
-  #     sonos_ids:
-  #       livingroom: "{{ vault_sonos_livingroom }}"
-  #       alfresco: "{{ vault_sonos_alfresco }}"
-  #       portable1: "{{ vault_sonos_portable1 }}"
-  #     openhab_audio_sink: "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
-  #     openhab_latlon: "{{ latitude }},{{ longitude }}"
+      # OpenHAB Base configuration - addons.cfg
+      openhab_package: expert
+      openhab_bindings:
+      - astro
+      - expire1
+      - gpstracker
+      - mqtt
+      - network
+      - ntp
+      - solaredge
+      - sonos
+      - tcp1
+      - zwave
+      openhab_ui:
+      - basic
+      - paper
+      - habmin
+      - habpanel
+      - homebuilder
+      openhab_action:
+      - pushover
+      openhab_persistence:
+      - mapdb
+      - influxdb
+      openhab_transformation:
+      - javascript
+      - jsonpath
+      - map
+      - regex
+      openhab_voice:
+      - voicerss
+      openhab_misc:
+      - market
 
-  #     # OpenHAB Base configuration - addons.cfg
-  #     openhab_package: expert
-  #     openhab_bindings:
-  #     - astro
-  #     - expire1
-  #     - gpstracker
-  #     - mqtt
-  #     - network
-  #     - ntp
-  #     - solaredge
-  #     - sonos
-  #     - tcp1
-  #     - zwave
-  #     openhab_ui:
-  #     - basic
-  #     - paper
-  #     - habmin
-  #     - habpanel
-  #     - homebuilder
-  #     openhab_action:
-  #     - pushover
-  #     openhab_persistence:
-  #     - jdbc-postgresql
-  #     - mapdb
-  #     - influxdb
-  #     openhab_transformation:
-  #     - javascript
-  #     - jsonpath
-  #     - map
-  #     - regex
-  #     openhab_voice:
-  #     - voicerss
-  #     openhab_misc:
-  #     - market
 
-  # - name: Add rich-rule to allow Sonos uPNP
-  #   tags:
-  #   - automation
-  #   - openhab
-  #   firewalld:
-  #     rich_rule: 'rule family="ipv4" source address="172.22.1.0/24" destination address="239.255.255.250/32" port port="1900" protocol="udp" accept'
-  #     immediate: yes
-  #     permanent: yes
-  #     state: enabled
+  - name: Open Firewall Ports
+    tags:
+    - automation
+    - openhab
+    - firewall
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - 8080/tcp
+    - 8443/tcp
+    - 1900/udp
+    - 5007/tcp
+
+  - name: Open Firewall Services
+    tags:
+    - automation
+    - openhab
+    - firewall
+    firewalld:
+      service: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - upnp-client
+
+  - name: Add rich-rule to allow Sonos uPNP
+    tags:
+    - automation
+    - openhab
+    - firewall
+    firewalld:
+      rich_rule: 'rule family="ipv4" source address="172.22.1.0/24" destination address="239.255.255.250/32" port port="1900" protocol="udp" accept'
+      immediate: yes
+      permanent: yes
+      state: enabled
 
   # - name: Add rule to allow DHCP proxy listener
   #   tags:
   #   - automation
   #   - openhab
+  #   - firewall
   #   firewalld:
   #     port: "{{ item }}"
   #     immediate: yes
@@ -278,124 +205,47 @@
   #   with_items:
   #   - 6767/udp
 
-  # - name: Install additional packages
-  #   tags:
-  #   - automation
-  #   - openhab
-  #   package:
+
+#####################################################################
+
+- name: Install Custom Scripting
+  remote_user: svc-ansible
+  become: true
+  hosts: automation
+
+  tasks:
+  # - name: Install script pre-reqs (python2 - needs python-pip)
+  #   pip:
   #     name: "{{ item }}"
   #     state: present
   #   with_items:
-  #   - python2-speedtest-cli
+  #   - paho-mqtt
+  #   - APScheduler
 
+  - name: Deploy custom scripts
+    tags:
+    - automation
+    - customscript
+    template:
+      src: templates/{{ item }}.j2
+      dest: /usr/local/bin/{{ item }}
+      mode: '0755'
+    with_items:
+    - bomxml2mqtt.py
+    vars:
+      bomxml2mqtt_bomuri: ftp://ftp.bom.gov.au/anon/gen/fwo/IDN11060.xml
+      bomxml2mqtt_user: bomxml
+      bomxml2mqtt_pass: 'notused'
+      bomxml2mqtt_topic: weather/bomxml/
 
-###############################################
-
-
-# - name: Install ZWave RPi
-#   remote_user: svc-ansible
-#   become: true
-#   hosts: zwave
-#   vars_files:
-#   - vault.yml
-
-#   tasks:
-#   - name: Install packages
-#     tags:
-#     - automation
-#     - zwave
-#     package:
-#       name: "{{ item }}"
-#       state: present
-#     with_items:
-#     - ser2net
-
-#   - name: Deploy ser2net config
-#     tags:
-#     - automation
-#     - zwave
-#     template:
-#       src: ser2net.conf.j2
-#       dest: /etc/ser2net.conf
-#       owner: root
-#       group: root
-#       mode: 0644
-#     notify: Restart ser2net
-
-#   - name: Install ser2net script
-#     tags:
-#     - automation
-#     - zwave
-#     copy:
-#       content: |
-#         #!/bin/sh
-#         /usr/sbin/ser2net -c /etc/ser2net.conf -P /run/ser2net.pid
-#       dest: /usr/local/bin/ser2net.sh
-#       owner: root
-#       group: root
-#       mode: 0755
-#     notify: Restart ser2net
-
-#   - name: Remove default ser2net init script
-#     tags:
-#     - automation
-#     - zwave
-#     file:
-#       path: /etc/init.d/ser2net
-#       state: absent
-
-#   - name: Install ser2net service
-#     tags:
-#     - automation
-#     - zwave
-#     copy:
-#       src: automation/ser2net.service
-#       dest: /etc/systemd/system/ser2net.service
-#       owner: root
-#       group: root
-#       mode: 0755
-
-#   - name: Enable services
-#     tags:
-#     - automation
-#     - zwave
-#     service:
-#       name: "{{ item }}"
-#       state: started
-#       enabled: true
-#       daemon_reload: true
-#     with_items:
-#     - ser2net
-
-#   - name: Configure firewall
-#     tags:
-#     - automation
-#     - zwave
-#     firewalld:
-#       port: 7676/tcp
-#       immediate: yes
-#       permanent: yes
-#       state: enabled
-
-#   - name: Install Z-Wave udev restart script
-#     tags:
-#     - automation
-#     - zwave
-#     copy:
-#       content: |
-#         #!/bin/sh
-#         systemctl restart ser2net
-#       dest: /usr/local/bin/restart-zwave-replug
-#       owner: root
-#       group: root
-#       mode: 0755
-
-#   - name: Install Z-Wave udev rules
-#     tags:
-#     - automation
-#     - zwave
-#     copy:
-#       content: "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0658\", ATTRS{idProduct}==\"0200\", SYMLINK+=\"zwave\", GROUP=\"dialout\", MODE=\"0666\", RUN+=\"/usr/local/bin/restart-zwave-replug\""
-#       dest: /etc/udev/rules.d/99-zwave-stick.rules
-#       owner: root
-#       group: root
+  - name: Deploy custom crontabs
+    tags:
+    - automation
+    - customscript
+    cron:
+      name: bomxml
+      cron_file: bomxml
+      user: root
+      job: '/usr/local/bin/bomxml2mqtt.py >/dev/null 2>&1'
+      minute: '02'
+      hour: '0,3,6,9,12,15,18,21'

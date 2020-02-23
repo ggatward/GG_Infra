@@ -1,0 +1,12 @@
+---
+packages:
+- apt-transport-https
+- openhab2
+- openjdk-8-jdk-headless
+- python3-psycopg2
+- python3-pip
+- speedtest-cli
+
+pip_packages:
+- speedtest-cli
+- APScheduler

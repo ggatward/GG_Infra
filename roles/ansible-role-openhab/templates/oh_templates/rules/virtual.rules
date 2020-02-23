@@ -50,8 +50,8 @@ then
 
         if (vAnnouncementMute.state != ON) {
             logInfo(logName, announceText)
-            say(announceText, "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
-//            say(announceText, "voicerss:enUS", "sonos:PLAY1:{{ sonos_ids.portable1 }}", new PercentType(25))
+            say(announceText, "voicerss:enUS", "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}")
+//            say(announceText, "voicerss:enUS", "sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}", new PercentType(25))
             // Speaker.postUpdate("LivingRoom")
             // SayCommand.postUpdate("" + announceText)
         } else {
@@ -77,9 +77,9 @@ when
     Item Garage_RollerDoor changed
 then
     if (Garage_RollerDoor.state == OPEN) {
-        say("The roller door is opening", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+        say("The roller door is opening", "voicerss:enUS", "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}")
     } else if (Garage_RollerDoor.state == CLOSED) {
-        say("The roller door is now closed", "voicerss:enUS", "sonos:CONNECTAMP:{{ sonos_ids.livingroom }}")
+        say("The roller door is now closed", "voicerss:enUS", "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}")
     }
 end
 

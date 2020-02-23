@@ -1,18 +1,8 @@
 ---
-# Postgresql
-openhab_db_user: openhab2
-openhab_db_password: 'ChangeMe'
-openhab_db_name: openhab2
-openhab_db_host: 127.0.0.1
-postgresql_pgdata: /var/lib/pgsql/data
-
-influxdb_openhab_password: 'ChangeMe'
-
-# MQTT Defaults
-mqtt_broker_fqdn: localhost
-mqtt_broker_port: '1883'
-
 # OpenHAB configuration defaults
+openhab_timezone: Australia/Sydney
+openhab_latlon: '12.345,123.456'
+
 openhab_package: standard
 openhab_remote_addons_enabled: true
 
@@ -32,8 +22,7 @@ openhab_ui:
 openhab_action: []
 
 openhab_persistence:
-  - jdbc-postgresql
-  - rrd4j
+  - mapdb
 
 openhab_transformation:
   - javascript
@@ -42,4 +31,26 @@ openhab_transformation:
 
 openhab_voice: []
 
+
 openhab_misc: []
+
+# Plugin defaults
+openhab_elk_ip: 192.168.2.123
+openhab_elk_port: '2101'
+
+openhab_mqtt_broker_fqdn: localhost
+openhab_mqtt_broker_port: '1883'
+
+openhab_influxdb_host: localhost
+openhab_influxdb_http_port: '8086'
+openhab_influxdb_db: openhab
+openhab_influxdb_user: openhab
+openhab_influxdb_password: 'ChangeMe'
+
+openhab_pushover_api_key: 'apitoken'
+openhab_pushover_user_key1: 'usertoken'
+
+openhab_voicerss_api_key: 'apitoken'
+
+openhab_zwave_device: /dev/ttyACM0
+openhab_zwave_securitykey: 'securitystring'

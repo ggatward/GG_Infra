@@ -1,4 +1,4 @@
-Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="{{ mqtt_broker_fqdn }}", port={{ mqtt_broker_port }}, clientid="openhab", username="openhab2", password="{{ vault_openhab_mqtt_password }}" ]
+Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="{{ openhab_mqtt_broker_fqdn }}", port={{ openhab_mqtt_broker_port }}, clientid="openhab" ]
 {
     Thing topic weewx "WeeWX" {
 	    Channels:

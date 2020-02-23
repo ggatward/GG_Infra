@@ -82,6 +82,38 @@
       packages:
       - firewalld
 
+  - block:
+    - name: Install VLAN support
+      package:
+        name: vlan
+        state: present
+
+    - name: Enable VLAN modules
+      lineinfile:
+        path: /etc/modules
+        regexp: '^8021q'
+        line: '8021q'
+
+    - name: Add VLAN interface
+      copy:
+        content: |
+          auto eth0.{{ item.id }}
+          iface eth0.{{ item.id }} inet manual
+            vlan-raw-device eth0
+        dest: /etc/network/interfaces.d/vlan-{{ item.id }}.conf
+      with_items: "{{ rpi_vlans }}"
+
+    - name: Add VLAN interface to dhcpcd.conf
+      blockinfile:
+        path: /etc/dhcpcd.conf
+        block: |
+          interface eth0.{{ item.id }}
+          static ip_address={{ item.address }}
+      with_items: "{{ rpi_vlans }}"
+    when: rpi_vlans is defined and rpi_vlans|length > 0
+
+
+
   - name: Reboot
     reboot:
     when: keyboard.changed or pi_hostname.changed
