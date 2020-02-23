@@ -69,36 +69,15 @@ all:
 
     automation:
       hosts:
-        openhab.core.home.gatwards.org: {}
+        openhab.core.home.gatwards.org:
+          rpi_vlans:
+          - id: '2'
+            address: 172.22.2.2/24
       vars:
         motd_role: Home Automation Server
-        # cis_nginx_install: { package: nginx, state: present, service: nginx, rstate: started, enabled: true, exception: 123 }
-        # cis_v_3_1_1_ipv4_ip_forward: { proc_src: '/proc/sys/net/ipv4/ip_forward', kernel_param: 'net.ipv4.ip_forward', value: 1 }
         ipaclient_ssl_create_certs: true
         ipaclient_ssl_keylen: '2048'
-        # Parameters for alarm panel
-        # elk_ip: 172.22.2.10
-        # elk_port: 2101
 
-      # children:
-      #   openhab:
-      #     hosts:
-      #       automation.core.home.gatwards.org:
-      #     vars:
-      #       motd_role: Home Automation Server
-      #       cis_nginx_install: { package: nginx, state: present, service: nginx, rstate: started, enabled: true, exception: 123 }
-      #       cis_v_3_1_1_ipv4_ip_forward: { proc_src: '/proc/sys/net/ipv4/ip_forward', kernel_param: 'net.ipv4.ip_forward', value: 1 }
-      #       ipaclient_ssl_create_certs: true
-      #       ipaclient_ssl_keylen: '2048'
-      #       # Parameters for alarm panel
-      #       elk_ip: 172.22.2.10
-      #       elk_port: 2101
-      #   zwave:
-      #     hosts:
-      #       zwave1.iot.home.gatwards.org:
-      #     vars:
-      #       ansible_python_interpreter: /usr/bin/python3
-      #       motd_role: Z-Wave master
 
     foreman:
       hosts:

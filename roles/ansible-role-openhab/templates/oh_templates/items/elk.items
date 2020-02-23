@@ -1,6 +1,6 @@
 Group     gELK               "Alarm System"          <alarm>      (Home)
 
-String  Elk_TCP      { tcp=">[*:{{ elk_ip }}:{{ elk_port }}:default]" }
+String  Elk_TCP      { tcp=">[*:{{ openhab_elk_ip }}:{{ openhab_elk_port }}:default]" }
 
 Switch  ELK_Zone001
 Contact Dining_FrontDoor            "Front Door [MAP(elk.map):%s]"              <frontdoor>         (LivingDining,gDoorStatus,gELK)

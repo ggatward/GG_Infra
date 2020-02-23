@@ -1,30 +1,4 @@
 
-// val Number NotificationVolume = 20
-
-// rule "Say Announcement"
-// when
-//     Item SayCommand received update
-// then
-//     var string AudioSink
-//     switch AudioSink {
-//         case Speaker.state.toString=="LivingRoom" : AudioSink="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
-//         case Speaker.state.toString=="Alfresco" : AudioSink="sonos:CONNECTAMP:{{ sonos_ids.alfresco }}"
-//         case Speaker.state.toString=="Portable1" : AudioSink= "sonos:PLAY1:{{ sonos_ids.portable1 }}"
-//         default:AudioSink="sonos:CONNECTAMP:{{ sonos_ids.livingroom }}"
-//     }
-//     gSonosNotification.allMembers.filter(s | s.state!=NotificationVolume ).forEach [item | item.sendCommand(NotificationVolume)]
-//     say(SayCommand.state.toString, "voicerss:enUS", AudioSink)
-// end
-
-// rule "IntialNotificationVolumeSetting"
-// when
-//     System started
-// then
-//     gSonosNotification.allMembers.forEach [item | item.sendCommand(NotificationVolume)]
-//     logInfo("IntialNotificationVolumeSetting","NotificationVolume set!")
-// end
-
-
 
 rule "Livingroom Favourites"
 when
@@ -83,8 +57,8 @@ then
         SonosLivingroom_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Unlink") {
         logInfo("SonosGrouping","Unlinking all slaves")
-        SonosLivingroom_Remove.sendCommand("{{ sonos_ids.alfresco }}")
-        SonosLivingroom_Remove.sendCommand("{{ sonos_ids.portable1 }}")
+        SonosLivingroom_Remove.sendCommand("{{ openhab_sonos_ids.alfresco }}")
+        SonosLivingroom_Remove.sendCommand("{{ openhab_sonos_ids.portable1 }}")
         SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
@@ -95,7 +69,7 @@ then
         SonosLivingroom_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Alfresco") {
         logInfo("SonosGrouping","Linking L->P")
-        SonosLivingroom_Add.sendCommand("{{ sonos_ids.alfresco }}")
+        SonosLivingroom_Add.sendCommand("{{ openhab_sonos_ids.alfresco }}")
         if(SonosLivingroom_MultiRoomMode.state=="Standalone") {
             tmp = "Alfresco"
         } else {
@@ -106,7 +80,7 @@ then
         SonosLivingroom_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Portable1") {
         logInfo("SonosGrouping","Linking L->P")
-        SonosLivingroom_Add.sendCommand("{{ sonos_ids.portable1 }}")
+        SonosLivingroom_Add.sendCommand("{{ openhab_sonos_ids.portable1 }}")
         if(SonosLivingroom_MultiRoomMode.state=="Standalone") {
             tmp = "Portable1"
         } else {
@@ -133,8 +107,8 @@ then
         SonosAlfresco_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Unlink") {
         logInfo("SonosGrouping","Unlinking all slaves from Alfresco")
-        SonosAlfresco_Remove.sendCommand("{{ sonos_ids.alfresco }}")
-        SonosAlfresco_Remove.sendCommand("{{ sonos_ids.livingroom }}")
+        SonosAlfresco_Remove.sendCommand("{{ openhab_sonos_ids.alfresco }}")
+        SonosAlfresco_Remove.sendCommand("{{ openhab_sonos_ids.livingroom }}")
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
         SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
@@ -145,7 +119,7 @@ then
         SonosAlfresco_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Livingroom") {
         logInfo("SonosGrouping","Linking Alfresco -> Livingroom")
-        SonosAlfresco_Add.sendCommand("{{ sonos_ids.livingroom }}")
+        SonosAlfresco_Add.sendCommand("{{ openhab_sonos_ids.livingroom }}")
         if(SonosAlfresco_MultiRoomMode.state=="Standalone") {
             tmp = "Livingroom"
         } else {
@@ -156,7 +130,7 @@ then
         SonosAlfresco_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Portable1") {
         logInfo("SonosGrouping","Linking Alfresco -> Portable1")
-        SonosAlfresco_Add.sendCommand("{{ sonos_ids.portable1 }}")
+        SonosAlfresco_Add.sendCommand("{{ openhab_sonos_ids.portable1 }}")
         if(SonosAlfresco_MultiRoomMode.state=="Standalone") {
             tmp = "Portable1"
         } else {
@@ -183,8 +157,8 @@ then
         SonosPortable1_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Unlink") {
         logInfo("SonosGrouping","Unlinking all slaves from Portable1")
-        SonosPortable1_Remove.sendCommand("{{ sonos_ids.alfresco }}")
-        SonosPortable1_Remove.sendCommand("{{ sonos_ids.livingroom }}")
+        SonosPortable1_Remove.sendCommand("{{ openhab_sonos_ids.alfresco }}")
+        SonosPortable1_Remove.sendCommand("{{ openhab_sonos_ids.livingroom }}")
         SonosPortable1_MultiRoomMode.postUpdate("Standalone")
         SonosLivingroom_MultiRoomMode.postUpdate("Standalone")
         SonosAlfresco_MultiRoomMode.postUpdate("Standalone")
@@ -195,7 +169,7 @@ then
         SonosPortable1_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Livingroom") {
         logInfo("SonosGrouping","Linking Portable1 -> Livingroom")
-        SonosPortable1_Add.sendCommand("{{ sonos_ids.livingroom }}")
+        SonosPortable1_Add.sendCommand("{{ openhab_sonos_ids.livingroom }}")
         if(SonosPortable1_MultiRoomMode.state=="Standalone") {
             tmp = "Livingroom"
         } else {
@@ -206,7 +180,7 @@ then
         SonosPortable1_MultiRoom.sendCommand("Empty")
     } else if(receivedCommand.toString=="Alfresco") {
         logInfo("SonosGrouping","Linking Portable1 -> Alfresco")
-        SonosPortable1_Add.sendCommand("{{ sonos_ids.alfresco }}")
+        SonosPortable1_Add.sendCommand("{{ openhab_sonos_ids.alfresco }}")
         if(SonosPortable1_MultiRoomMode.state=="Standalone") {
             tmp = "Alfresco"
         } else {

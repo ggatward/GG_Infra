@@ -13,6 +13,6 @@
 
 #- import_playbook: monitoring.yml
 
-#- import_playbook: weather.yml
-#- import_playbook: automation.yml
+- import_playbook: weather.yml
+- import_playbook: automation.yml
 # - import_playbook: workstation.yml

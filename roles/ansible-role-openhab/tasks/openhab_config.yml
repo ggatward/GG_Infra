@@ -134,64 +134,64 @@
 
 
 
-  # To get the symbolic names:
-  # ssh -p 8101 openhab@localhost
-  # openhab> bundle:list -s
-- name: Configure logging
-  blockinfile:
-    path: /var/lib/openhab2/etc/org.ops4j.pax.logging.cfg
-    block: |
-      log4j2.logger.sonos.name = org.eclipse.smarthome.binding.sonos
-      log4j2.logger.sonos.level = DEBUG
-      log4j2.logger.sonos.additivity = false
-      log4j2.logger.sonos.appenderRefs = sonos
-      log4j2.logger.sonos.appenderRef.sonos.ref = sonos
-      log4j2.appender.sonos.name = sonos
-      log4j2.appender.sonos.type = RollingRandomAccessFile
-      log4j2.appender.sonos.fileName = /var/log/openhab2/sonos.log
-      log4j2.appender.sonos.filePattern = /var/log/openhab2/sonos.log.%i
-      log4j2.appender.sonos.immediateFlush = true
-      log4j2.appender.sonos.append = true
-      log4j2.appender.sonos.layout.type = PatternLayout
-      log4j2.appender.sonos.layout.pattern = %d{dd-MMM-yyyy HH:mm:ss.SSS} [%-5.5p] [%-50.50c] - %m%n
-      log4j2.appender.sonos.policies.type = Policies
-      log4j2.appender.sonos.policies.size.type = SizeBasedTriggeringPolicy
-      log4j2.appender.sonos.policies.size.size = 10MB
-      log4j2.appender.sonos.strategy.type = DefaultRolloverStrategy
-      log4j2.appender.sonos.strategy.max = 10
+#   # To get the symbolic names:
+#   # ssh -p 8101 openhab@localhost
+#   # openhab> bundle:list -s
+# - name: Configure logging
+#   blockinfile:
+#     path: /var/lib/openhab2/etc/org.ops4j.pax.logging.cfg
+#     block: |
+#       log4j2.logger.sonos.name = org.eclipse.smarthome.binding.sonos
+#       log4j2.logger.sonos.level = DEBUG
+#       log4j2.logger.sonos.additivity = false
+#       log4j2.logger.sonos.appenderRefs = sonos
+#       log4j2.logger.sonos.appenderRef.sonos.ref = sonos
+#       log4j2.appender.sonos.name = sonos
+#       log4j2.appender.sonos.type = RollingRandomAccessFile
+#       log4j2.appender.sonos.fileName = /var/log/openhab2/sonos.log
+#       log4j2.appender.sonos.filePattern = /var/log/openhab2/sonos.log.%i
+#       log4j2.appender.sonos.immediateFlush = true
+#       log4j2.appender.sonos.append = true
+#       log4j2.appender.sonos.layout.type = PatternLayout
+#       log4j2.appender.sonos.layout.pattern = %d{dd-MMM-yyyy HH:mm:ss.SSS} [%-5.5p] [%-50.50c] - %m%n
+#       log4j2.appender.sonos.policies.type = Policies
+#       log4j2.appender.sonos.policies.size.type = SizeBasedTriggeringPolicy
+#       log4j2.appender.sonos.policies.size.size = 10MB
+#       log4j2.appender.sonos.strategy.type = DefaultRolloverStrategy
+#       log4j2.appender.sonos.strategy.max = 10
 
-      log4j2.logger.gpslogger.name = org.openhab.binding.gpstracker
-      log4j2.logger.gpslogger.level = TRACE
-      log4j2.logger.gpslogger.additivity = false
-      log4j2.logger.gpslogger.appenderRefs = gpslogger
-      log4j2.logger.gpslogger.appenderRef.gpslogger.ref = gpslogger
-      log4j2.appender.gpslogger.name = gpslogger
-      log4j2.appender.gpslogger.type = RollingRandomAccessFile
-      log4j2.appender.gpslogger.fileName = /var/log/openhab2/gpslogger.log
-      log4j2.appender.gpslogger.filePattern = /var/log/openhab2/gpslogger.log.%i
-      log4j2.appender.gpslogger.immediateFlush = true
-      log4j2.appender.gpslogger.append = true
-      log4j2.appender.gpslogger.layout.type = PatternLayout
-      log4j2.appender.gpslogger.layout.pattern = %d{dd-MMM-yyyy HH:mm:ss.SSS} [%-5.5p] [%-50.50c] - %m%n
-      log4j2.appender.gpslogger.policies.type = Policies
-      log4j2.appender.gpslogger.policies.size.type = SizeBasedTriggeringPolicy
-      log4j2.appender.gpslogger.policies.size.size = 10MB
-      log4j2.appender.gpslogger.strategy.type = DefaultRolloverStrategy
-      log4j2.appender.gpslogger.strategy.max = 10
+#       log4j2.logger.gpslogger.name = org.openhab.binding.gpstracker
+#       log4j2.logger.gpslogger.level = TRACE
+#       log4j2.logger.gpslogger.additivity = false
+#       log4j2.logger.gpslogger.appenderRefs = gpslogger
+#       log4j2.logger.gpslogger.appenderRef.gpslogger.ref = gpslogger
+#       log4j2.appender.gpslogger.name = gpslogger
+#       log4j2.appender.gpslogger.type = RollingRandomAccessFile
+#       log4j2.appender.gpslogger.fileName = /var/log/openhab2/gpslogger.log
+#       log4j2.appender.gpslogger.filePattern = /var/log/openhab2/gpslogger.log.%i
+#       log4j2.appender.gpslogger.immediateFlush = true
+#       log4j2.appender.gpslogger.append = true
+#       log4j2.appender.gpslogger.layout.type = PatternLayout
+#       log4j2.appender.gpslogger.layout.pattern = %d{dd-MMM-yyyy HH:mm:ss.SSS} [%-5.5p] [%-50.50c] - %m%n
+#       log4j2.appender.gpslogger.policies.type = Policies
+#       log4j2.appender.gpslogger.policies.size.type = SizeBasedTriggeringPolicy
+#       log4j2.appender.gpslogger.policies.size.size = 10MB
+#       log4j2.appender.gpslogger.strategy.type = DefaultRolloverStrategy
+#       log4j2.appender.gpslogger.strategy.max = 10
 
-      log4j2.logger.voicerss.name = org.openhab.voice.voicerss
-      log4j2.logger.voicerss.level = DEBUG
+#       log4j2.logger.voicerss.name = org.openhab.voice.voicerss
+#       log4j2.logger.voicerss.level = DEBUG
 
-      log4j2.logger.audio.name = org.eclipse.smarthome.core.audio
-      log4j2.logger.audio.level = OFF
+#       log4j2.logger.audio.name = org.eclipse.smarthome.core.audio
+#       log4j2.logger.audio.level = OFF
 
-      log4j2.logger.voice.name = org.eclipse.smarthome.core.voice
-      log4j2.logger.voice.level = OFF
+#       log4j2.logger.voice.name = org.eclipse.smarthome.core.voice
+#       log4j2.logger.voice.level = OFF
 
-      log4j2.logger.network.name = org.openhab.binding.network
-      log4j2.logger.network.level = OFF
-    state: present
-  notify: Restart Openhab
-  tags:
-  - all
-  - config
+#       log4j2.logger.network.name = org.openhab.binding.network
+#       log4j2.logger.network.level = OFF
+#     state: present
+#   notify: Restart Openhab
+#   tags:
+#   - all
+#   - config

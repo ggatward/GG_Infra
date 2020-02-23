@@ -5,27 +5,12 @@
     name: openhab2
     state: restarted
 
-- name: Restart Postgresql
-  service:
-    name: postgresql
-    state: restarted
+# - name: Restart rsyslog
+#   service:
+#     name: rsyslog
+#     state: restarted
 
-- name: Restart ser2net
-  service:
-    name: ser2net
-    state: restarted
-
-- name: Restart socat
-  service:
-    name: socat
-    state: restarted
-
-- name: Restart rsyslog
-  service:
-    name: rsyslog
-    state: restarted
-
-- name: Restart nginx
-  service:
-    name: nginx
-    state: restarted
+# - name: Restart nginx
+#   service:
+#     name: nginx
+#     state: restarted

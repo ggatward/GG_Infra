@@ -22,13 +22,13 @@ xmlfile = '/tmp/xmlfile.xml'
 
 # MQTT connection properties
 broker = '{{ mqtt_broker_fqdn }}'
-port = {{ mqtt_broker_port }}
+port = 1883
 username = '{{ bomxml2mqtt_user }}'
 password = '{{ bomxml2mqtt_pass }}'
 topic = '{{ bomxml2mqtt_topic }}'
 
 # logging properties
-logfile = '/var/log/weewx/bomxml.log'
+logfile = '/var/log/bomxml.log'
 loglevel = 'DEBUG'
 logformat = '%(asctime)-15s %(levelname)-5s [%(module)s] %(message)s'
 
