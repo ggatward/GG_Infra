@@ -27,6 +27,13 @@
     import_role:
       name: ansible-role-hw_vm_tools
 
+  - name: Install CA certificates
+    import_role:
+      name: ansible-role-cacerts
+    tags:
+    - generic
+    - certs
+
 ####################################################################
 
 - name: Authentication

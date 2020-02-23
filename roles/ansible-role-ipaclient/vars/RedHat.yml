@@ -1,4 +1,4 @@
 ipaclient_install_command: '/usr/sbin/ipa-client-install'
 ipaclient_packages:
 - ipa-client
-# - dbus-python
+ipaclient_ssl_dir: /etc/pki/tls

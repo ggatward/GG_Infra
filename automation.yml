@@ -81,6 +81,7 @@
       state: present
       user: root
 
+###################################################################
 
 - name: Install Caller ID Server
   remote_user: svc-ansible
@@ -106,6 +107,7 @@
     with_items:
     - 3333/tcp
 
+####################################################################
 
 # Nginx (SSL frontend)
 # - name: Configure Nginx for OpenHAB
@@ -153,6 +155,7 @@
 #           ssl_prefer_server_ciphers on;
 #           add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
+#####################################################################
 
 # - name: Install OpenHAB
 #   remote_user: svc-ansible
