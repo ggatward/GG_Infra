@@ -1,12 +1,18 @@
 ---
+ssl_dir: /etc/ssl/localcerts
+ca_path: /usr/local/share/ca-certificates
+
 packages:
 - apt-transport-https
 - openhab2
 - openjdk-8-jdk-headless
 - python3-psycopg2
 - python3-pip
+- python3-openssl
 - speedtest-cli
+- arping
 
 pip_packages:
 - speedtest-cli
+- paho-mqtt
 - APScheduler

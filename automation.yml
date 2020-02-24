@@ -25,7 +25,7 @@
     - mqtt
     - docker
     template:
-      src: mosquitto.conf.j2
+      src: automation/mosquitto.conf.j2
       dest: /volume2/docker/mosquitto/config/mosquitto.conf
       owner: root
       group: root
@@ -100,6 +100,7 @@
     - config
     vars:
       # Get sensitive vars from the vault
+      openhab_keystore_password: "{{ vault_openhab_keystore_password }}"
       openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
       openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
       openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
@@ -150,7 +151,6 @@
       - voicerss
       openhab_misc:
       - market
-
 
   - name: Open Firewall Ports
     tags:
@@ -214,29 +214,32 @@
   hosts: automation
 
   tasks:
-  # - name: Install script pre-reqs (python2 - needs python-pip)
-  #   pip:
-  #     name: "{{ item }}"
-  #     state: present
-  #   with_items:
-  #   - paho-mqtt
-  #   - APScheduler
-
   - name: Deploy custom scripts
     tags:
     - automation
     - customscript
     template:
-      src: templates/{{ item }}.j2
+      src: files/automation/{{ item }}
       dest: /usr/local/bin/{{ item }}
       mode: '0755'
     with_items:
     - bomxml2mqtt.py
+
+  - name: Deploy custom script configs
+    tags:
+    - automation
+    - customscript
+    template:
+      src: templates/automation/{{ item }}.j2
+      dest: /usr/local/etc/{{ item }}
+      mode: '0644'
+    with_items:
+    - bomxml2mqtt.yml
     vars:
       bomxml2mqtt_bomuri: ftp://ftp.bom.gov.au/anon/gen/fwo/IDN11060.xml
+      bomxml2mqtt_topic: weather/bomxml/
       bomxml2mqtt_user: bomxml
       bomxml2mqtt_pass: 'notused'
-      bomxml2mqtt_topic: weather/bomxml/
 
   - name: Deploy custom crontabs
     tags:
