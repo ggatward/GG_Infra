@@ -79,13 +79,12 @@
     register: certlist
 
   - set_fact:
-      certid: "{{ certlist.stdout | regex_search(regexp,'\\1') }}"
+      certid: "{{ certlist.stdout | regex_search(regexp,'\\1') | first }}"
     vars:
       regexp: "Request ID '([^']+)'"
 
   - name: Stop tracking existing certs
-    command: >
-      ipa-getcert stop-tracking -i {{ certid }}
+    command: ipa-getcert stop-tracking -i {{ certid }}
 
   - name: Remove existing certs
     file:
