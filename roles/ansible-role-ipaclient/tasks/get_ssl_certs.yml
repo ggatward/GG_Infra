@@ -76,12 +76,12 @@
 - block:
   - name: Get existing cert dogtag tracking ID
     command: ipa-getcert list -f {{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem
-    register: certid
+    register: certlist
 
-    # | grep Request | cut -f2 -d\'"
-
-  - debug:
-      var: certid
+  - set_fact:
+      certid: "{{ certlist.stdout | regex_search(regexp,'\\1') }}"
+    vars:
+      regexp: "Request ID '([^']+)'"
 
   - name: Stop tracking existing certs
     command: >
