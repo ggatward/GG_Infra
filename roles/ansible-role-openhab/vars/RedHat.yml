@@ -1,4 +1,7 @@
 ---
+ssl_dir: /etc/pki/tls
+ca_path: /etc/pki/ca-trust/source/anchors
+
 packages:
 - openhab2
 - java-1.8.0-openjdk
@@ -9,4 +12,5 @@ packages:
 
 pip_packages:
 - speedtest-cli
+- paho-mqtt
 - APScheduler

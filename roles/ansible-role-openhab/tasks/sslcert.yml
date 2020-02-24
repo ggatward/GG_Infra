@@ -1,0 +1,40 @@
+---
+# https://community.openhab.org/t/ssl-with-openhab2/3516/2
+
+- name: Create SSL bundle
+  openssl_pkcs12:
+    friendly_name: mykey
+    passphrase: openhab
+    path: /etc/ssl/localcerts/certs/openhab.p12
+    certificate_path: "{{ ssl_dir }}/certs/{{ ansible_fqdn }}.pem"
+    privatekey_path: "{{ ssl_dir }}/private/{{ ansible_fqdn }}.key"
+    other_certificates:
+    - "{{ ca_path }}/GatwardIT-IPA.crt"
+    - "{{ ca_path }}/GatwardIT-CA2.crt"
+  register: newcert
+
+- block:
+  # keytool -delete -alias mykey -keystore <OpenHAB2InstallDir>/etc/keystore
+  - name: Delete original cert from Keystore
+    java_cert:
+      cert_url: dummy.org     # Ansible role requires a URL even if not used :(
+      cert_alias: mykey       # OH2 static config
+      keystore_path: /var/lib/openhab2/etc/keystore
+      keystore_pass: openhab  # OH2 static config
+      state: absent
+      executable: /usr/bin/keytool
+
+  # keytool -importkeystore -srckeystore pkcs.p12 -srcstoretype pkcs12 \
+  #   -destkeystore <OpenHAB2InstallDir>/etc/keystore -deststoretype jks \
+  #   -deststorepass openhab -destalias mykey
+  - name: Import PKCS12 cert into Keystore
+    java_cert:
+      pkcs12_path: "{{ ssl_dir }}/certs/openhab.p12"
+      pkcs12_password: openhab
+      pkcs12_alias: mykey
+      keystore_path: /var/lib/openhab2/etc/keystore
+      keystore_type: JKS
+      keystore_pass: openhab
+      cert_alias: mykey
+    notify: Restart Openhab
+  when: newcert.changed

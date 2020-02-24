@@ -1,0 +1,9 @@
+
+mqtt:
+  broker_fqdn: {{ mqtt_broker_fqdn }}
+  broker_username: {{ bomxml2mqtt_user }}
+  broker_password: {{ bomxml2mqtt_pass }}
+
+forecast:
+  url: {{ bomxml2mqtt_bomuri }}
+  mqtt_topic: {{ bomxml2mqtt_topic }}

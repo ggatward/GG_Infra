@@ -4,13 +4,3 @@
   service:
     name: openhab2
     state: restarted
-
-# - name: Restart rsyslog
-#   service:
-#     name: rsyslog
-#     state: restarted
-
-# - name: Restart nginx
-#   service:
-#     name: nginx
-#     state: restarted

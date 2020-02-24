@@ -11,9 +11,8 @@
   - "{{ ansible_fqdn }}"
 
 - name: Get Admin Keytab
-  #shell: "kinit {{ ipaclient_enroll_user }} <<< '{{ ipaclient_enroll_pass }}'"
   shell: echo '{{ ipaclient_enroll_pass }}' | kinit {{ ipaclient_enroll_user }}
-#  no_log: true
+  no_log: true
 
 - block:
   # ipa host-add san.host.example.test --force
@@ -21,6 +20,7 @@
     run_once: true
     no_log: true
     ipa_host:
+      ipa_host: "{{ ipaclient_servers[0] }}"
       ipa_user: "{{ ipaclient_enroll_user }}"
       ipa_pass: "{{ ipaclient_enroll_pass }}"
       fqdn: "{{ item }}"
@@ -33,19 +33,29 @@
     run_once: true
     no_log: true
     ipa_service:
+      ipa_host: "{{ ipaclient_servers[0] }}"
       ipa_user: "{{ ipaclient_enroll_user }}"
       ipa_pass: "{{ ipaclient_enroll_pass }}"
       krbcanonicalname: HTTP/{{ item }}
       hosts: "{{ ansible_fqdn }}"
       state: present
+    register: newsan
     with_items:
     - "{{ ipaclient_ssl_subject_altnames }}"
 
   # ipa service-add-host test/san.host.example.test --host `hostname`   (Link service to real host)
   - name: Associate SAN principal to real host
     command: ipa service-add-host HTTP/{{ item }} --host {{ ansible_fqdn }}
+    register: sanadd
     with_items:
     - "{{ ipaclient_ssl_subject_altnames }}"
+    ignore_errors: true
+    # failed_when:
+    # - sanadd.rc != 0
+    # - '"This entry is already a member" not in sanadd.stdout_lines'
+    # changed_when:
+    # - sanadd.rc == 0
+
   when: ipaclient_ssl_subject_altnames|length > 0
 
 - name: Ensude SSL cert directories exist
@@ -62,6 +72,30 @@
   register: sslcerts
   changed_when: false
 
+# If we have updated certs we need to clean up and request the updated ones
+- block:
+  - name: Get existing cert dogtag tracking ID
+    command: ipa-getcert list -f {{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem
+    register: certid
+
+    # | grep Request | cut -f2 -d\'"
+
+  - debug:
+      var: certid
+
+  - name: Stop tracking existing certs
+    command: >
+      ipa-getcert stop-tracking -i {{ certid }}
+
+  - name: Remove existing certs
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+    - "{{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem"
+    - "{{ ipaclient_ssl_dir }}/private/{{ ansible_fqdn }}.key"
+  when: sslcerts.stat.exists and newsan.changed
+
 - name: Request new SSL certs from IPA
   command: >
     ipa-getcert request -r -g {{ ipaclient_ssl_keylen }}
@@ -72,7 +106,7 @@
     {% for san in ipaclient_ssl_subject_altnames %}
     -D {{ san }}
     {% endfor %}
-  when: not sslcerts.stat.exists
+  when: not sslcerts.stat.exists or newsan.changed
 
 - name: Wait for certs to be retrieved
   wait_for:

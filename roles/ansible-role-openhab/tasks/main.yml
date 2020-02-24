@@ -9,6 +9,12 @@
   - openhab
   include_tasks: install.yml
 
+- name: Configure SSL certs
+  tags:
+  - openhab
+  - ssl
+  include_tasks: sslcert.yml
+
 - name: Configure OpenHab
   tags:
   - openhab

@@ -1,31 +1,40 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import paho.mqtt.client as mqtt
 import xml.etree.ElementTree as xml
-import atexit
-import logging
-import requests
-import socket
-import sys, os
-import datetime
-import ftplib
-import tempfile
+import atexit, logging, requests, socket, sys, os
+import datetime, ftplib, tempfile, yaml
 
-from urlparse import urlparse
+from urllib.parse import urlparse
 from time import sleep
 from apscheduler.schedulers.background import BackgroundScheduler
 
+# Load config file
+filename = '/usr/local/etc/bomxml2mqtt.yml'
+try:
+    CONFIG = yaml.safe_load(open(filename, 'r'))
+except IOError:
+    print("Please create a config file at %s." % filename)
+    sys.exit(1)
+
+BROKER = CONFIG['mqtt']['broker_fqdn']
+USERNAME = CONFIG['mqtt']['broker_username']
+PASSWORD = CONFIG['mqtt']['broker_password']
+URL = CONFIG['forecast']['url']
+TOPIC = CONFIG['forecast']['mqtt_topic']
+
+
 # request properties
-bomuri = '{{ bomxml2mqtt_bomuri }}'
+bomuri = URL
 xmlfile = '/tmp/xmlfile.xml'
 
 # MQTT connection properties
-broker = '{{ mqtt_broker_fqdn }}'
+broker = BROKER
 port = 1883
-username = '{{ bomxml2mqtt_user }}'
-password = '{{ bomxml2mqtt_pass }}'
-topic = '{{ bomxml2mqtt_topic }}'
+username = USERNAME
+password = PASSWORD
+topic = TOPIC
 
 # logging properties
 logfile = '/var/log/bomxml.log'
@@ -52,18 +61,18 @@ def on_connect(client, userdata, flags, rc):
     if (rc == 0):
         logging.debug("Successfully connected to MQTT broker")
         mqttc.connected_flag=True
-    elif result_code == 1:
+    elif (rc == 1):
         logging.info("Connection refused - unacceptable protocol version")
-    elif result_code == 2:
+    elif (rc == 2):
         logging.info("Connection refused - identifier rejected")
-    elif result_code == 3:
+    elif (rc == 3):
         logging.info("Connection refused - server unavailable")
-    elif result_code == 4:
+    elif (rc == 4):
         logging.info("Connection refused - bad user name or password")
-    elif result_code == 5:
+    elif (rc == 5):
         logging.info("Connection refused - not authorised")
     else:
-        logging.warning("Connection failed - result code %d" % (result_code))
+        logging.warning("Connection failed - result code %d" % (rc))
 
 def on_disconnect(mosq, userdata, result_code):
     if result_code == 0:
@@ -82,7 +91,7 @@ def connect_mqtt():
         mqttc.loop_start()
         while not mqttc.connected_flag:
             sleep(1)
-    except Exception, e:
+    except Exception as e:
         logging.error("Cannot connect to MQTT broker at %s:%d: %s" % (broker, port, str(e)))
         sys.exit(2)
 
