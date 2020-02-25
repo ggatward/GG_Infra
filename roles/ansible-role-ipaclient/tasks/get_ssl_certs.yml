@@ -9,6 +9,11 @@
     state: present
   with_items:
   - "{{ ansible_fqdn }}"
+  register: ipasvc
+  no_log: true
+  retries: 5
+  delay: 2
+  until: not ipasvc.failed
 
 - name: Get Admin Keytab
   shell: echo '{{ ipaclient_enroll_pass }}' | kinit {{ ipaclient_enroll_user }}
@@ -27,6 +32,10 @@
       force: true
     with_items:
     - "{{ ipaclient_ssl_subject_altnames }}"
+    register: ipahost
+    retries: 5
+    delay: 2
+    until: not ipahost.failed
 
   # ipa service-add test/san.host.example.test --force
   - name: Create HTTP service in IPA
@@ -42,23 +51,25 @@
     register: newsan
     with_items:
     - "{{ ipaclient_ssl_subject_altnames }}"
-
+    retries: 5
+    delay: 2
+    until: not newsan.failed
+    
   # ipa service-add-host test/san.host.example.test --host `hostname`   (Link service to real host)
   - name: Associate SAN principal to real host
     command: ipa service-add-host HTTP/{{ item }} --host {{ ansible_fqdn }}
     register: sanadd
     with_items:
     - "{{ ipaclient_ssl_subject_altnames }}"
-    ignore_errors: true
-    # failed_when:
-    # - sanadd.rc != 0
-    # - '"This entry is already a member" not in sanadd.stdout_lines'
-    # changed_when:
-    # - sanadd.rc == 0
-
+    failed_when:
+    - sanadd.rc != 0
+    - sanadd.rc != 1
+    - '"This entry is already a member" not in sanadd.stdout_lines'
+    changed_when:
+    - '"Number of members added 1" in sanadd.stdout_lines'
   when: ipaclient_ssl_subject_altnames|length > 0
 
-- name: Ensude SSL cert directories exist
+- name: Ensure SSL cert directories exist
   file:
     path: "{{ ipaclient_ssl_dir }}/{{ item }}"
     state: directory
@@ -78,7 +89,8 @@
     command: ipa-getcert list -f {{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem
     register: certlist
 
-  - set_fact:
+  - name: Set Cert ID
+    set_fact:
       certid: "{{ certlist.stdout | regex_search(regexp,'\\1') | first }}"
     vars:
       regexp: "Request ID '([^']+)'"
