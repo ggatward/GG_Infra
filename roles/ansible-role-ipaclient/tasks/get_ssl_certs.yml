@@ -54,7 +54,7 @@
     retries: 5
     delay: 2
     until: not newsan.failed
-    
+
   # ipa service-add-host test/san.host.example.test --host `hostname`   (Link service to real host)
   - name: Associate SAN principal to real host
     command: ipa service-add-host HTTP/{{ item }} --host {{ ansible_fqdn }}
@@ -122,7 +122,7 @@
 - name: Wait for certs to be retrieved
   wait_for:
     path: "{{ ipaclient_ssl_dir }}/certs/{{ ansible_fqdn }}.pem"
-  when: not sslcerts.stat.exists
+  when: not sslcerts.stat.exists or newsan.changed
 
 - name: Destroy admin keytab
   command: kdestroy
