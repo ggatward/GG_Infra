@@ -46,11 +46,13 @@ all:
       hosts:
         openhab.core.home.gatwards.org: {}
         rpi-util1.core.home.gatwards.org: {}
-        rpi-util2.core.home.gatwards.org: {}
+#        rpi-util2.core.home.gatwards.org: {}
 #        rpi-util3.core.home.gatwards.org: {}
       vars:
         ansible_python_interpreter: /usr/bin/python3
         prometheus_platform_architecture: linux-armv7
+        ssl_dir: /etc/ssl/localcerts
+        ca_path: /usr/local/share/ca-certificates
 
     influxdb:
       hosts:
