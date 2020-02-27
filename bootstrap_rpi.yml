@@ -98,7 +98,7 @@
       copy:
         content: |
           auto eth0.{{ item.id }}
-          iface eth0.{{ item.id }} inet manual
+          iface eth0.{{ item.id }} inet static
             vlan-raw-device eth0
         dest: /etc/network/interfaces.d/vlan-{{ item.id }}.conf
       with_items: "{{ rpi_vlans }}"
@@ -112,7 +112,9 @@
       with_items: "{{ rpi_vlans }}"
     when: rpi_vlans is defined and rpi_vlans|length > 0
 
-
+# TODO:
+# Add to /etc/rc.local (before exit 0) to ensure VLAN comes up:
+# /sbin/vconfig add eth0 {{ item.id }}
 
   - name: Reboot
     reboot:

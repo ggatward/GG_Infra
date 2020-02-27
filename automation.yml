@@ -3,8 +3,6 @@
   remote_user: svc-ansible
   become: true
   hosts: docker_nas
-  # vars_files:
-  # - vault.yml
 
   tasks:
   - name: Ensure Mosquitto config paths exist
@@ -214,6 +212,17 @@
   hosts: automation
 
   tasks:
+  - name: Install custom script requirements
+    tags:
+    - automation
+    - customscript
+    package:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - python3-yaml
+
   - name: Deploy custom scripts
     tags:
     - automation
