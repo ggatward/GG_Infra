@@ -16,6 +16,9 @@ roles:
 - src: https://github.com/ericsysmin/ansible-role-chrony.git
   scm: git
 
+- name: ansible_nginx
+  src: https://github.com/geerlingguy/ansible-role-nginx.git
+  scm: git
 
 
 
@@ -29,10 +32,6 @@ roles:
 #   scm: git
 
 # - src: https://github.com/mrlesmithjr/ansible-haproxy.git
-#   scm: git
-
-# - name: ansible_nginx
-#   src: https://github.com/geerlingguy/ansible-role-nginx.git
 #   scm: git
 
 # - src: https://github.com/ggatward/ansible-grafana.git
