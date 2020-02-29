@@ -1,0 +1,11 @@
+---
+- name: Install ADSB services
+  remote_user: svc-ansible
+  become: true
+  hosts: rpi-util2.core.home.gatwards.org
+  tasks:
+  - name: Configure ADSB
+    tags:
+    - adsb
+    import_role:
+      name: ansible-role-adsb

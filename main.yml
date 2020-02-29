@@ -6,13 +6,11 @@
 #- import_playbook: bootstrap_rpi.yml         # (as pi)
 
 - import_playbook: generic.yml
-
 - import_playbook: hardening.yml
 
 - import_playbook: general_services.yml
-
-#- import_playbook: monitoring.yml
-
 - import_playbook: weather.yml
 - import_playbook: automation.yml
+- import_playbook: adsb.yml
+#- import_playbook: monitoring.yml
 # - import_playbook: workstation.yml
