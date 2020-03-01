@@ -1,0 +1,26 @@
+---
+
+- name: Install PiAware repo
+  apt:
+    deb: https://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
+    update_cache: true
+
+- name: Install PiAware
+  package:
+    name: piaware
+    state: present
+
+- name: Enable PiAware auto updates
+  command: /usr/bin/piaware-config allow-auto-updates yes
+
+- name: Enable PiAware manual updates
+  command: /usr/bin/piaware-config allow-manual-updates yes
+
+- name: Configure PiAware Feeder ID
+  command: /usr/bin/piaware-config feeder-id {{ adsb_flightaware_feedid }}
+
+- name: Configure Receiver Type
+  command: /usr/bin/piaware-config receiver-type {{ adsb_flightaware_receiver_type }}
+
+- name: Configure Receiver address
+  command: /usr/bin/piaware-config receiver-host {{ adsb_flightaware_receiver_address }}

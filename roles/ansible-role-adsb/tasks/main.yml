@@ -1,2 +1,30 @@
 ---
 # tasks file for ansible-role-adsb
+
+- name: Create ADSB user
+  user:
+    name: "{{ adsb_owner }}"
+    state: present
+
+- name: Create ADSB common database paths
+  file:
+    path: "{{ adsb_local_db_base }}/{{ item }}"
+    state: directory
+    owner: "{{ adsb_owner }}"
+    group: "{{ adsb_group }}"
+  with_items:
+  - db
+  - pictures
+  - silhouettes
+
+- name: Configure Mode-S Mixer
+  include_tasks: modesmixer.yml
+
+# - name: Configure Dump1090
+#   include_tasks: dump1090.yml
+
+- name: Configure FlightRadar24 Feeder
+  include_tasks: fr24feed.yml
+
+- name: Configure FlightAware Feeder
+  include_tasks: piaware.yml

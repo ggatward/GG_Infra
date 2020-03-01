@@ -3,9 +3,21 @@
   remote_user: svc-ansible
   become: true
   hosts: rpi-util2.core.home.gatwards.org
+  vars_files:
+  - vault.yml
   tasks:
   - name: Configure ADSB
     tags:
     - adsb
     import_role:
       name: ansible-role-adsb
+    vars:
+      adsb_latlon: "{{ vault_latitude }}:{{ vault_longitude }}"
+      adsb_local_db: False
+      adsb_modesmixer__inConnect:
+      - '172.22.1.50:10001'
+      adsb_modesmixer__outServer:
+      - 'sbs10001:10001'
+      - 'beast:30005'
+      adsb_flightaware_feedid: "{{ vault_adsb_flightaware_feedid }}"
+      adsb_fr24feed_key: "{{ vault_adsb_fr24feed_key }}"

@@ -1,0 +1,42 @@
+---
+adsb_modesmixer_service_config:
+  - ['globes', "{{ adsb_modesmixer__globes }}"]
+  - ['web', "{{ adsb_modesmixer__web }}"]
+  - ['google-key', "{{ adsb_modesmixer__google_key }}"]
+  - ['web-auth', "{{ adsb_modesmixer__web_auth }}"]
+  - ['silhouettes', "{{ adsb_modesmixer__silhouettes }}"]
+  - ['pictures', "{{ adsb_modesmixer__pictures }}"]
+  - ['location', "{{ adsb_modesmixer__location }}"]
+  - ['add-reference-point', "{{ adsb_modesmixer__add_reference_point }}"]
+  - ['add-points', "{{ adsb_modesmixer__add_points }}"]
+  - ['filter-expire', "{{ adsb_modesmixer__filter_expire }}"]
+  - ['valid-adsb', "{{ adsb_modesmixer__valid_adsb }}"]
+  - ['valid-modes', "{{ adsb_modesmixer__valid_modes }}"]
+  - ['filter-dup', "{{ adsb_modesmixer__filter_dup }}"]
+  - ['flight-expire-time', "{{ adsb_modesmixer__flight_expire_time }}"]
+  - ['log-file', "{{ adsb_modesmixer__log_file }}"]
+  - ['log-level', "{{ adsb_modesmixer__log_level }}"]
+
+adsb_modesmixer_service_config_bools:
+  - ['keep', "{{ adsb_modesmixer__keep }}"]
+  - ['disable-web-log', "{{ adsb_modesmixer__disable_web_log }}"]
+  - ['localtime', "{{ adsb_modesmixer__localtime }}"]
+  - ['log-noconsole', "{{ adsb_modesmixer__log_noconsole }}"]
+  - ['filter-nocountry', "{{ adsb_modesmixer__filter_nocountry }}"]
+  - ['metric', "{{ adsb_modesmixer__metric }}"]
+
+adsb_modesmixer_service_config_lists:
+  - ['inConnect', "{{ adsb_modesmixer__inConnect }}"]
+  - ['inConnectId', "{{ adsb_modesmixer__inConnectId }}"]
+  - ['inServer', "{{ adsb_modesmixer__inServer }}"]
+  - ['inServerId', "{{ adsb_modesmixer__inServerId }}"]
+  - ['inServerUdp', "{{ adsb_modesmixer__inServerUdp }}"]
+  - ['inSerial', "{{ adsb_modesmixer__inSerial }}"]
+  - ['outConnect', "{{ adsb_modesmixer__outConnect }}"]
+  - ['outConnectId', "{{ adsb_modesmixer__outConnectId }}"]
+  - ['outConnectUdp', "{{ adsb_modesmixer__outConnectUdp }}"]
+  - ['outServer', "{{ adsb_modesmixer__outServer }}"]
+
+adsb_modesmixer_service_config_db:
+  - ['db', "{{ adsb_modesmixer__db }}"]
+  - ['frdb', "{{ adsb_modesmixer__frdb }}"]
