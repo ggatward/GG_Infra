@@ -1,2 +1,69 @@
 ---
 # defaults file for ansible-role-adsb
+
+# User/Group to run processes as
+adsb_owner: adsb
+adsb_group: adsb
+
+# Use local basestation.sqb and flightroute.sqb databases
+adsb_local_db_base: /var/lib/adsb
+adsb_local_db: True
+
+# Home Location
+adsb_latlon: '12.345:123.456'
+
+
+
+
+
+# Mode-S Mixer defaults
+adsb_modesmixer_tarball: modesmixer2_rpi2-3_deb9_20190413.tgz
+adsb_modesmixer__inConnect: []
+adsb_modesmixer__inConnectId: []
+adsb_modesmixer__inServer: []
+adsb_modesmixer__inServerId: []
+adsb_modesmixer__inServerUdp: []
+adsb_modesmixer__inSerial: []
+adsb_modesmixer__outConnect: []
+adsb_modesmixer__outConnectId: []
+adsb_modesmixer__outConnectUdp: []
+adsb_modesmixer__outServer: []
+adsb_modesmixer__globes:
+adsb_modesmixer__web: '8080'
+adsb_modesmixer__google_key:
+adsb_modesmixer__web_auth:
+adsb_modesmixer__disable_web_log: False
+adsb_modesmixer__silhouettes: "{{ adsb_local_db_base }}/silhouettes"
+adsb_modesmixer__pictures: "{{ adsb_local_db_base }}/pictures"
+adsb_modesmixer__db: "{{ adsb_local_db_base }}/db"
+adsb_modesmixer__keep: False
+adsb_modesmixer__frdb: "{{ adsb_local_db_base }}/db"
+adsb_modesmixer__location: "{{ adsb_latlon }}"
+adsb_modesmixer__add_reference_point:
+adsb_modesmixer__add_points:
+adsb_modesmixer__localtime: True
+adsb_modesmixer__filter_expire:
+adsb_modesmixer__valid_adsb:
+adsb_modesmixer__valid_modes:
+adsb_modesmixer__filter_nocountry: False
+adsb_modesmixer__filter_dup:
+adsb_modesmixer__flight_expire_time:
+adsb_modesmixer__log_noconsole: True
+adsb_modesmixer__log_file: /var/log/modesmixer2.log
+adsb_modesmixer__log_level: '4'
+adsb_modesmixer__metric: False
+
+
+# PiAware / FlightAware defaults:
+adsb_flightaware_username:
+adsb_flightaware_password: 'ChangeMe'
+adsb_flightaware_feedid: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+adsb_flightaware_receiver_type: relay
+adsb_flightaware_receiver_address: localhost
+
+# FlightRadar24
+adsb_fr24feed_key: 'xxxxxxxxxxx'
+adsb_fr24feed_receiver: beast-tcp
+adsb_fr24feed_receiver_address: '127.0.0.1'
+adsb_fr24feed_raw_output: 'no'        # Enable RAW data feed on port 30334
+adsb_fr24feed_bs_output: 'no'         # Enable Basestation data feed on port 30003

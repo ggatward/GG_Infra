@@ -1,2 +1,25 @@
 ---
 # handlers file for ansible-role-adsb
+- name: reload daemon
+  systemd:
+    daemon_reload: yes
+
+- name: restart modesmixer2
+  systemd:
+    name: modesmixer2
+    state: restarted
+
+- name: restart fr24feed
+  systemd:
+    name: fr24feed
+    state: restarted
+
+- name: restart dump1090
+  systemd:
+    name: dump1090-fa
+    state: restarted
+
+- name: restart piaware
+  systemd:
+    name: piaware
+    state: restarted

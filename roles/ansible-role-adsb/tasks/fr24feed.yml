@@ -1,0 +1,21 @@
+---
+
+- name: Install fr24feed APT key
+  apt_key:
+    keyserver: pool.sks-keyservers.net
+    id: 40C430F5
+
+- name: Install fr24feed repo
+  apt_repository:
+    repo: 'deb http://repo.feed.flightradar24.com flightradar24 raspberrypi-stable'
+    update_cache: true
+
+- name: Install fr24feed
+  apt:
+    name: fr24feed
+
+- name: Configure fr24feed
+  template:
+    src: fr24feed.ini.j2
+    dest: /etc/fr24feed.ini
+  notify: restart fr24feed
