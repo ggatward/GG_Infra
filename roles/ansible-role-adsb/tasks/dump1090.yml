@@ -10,9 +10,18 @@
     name: dump1090-fa
     state: present
 
-#- name: Configure dump1090
-#  /etc/default/dump1090-fa
+- name: Configure dump1090
+  template:
+    src: dump1090-fa.j2
+    dest: /etc/default/dump1090-fa
+  notify: restart dump1090
 
-# --net
-# --net-only
-# --forward-mlat
+- name: Open firewall ports
+  firewalld:
+    port: "{{ item }}"
+    immediate: yes
+    permanent: yes
+    state: enabled
+  with_items:
+  - "80/tcp"
+  - "8080/tcp"

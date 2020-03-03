@@ -12,12 +12,14 @@
     import_role:
       name: ansible-role-adsb
     vars:
-      adsb_latlon: "{{ vault_latitude }}:{{ vault_longitude }}"
+      adsb_lat: "{{ vault_latitude }}"
+      adsb_lon: "{{ vault_longitude }}"
       adsb_local_db: False
       adsb_modesmixer__inConnect:
       - '172.22.1.50:10001'
-      adsb_modesmixer__outServer:
-      - 'sbs10001:10001'
-      - 'beast:30005'
+      adsb_modesmixer__outConnect:
+      - 'beast:localhost:30004'
+      adsb_modesmixer__outServer: []
       adsb_flightaware_feedid: "{{ vault_adsb_flightaware_feedid }}"
       adsb_fr24feed_key: "{{ vault_adsb_fr24feed_key }}"
+      adsb_dump1090_net_only: true
