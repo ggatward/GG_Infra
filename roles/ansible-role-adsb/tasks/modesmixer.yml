@@ -2,6 +2,11 @@
 - name: Read vars
   include_vars: modesmixer.yml
 
+- name: Create ADSB user
+  user:
+    name: "{{ adsb_owner }}"
+    state: present
+
 - name: Extract package
   unarchive:
     src: "{{ adsb_modesmixer_tarball }}"

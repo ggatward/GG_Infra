@@ -23,3 +23,8 @@
   systemd:
     name: piaware
     state: restarted
+
+- name: restart vrs
+  systemd:
+    name: vrs
+    state: restarted

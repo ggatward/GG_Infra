@@ -1,0 +1,5 @@
+#!/bin/sh
+cd {{ adsb_vrs_base }}
+/usr/bin/mono VirtualRadar.exe -nogui -createAdmin:{{ adsb_vrs_admin_user }} -password:{{ adsb_vrs_admin_pass }} &
+pid=$(ps -ef | grep VirtualRadar | grep -v grep | awk '{print $2}')
+echo ${pid}

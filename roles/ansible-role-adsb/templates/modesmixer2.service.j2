@@ -6,7 +6,7 @@ After=network.target
 Wants=network.target
 
 [Service]
-ExecStart=/usr/local/bin/modesmixer2 {% for config in adsb_modesmixer_service_config if config[1] is not none %}--{{ config[0] }} {{ config[1] }} {% endfor %}{% for config in adsb_modesmixer_service_config_bools if config[1] %}--{{ config[0] }} {% endfor %}{% for config in adsb_modesmixer_service_config_lists if config[1] | length > 0 %}{% for server in config[1] %}--{{ config[0] }} {{ server }} {% endfor %}{% endfor %}{% for config in adsb_modesmixer_service_config_db if adsb_local_db %}--{{ config[0] }} {{ config[1] }} {% endfor %}
+ExecStart=/usr/local/bin/modesmixer2 {% for config in adsb_modesmixer_service_config if config[1] is not none %}--{{ config[0] }} {{ config[1] }} {% endfor %}{% for config in adsb_modesmixer_service_config_bools if config[1] %}--{{ config[0] }} {% endfor %}{% for config in adsb_modesmixer_service_config_lists if config[1] | length > 0 %}{% for server in config[1] %}--{{ config[0] }} {{ server }} {% endfor %}{% endfor %}
 
 Restart=always
 RestartSec=20

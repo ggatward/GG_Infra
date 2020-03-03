@@ -14,12 +14,12 @@
     vars:
       adsb_lat: "{{ vault_latitude }}"
       adsb_lon: "{{ vault_longitude }}"
-      adsb_local_db: False
       adsb_modesmixer__inConnect:
       - '172.22.1.50:10001'
       adsb_modesmixer__outConnect:
       - 'beast:localhost:30004'
-      adsb_modesmixer__outServer: []
       adsb_flightaware_feedid: "{{ vault_adsb_flightaware_feedid }}"
       adsb_fr24feed_key: "{{ vault_adsb_fr24feed_key }}"
       adsb_dump1090_net_only: true
+      adsb_vrs_web_port: 8082
+      adsb_vrs_admin_pass: "{{ vault_adsb_vrs_admin_pass }}"
