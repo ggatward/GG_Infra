@@ -1,0 +1,106 @@
+---
+- name: Install mono
+  package:
+    name: mono-complete
+    state: present
+
+- name: Create VRS user
+  user:
+    name: "{{ adsb_vrs_user }}"
+    state: present
+
+- name: Create install dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ adsb_vrs_user }}"
+    group: "{{ adsb_vrs_user }}"
+  with_items:
+  - "{{ adsb_vrs_base }}"
+  - "/home/{{ adsb_vrs_user }}/.local/share/VirtualRadar"
+
+- name: Download VRS archives
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ adsb_vrs_user }}"
+    group: "{{ adsb_vrs_user }}"
+  with_items:
+  - url: http://www.virtualradarserver.co.uk/Files/VirtualRadar.tar.gz
+    dest: "{{ adsb_vrs_base }}/VirtualRadar.tar.gz"
+  - url: http://www.virtualradarserver.co.uk/Files/VirtualRadar.WebAdminPlugin.tar.gz
+    dest: "{{ adsb_vrs_base }}/VirtualRadar.WebAdminPlugin.tar.gz"
+
+- name: Extract VRS archives
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ adsb_vrs_base }}"
+    remote_src: true
+    owner: "{{ adsb_vrs_user }}"
+    group: "{{ adsb_vrs_user }}"
+  with_items:
+  - "{{ adsb_vrs_base }}/VirtualRadar.tar.gz"
+  - "{{ adsb_vrs_base }}/VirtualRadar.WebAdminPlugin.tar.gz"
+
+- name: Deploy VRS mono config
+  copy:
+    src: VirtualRadar.exe.config
+    dest: "{{ adsb_vrs_base }}"
+    owner: "{{ adsb_vrs_user }}"
+    group: "{{ adsb_vrs_user }}"
+
+- name: Deploy VRS install config overrides
+  template:
+    src: InstallerConfiguration.xml.j2
+    dest: "/home/{{ adsb_vrs_user }}/.local/share/VirtualRadar/InstallerConfiguration.xml"
+    owner: "{{ adsb_vrs_user }}"
+    group: "{{ adsb_vrs_user }}"
+
+- name: Create bootstrap script
+  template:
+    src: bootstrap_vrs.sh.j2
+    dest: /tmp/bootstrap_vrs.sh
+    mode: '0755'
+
+# Need to figure out how to run this and then kill it when the sqb has been completed
+- name: Create VRS admin user
+  become: true
+  become_user: "{{ adsb_vrs_user }}"
+  command: /tmp/bootstrap_vrs.sh
+  register: mono_out
+
+- debug:
+    msg: "{{ mono_out.stdout }}"
+
+- name: Wait for initial bootstrap to complete
+  wait_for:
+    path: /home/{{ adsb_vrs_user }}/.local/share/VirtualRadar/StandingData.sqb
+
+- name: Kill VRS
+  command: kill -9 {{ mono_out.stdout }}
+
+- name: Install VRS systemd service
+  template:
+    src: vrs.service.j2
+    dest: /etc/systemd/system/vrs.service
+  notify:
+    - reload daemon
+    - restart vrs
+
+- name: Enable VRS
+  systemd:
+    name: vrs
+    state: started
+    enabled: true
+
+- name: Open firewall ports
+  firewalld:
+    port: "{{ item }}"
+    immediate: yes
+    permanent: yes
+    state: enabled
+  with_items:
+  - "{{ adsb_vrs_web_port }}/tcp"
+
+
+# Config .. via web only ?

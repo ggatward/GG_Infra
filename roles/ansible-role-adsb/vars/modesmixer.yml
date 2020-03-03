@@ -4,8 +4,8 @@ adsb_modesmixer_service_config:
   - ['web', "{{ adsb_modesmixer__web }}"]
   - ['google-key', "{{ adsb_modesmixer__google_key }}"]
   - ['web-auth', "{{ adsb_modesmixer__web_auth }}"]
-  - ['silhouettes', "{{ adsb_modesmixer__silhouettes }}"]
-  - ['pictures', "{{ adsb_modesmixer__pictures }}"]
+#  - ['silhouettes', "{{ adsb_modesmixer__silhouettes }}"]
+#  - ['pictures', "{{ adsb_modesmixer__pictures }}"]
   - ['location', "{{ adsb_modesmixer__location }}"]
   - ['add-reference-point', "{{ adsb_modesmixer__add_reference_point }}"]
   - ['add-points', "{{ adsb_modesmixer__add_points }}"]
@@ -36,7 +36,3 @@ adsb_modesmixer_service_config_lists:
   - ['outConnectId', "{{ adsb_modesmixer__outConnectId }}"]
   - ['outConnectUdp', "{{ adsb_modesmixer__outConnectUdp }}"]
   - ['outServer', "{{ adsb_modesmixer__outServer }}"]
-
-adsb_modesmixer_service_config_db:
-  - ['db', "{{ adsb_modesmixer__db }}"]
-  - ['frdb', "{{ adsb_modesmixer__frdb }}"]

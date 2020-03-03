@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=VirtualRadarServer service
+After=network.target
+Wants=network.target
+
+[Service]
+ExecStart=/usr/bin/mono {{ adsb_vrs_base }}/VirtualRadar.exe -nogui
+Restart=always
+RestartSec=20
+TimeoutSec=300
+User={{ adsb_vrs_user }}
+Group={{ adsb_vrs_group }}
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
