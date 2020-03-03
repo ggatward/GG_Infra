@@ -1,0 +1,20 @@
+# dump1090-fa configuration
+# This is sourced by /usr/share/dump1090-fa/start-dump1090-fa as a
+# shellscript fragment.
+
+# If you are using a PiAware sdcard image, this config file is regenerated
+# on boot based on the contents of piaware-config.txt; any changes made to this
+# file will be lost.
+
+# dump1090-fa won't automatically start unless ENABLED=yes
+ENABLED={{ adsb_dump1090_enabled }}
+
+RECEIVER_OPTIONS="--device-index {{ adsb_dump1090_rec_index }} --gain {{ adsb_dump1090_rec_gain }} --ppm {{ adsb_dump1090_rec_ppm }}"
+
+DECODER_OPTIONS="--max-range {{ adsb_dump1090_decoder_maxrange }} {% if adsb_dump1090_decoder_fix %}--fix {% endif %}{% if adsb_dump1090_decoder_modeac %}--modeac {% endif %}{% if adsb_dump1090_decoder_forward_mlat %}--forward-mlat {% endif %}"
+
+NET_OPTIONS="{% if adsb_dump1090_net %}--net {% endif %}{% if adsb_dump1090_net_only %}--net-only {% endif %}--net-heartbeat {{ adsb_dump1090_net_heartbeat }} --net-ro-size {{ adsb_dump1090_net_ro_size }} --net-ro-interval {{ adsb_dump1090_net_ro_interval }} --net-ri-port {{ adsb_dump1090_net_ri_port }} --net-ro-port {{ adsb_dump1090_net_ro_port }} --net-sbs-port {{ adsb_dump1090_net_sbs_port }} --net-bi-port {{ adsb_dump1090_net_bi_port }} --net-bo-port {{ adsb_dump1090_net_bo_port }}"
+
+JSON_OPTIONS="--json-location-accuracy {{ adsb_dump1090_json_location_accuracy }}"
+
+POSITION="--lat {{ adsb_dump1090_lat }} --lon {{ adsb_dump1090_lon }}"

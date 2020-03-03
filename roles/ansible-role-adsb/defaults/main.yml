@@ -10,7 +10,8 @@ adsb_local_db_base: /var/lib/adsb
 adsb_local_db: True
 
 # Home Location
-adsb_latlon: '12.345:123.456'
+adsb_lat: '12.345'
+adsb_lon: '123.456'
 
 
 
@@ -29,7 +30,7 @@ adsb_modesmixer__outConnectId: []
 adsb_modesmixer__outConnectUdp: []
 adsb_modesmixer__outServer: []
 adsb_modesmixer__globes:
-adsb_modesmixer__web: '8080'
+adsb_modesmixer__web: '8081'
 adsb_modesmixer__google_key:
 adsb_modesmixer__web_auth:
 adsb_modesmixer__disable_web_log: False
@@ -38,7 +39,7 @@ adsb_modesmixer__pictures: "{{ adsb_local_db_base }}/pictures"
 adsb_modesmixer__db: "{{ adsb_local_db_base }}/db"
 adsb_modesmixer__keep: False
 adsb_modesmixer__frdb: "{{ adsb_local_db_base }}/db"
-adsb_modesmixer__location: "{{ adsb_latlon }}"
+adsb_modesmixer__location: "{{ adsb_lat }}:{{ adsb_lon }}"
 adsb_modesmixer__add_reference_point:
 adsb_modesmixer__add_points:
 adsb_modesmixer__localtime: True
@@ -67,3 +68,32 @@ adsb_fr24feed_receiver: beast-tcp
 adsb_fr24feed_receiver_address: '127.0.0.1'
 adsb_fr24feed_raw_output: 'no'        # Enable RAW data feed on port 30334
 adsb_fr24feed_bs_output: 'no'         # Enable Basestation data feed on port 30003
+
+# Dump1090
+adsb_dump1090_enabled: 'yes'
+adsb_dump1090_rec_index: '0'
+adsb_dump1090_rec_gain: '-10'
+adsb_dump1090_rec_ppm: '0'
+adsb_dump1090_decoder_maxrange: '360'
+adsb_dump1090_decoder_fix: true
+adsb_dump1090_decoder_modeac: true                # Enable decoding of SSR Modes 3/A & 3/C
+adsb_dump1090_decoder_forward_mlat: true          # Allow forwarding of received mlat results to output ports
+adsb_dump1090_lat: "{{ adsb_lat }}"
+adsb_dump1090_lon: "{{ adsb_lon }}"
+#adsb_dump1090_metric: false
+
+adsb_dump1090_net: true                   # Enable networking
+adsb_dump1090_net_only: false             # Enable just networking, no RTL device or file used
+adsb_dump1090_net_heartbeat: 60           # TCP heartbeat rate in seconds
+adsb_dump1090_net_ro_interval: '0.2'      # TCP output memory flush rate in seconds
+adsb_dump1090_net_ro_size: '1300'         # TCP output minimum size
+adsb_dump1090_net_bind_ip: '0.0.0.0'      # IP address to bind to (default: Any; Use 127.0.0.1 for private)
+adsb_dump1090_net_ri_port: '0'            # Raw input port
+adsb_dump1090_net_ro_port: '30002'        # Raw output port
+adsb_dump1090_net_sbs_port: '30003'       # Basestation format output port
+adsb_dump1090_net_bi_port: '30004,30104'  # Beast format input port
+adsb_dump1090_net_bo_port: '30005'        # Beast format output port
+
+adsb_dump1090_json_location_accuracy: 1
+adsb_dump1090_json_path:
+adsb_dump1090_json_interval: 1
