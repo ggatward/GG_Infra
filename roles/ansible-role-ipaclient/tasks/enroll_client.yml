@@ -25,26 +25,50 @@
   stat:
     path: /etc/ipa/default.conf
 
-- name: Enroll host in domain
-  become: true
+- block:
+  - name: Attempt to enroll host in domain
+    become: true
+    command: >
+      {{ ipaclient_install_command }}
+      {{'--hostname=' + ipaclient_hostname  if ipaclient_hostname is defined else ''}}
+      {% for freeipa_server in ipaclient_servers %}
+      --server={{ freeipa_server }}
+      {% endfor %}
+      --domain={{ ipaclient_domain }}
+      --principal={{ ipaclient_enroll_user }}
+      --password={{ ipaclient_enroll_pass }}
+      --ssh-trust-dns
+      {{ '--mkhomedir' if ipaclient_mkhomedir else ''}}
+      {{ '--enable-dns-updates' if ipaclient_enable_dns_updates else ''}}
+      --unattended
+      {{ '--all-ip-addresses' if ipaclient_all_ip_addresses else ''}}
+      {{ '--ip-address=' + ipaclient_ip_address if ipaclient_ip_address else ''}}
+      {{ '--no-ntp' if not ipaclient_enable_ntp else ''}}
+      {{ '--force-join' if ipaclient_force_join else ''}}
+    register: ipajoin
+    ignore_errors: true
+
+  - name: Attempt to force enroll host in domain
+    become: true
+    command: >
+      {{ ipaclient_install_command }}
+      {{'--hostname=' + ipaclient_hostname  if ipaclient_hostname is defined else ''}}
+      {% for freeipa_server in ipaclient_servers %}
+      --server={{ freeipa_server }}
+      {% endfor %}
+      --domain={{ ipaclient_domain }}
+      --principal={{ ipaclient_enroll_user }}
+      --password={{ ipaclient_enroll_pass }}
+      --ssh-trust-dns
+      {{ '--mkhomedir' if ipaclient_mkhomedir else ''}}
+      {{ '--enable-dns-updates' if ipaclient_enable_dns_updates else ''}}
+      --unattended
+      {{ '--all-ip-addresses' if ipaclient_all_ip_addresses else ''}}
+      {{ '--ip-address=' + ipaclient_ip_address if ipaclient_ip_address else ''}}
+      {{ '--no-ntp' if not ipaclient_enable_ntp else ''}}
+      --force-join
+    when: ipajoin.failed
   when: ipaclient_force_join or not ipaclient_ipaconf.stat.exists
-  command: >
-    {{ ipaclient_install_command }}
-    {{'--hostname=' + ipaclient_hostname  if ipaclient_hostname is defined else ''}}
-    {% for freeipa_server in ipaclient_servers %}
-    --server={{ freeipa_server }}
-    {% endfor %}
-    --domain={{ ipaclient_domain }}
-    --principal={{ ipaclient_enroll_user }}
-    --password={{ ipaclient_enroll_pass }}
-    --ssh-trust-dns
-    --mkhomedir
-    {{ '--enable-dns-updates' if ipaclient_enable_dns_updates else ''}}
-    --unattended
-    {{ '--all-ip-addresses' if ipaclient_all_ip_addresses else ''}}
-    {{ '--ip-address=' + ipaclient_ip_address if ipaclient_ip_address else ''}}
-    {{ '--no-ntp' if not ipaclient_enable_ntp else ''}}
-    {{ '--force-join' if ipaclient_force_join else ''}}
 
 
 - name: Configure sssd username format

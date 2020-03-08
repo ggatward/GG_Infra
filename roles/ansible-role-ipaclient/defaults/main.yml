@@ -13,6 +13,7 @@ ipaclient_enable_ntp: true
 ipaclient_all_ip_addresses: false
 ipaclient_ip_address: false
 ipaclient_enable_dns_updates: true
+ipaclient_mkhomedir: true
 
 # SSL Certificate defaults
 ipaclient_ssl_create_certs: false
