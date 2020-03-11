@@ -1,19 +1,58 @@
 ---
 # tasks file for ansible-role-adsb
 
+- name: Create ADSB user
+  user:
+    name: "{{ adsb_owner }}"
+    state: present
+
+- name: Set group write permission on ADSB directory
+  file:
+    path: "/home/{{ adsb_owner }}"
+    mode: '0775'
+
+- name: Create directories
+  file:
+    path: "/home/{{ adsb_owner }}/{{ item }}"
+    state: directory
+    owner: "{{ adsb_owner }}"
+    group: "{{ adsb_owner }}"
+    mode: '0755'
+  with_items:
+  - flags
+  - silhouettes
 
 
-# - name: Configure Mode-S Mixer
-#   include_tasks: modesmixer.yml
+- name: Configure Mode-S Mixer
+  include_tasks: modesmixer.yml
 
-# - name: Configure Dump1090
-#   include_tasks: dump1090.yml
+- name: Configure Dump1090
+  include_tasks: dump1090.yml
 
-# - name: Configure FlightRadar24 Feeder
-#   include_tasks: fr24feed.yml
+- name: Configure FlightRadar24 Feeder
+  include_tasks: fr24feed.yml
 
-# - name: Configure FlightAware Feeder
-#   include_tasks: piaware.yml
+- name: Configure FlightAware Feeder
+  include_tasks: piaware.yml
 
 - name: Configure Virtual Radar Server
   include_tasks: vrs.yml
+
+
+- name: Extract Operator Flags
+  unarchive:
+    src: http://webshare.lab.home.gatwards.org/ADSB/OperatorFlags.zip
+    dest: "/home/{{ adsb_owner }}/flags"
+    remote_src: true
+    owner: "{{ adsb_owner }}"
+    group: "{{ adsb_owner }}"
+    mode: '0644'
+
+- name: Extract Silhouettes
+  unarchive:
+    src: http://webshare.lab.home.gatwards.org/ADSB/Silhouettes.zip
+    dest: "/home/{{ adsb_owner }}/silhouettes"
+    remote_src: true
+    owner: "{{ adsb_owner }}"
+    group: "{{ adsb_owner }}"
+    mode: '0644'
