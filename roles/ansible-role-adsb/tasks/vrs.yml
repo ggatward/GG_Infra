@@ -8,6 +8,8 @@
   user:
     name: "{{ adsb_vrs_user }}"
     state: present
+    groups: adsb
+    append: true
 
 - name: Create install dir
   file:
@@ -34,7 +36,8 @@
     dest: "{{ adsb_vrs_base }}/VirtualRadar.DatabaseWriterPlugin.tar.gz"
   - url: http://www.virtualradarserver.co.uk/Files/VirtualRadar.TileServerCachePlugin.tar.gz
     dest: "{{ adsb_vrs_base }}/VirtualRadar.TileServerCachePlugin.tar.gz"
-
+  - url: http://www.virtualradarserver.co.uk/Files/VirtualRadar.DatabaseEditorPlugin.tar.gz
+    dest: "{{ adsb_vrs_base }}/VirtualRadar.DatabaseEditorPlugin.tar.gz"
 
 - name: Extract VRS archives
   unarchive:
@@ -48,6 +51,7 @@
   - "{{ adsb_vrs_base }}/VirtualRadar.WebAdminPlugin.tar.gz"
   - "{{ adsb_vrs_base }}/VirtualRadar.DatabaseWriterPlugin.tar.gz"
   - "{{ adsb_vrs_base }}/VirtualRadar.TileServerCachePlugin.tar.gz"
+  - "{{ adsb_vrs_base }}/VirtualRadar.DatabaseEditorPlugin.tar.gz"
 
 - name: Deploy VRS mono config
   copy:
@@ -70,8 +74,6 @@
     owner: "{{ adsb_vrs_user }}"
     group: "{{ adsb_vrs_user }}"
   with_items:
-  - flags
-  - silhouettes
   - pictures
 
 - name: Check if the StandingData.sqb has been created
@@ -124,4 +126,3 @@
   - "{{ adsb_vrs_web_port }}/tcp"
 
 
-# Config .. via web only ?

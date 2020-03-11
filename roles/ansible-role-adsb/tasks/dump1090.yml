@@ -1,5 +1,4 @@
 ---
-
 - name: Install piaware repo
   apt:
     deb: https://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
