@@ -30,6 +30,7 @@
   with_items:
   - flags
   - silhouettes
+  - pictures
 
 - name: Check if BaseStation.sqb exists
   stat:
@@ -83,3 +84,22 @@
   package:
     name: sqlitebrowser
     state: present
+
+- name: Deploy database backup script
+  copy:
+    content: >
+      #!/bin/bash
+      mount nas1.core.home.gatwards.org:/volume1/WebShare/ADSB /mnt
+      cp /home/adsb/BaseStation.sqb /mnt
+      umount /mnt
+    dest: /usr/local/bin/sqb_backup.sh
+    mode: '0755'
+
+- name: Deploy daily backup cron
+  cron:
+    name: sqb_backup
+    cron_file: sqb_backup
+    user: root
+    job: '/usr/local/bin/sqb_backup.sh'
+    minute: '01'
+    hour: '01'

@@ -67,15 +67,6 @@
     owner: "{{ adsb_vrs_user }}"
     group: "{{ adsb_vrs_user }}"
 
-- name: Create directories
-  file:
-    path: "/home/{{ adsb_vrs_user }}/.local/share/VirtualRadar/{{ item }}"
-    state: directory
-    owner: "{{ adsb_vrs_user }}"
-    group: "{{ adsb_vrs_user }}"
-  with_items:
-  - pictures
-
 - name: Check if the StandingData.sqb has been created
   stat:
     path: /home/{{ adsb_vrs_user }}/.local/share/VirtualRadar/StandingData.sqb
