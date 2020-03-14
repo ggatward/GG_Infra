@@ -4,6 +4,7 @@
 # User/Group to run processes as
 adsb_owner: adsb
 adsb_group: adsb
+adsb_group_members: []
 
 # Home Location
 adsb_lat: '12.345'

@@ -46,7 +46,8 @@ all:
       hosts:
         openhab.core.home.gatwards.org: {}
         rpi-util1.core.home.gatwards.org: {}
-        rpi-util2.core.home.gatwards.org: {}
+        rpi-util2.core.home.gatwards.org:
+          ssh_X11Forwarding: 'yes'
 #        rpi-util3.core.home.gatwards.org: {}
       vars:
         ansible_python_interpreter: /usr/bin/python3

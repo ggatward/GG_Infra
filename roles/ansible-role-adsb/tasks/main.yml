@@ -11,6 +11,15 @@
     path: "/home/{{ adsb_owner }}"
     mode: '0775'
 
+- name: Add users to ADSB group
+  user:
+    name: "{{ item }}"
+    state: present
+    groups: adsb
+    append: true
+  with_items: "{{ adsb_group_members }}"
+  when: adsb_group_members is defined and adsb_group_members|length > 0
+
 - name: Create directories
   file:
     path: "/home/{{ adsb_owner }}/{{ item }}"
@@ -22,22 +31,19 @@
   - flags
   - silhouettes
 
+- name: Check if BaseStation.sqb exists
+  stat:
+    path: "/home/{{ adsb_owner }}/BaseStation.sqb"
+  register: sqb
 
-- name: Configure Mode-S Mixer
-  include_tasks: modesmixer.yml
-
-- name: Configure Dump1090
-  include_tasks: dump1090.yml
-
-- name: Configure FlightRadar24 Feeder
-  include_tasks: fr24feed.yml
-
-- name: Configure FlightAware Feeder
-  include_tasks: piaware.yml
-
-- name: Configure Virtual Radar Server
-  include_tasks: vrs.yml
-
+- name: Resore initial BaseStation.sqb
+  get_url:
+    url: http://webshare.lab.home.gatwards.org/ADSB/BaseStation.sqb
+    dest: "/home/{{ adsb_owner }}/BaseStation.sqb"
+    owner: "{{ adsb_owner }}"
+    group: "{{ adsb_owner }}"
+    mode: '0664'
+  when: not sqb.stat.exists
 
 - name: Extract Operator Flags
   unarchive:
@@ -56,3 +62,24 @@
     owner: "{{ adsb_owner }}"
     group: "{{ adsb_owner }}"
     mode: '0644'
+
+
+- name: Configure Mode-S Mixer
+  include_tasks: modesmixer.yml
+
+- name: Configure Dump1090
+  include_tasks: dump1090.yml
+
+- name: Configure FlightRadar24 Feeder
+  include_tasks: fr24feed.yml
+
+- name: Configure FlightAware Feeder
+  include_tasks: piaware.yml
+
+- name: Configure Virtual Radar Server
+  include_tasks: vrs.yml
+
+- name: Install SQLiteBrowser
+  package:
+    name: sqlitebrowser
+    state: present
