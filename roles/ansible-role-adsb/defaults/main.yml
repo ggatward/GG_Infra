@@ -27,9 +27,10 @@ adsb_modesmixer__web: '8081'
 adsb_modesmixer__google_key:
 adsb_modesmixer__web_auth:
 adsb_modesmixer__disable_web_log: False
-#adsb_modesmixer__silhouettes: "{{ adsb_local_db_base }}/silhouettes"
-#adsb_modesmixer__pictures: "{{ adsb_local_db_base }}/pictures"
-#adsb_modesmixer__db: "{{ adsb_local_db_base }}/db"
+adsb_modesmixer__silhouettes:
+adsb_modesmixer__pictures:
+adsb_modesmixer__db:
+adsb_modesmixer__dbro:
 adsb_modesmixer__keep: False
 #adsb_modesmixer__frdb: "{{ adsb_local_db_base }}/db"
 adsb_modesmixer__location: "{{ adsb_lat }}:{{ adsb_lon }}"
