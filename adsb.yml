@@ -23,3 +23,5 @@
       adsb_dump1090_net_only: true
       adsb_vrs_web_port: 8082
       adsb_vrs_admin_pass: "{{ vault_adsb_vrs_admin_pass }}"
+      adsb_group_members:
+      - geoff

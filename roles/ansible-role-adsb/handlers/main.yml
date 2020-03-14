@@ -28,3 +28,8 @@
   systemd:
     name: vrs
     state: restarted
+
+- name: restart sshd
+  systemd:
+    name: sshd
+    state: restarted
