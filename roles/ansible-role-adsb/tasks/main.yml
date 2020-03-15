@@ -87,7 +87,7 @@
 
 - name: Deploy database backup script
   copy:
-    content: >
+    content: |
       #!/bin/bash
       mount nas1.core.home.gatwards.org:/volume1/WebShare/ADSB /mnt
       cp /home/adsb/BaseStation.sqb /mnt
