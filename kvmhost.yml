@@ -1,0 +1,101 @@
+---
+- name: KVM Host
+  remote_user: svc-ansible
+  become: true
+  hosts: kvm
+
+  tasks:
+  - name: Create KVM image partition
+    parted:
+      device: "{{ kvm_imgvol }}"
+      label: gpt
+      number: 1
+      state: present
+
+  - name: Prepare KVM image filesystem
+    filesystem:
+      dev: "{{ kvm_imgvol }}1"
+      fstype: xfs
+
+  - name: Mount KVM image volume
+    mount:
+      src: "{{ kvm_imgvol }}1"
+      path: /var/lib/libvirt/images
+      state: mounted
+      fstype: xfs
+      opts: nodev,nosuid
+
+  - name: Get existing interfaces
+    command: nmcli con
+    register: interfaces
+    changed_when: false
+
+  - name: Create bridge interfaces
+    command: nmcli con add type bridge ifname vmbr{{ item }} con-name vmbr{{ item }}
+    when: '"vmbr{{ item }}" not in interfaces.stdout'
+    with_items: "{{ kvm_vlans }}"
+
+  - name: Disable bridge STP
+    command: nmcli con mod vmbr{{ item }} bridge.stp no
+    when: '"vmbr{{ item }}" not in interfaces.stdout'
+    with_items: "{{ kvm_vlans }}"
+
+  - name: Create VLAN interfaces and add to bridge
+    command: nmcli con add type vlan con-name vlan{{ item }} ifname enp1s0.{{ item }} dev enp1s0 id {{ item }} master vmbr{{ item }} slave-type bridge
+    when: '"vlan{{ item }}" not in interfaces.stdout'
+    with_items: "{{ kvm_vlans }}"
+
+  - name: Install prereq packages
+    yum:
+      name: python-lxml
+      state: present
+
+  - name: Configure KVM
+    tags:
+    - kvm
+    import_role:
+      name: ansible-kvm
+    vars:
+      kvm_config: true
+      kvm_config_users: true
+      kvm_users:
+      - geoff
+      kvm_config_virtual_networks: true
+      kvm_virtual_networks:
+      - name: Core_VLAN1
+        mode: bridge
+        bridge_name: vmbr1
+        autostart: true
+        state: active
+      - name: Lab_VLAN4
+        mode: bridge
+        bridge_name: vmbr4
+        autostart: true
+        state: active
+
+  - name: Allow SSH X11 Forwarding
+    lineinfile:
+      regexp: "^X11Forwarding\\s+"
+      line: "X11Forwarding yes"
+      dest: "/etc/ssh/sshd_config"
+    register: sshconfig
+
+  - name: Open Firewall ports
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - 5904-5910/tcp
+
+  - name: Open Firewall services
+    firewalld:
+      service: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - vnc-server
+    # - libvirt
+    # - libvirt-tls

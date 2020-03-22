@@ -103,10 +103,14 @@ all:
 
     kvm:
       hosts:
-        kvm1.core.home.gatwards.org: {}
+        kvm1.core.home.gatwards.org:
+          kvm_imgvol: /dev/mapper/pdc_cgbbjdiaic
+          kvm_vlans: ['1','4']
       vars:
         motd_role: KVM Host
         ipaclient_ssl_create_certs: true
+        ssh_X11Forwarding: 'yes'
+        # kvm_vlans: ['1','2','3','4','5','6','7']
 
 
 

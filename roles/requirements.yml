@@ -20,6 +20,11 @@ roles:
   src: https://github.com/geerlingguy/ansible-role-nginx.git
   scm: git
 
+- src: https://github.com/mrlesmithjr/ansible-config-interfaces.git
+  scm: git
+
+- src: https://github.com/mrlesmithjr/ansible-kvm
+  scm: git
 
 
 # - src: git@github.com:ggatward/ansible-role-workstation.git
