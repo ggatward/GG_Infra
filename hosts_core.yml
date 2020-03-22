@@ -101,6 +101,12 @@ all:
         cis_dhcpd_install: { package: "dhcp", state: present, service: dhcpd, rstate: started, enabled: true, exception: 123 }
         cis_httpd_install: { package: httpd, state: present, service: httpd, rstate: started, enabled: true, exception: 123 }
 
+    kvm:
+      hosts:
+        kvm1.core.home.gatwards.org: {}
+      vars:
+        motd_role: KVM Host
+        ipaclient_ssl_create_certs: true
 
 
 
