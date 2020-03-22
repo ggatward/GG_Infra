@@ -58,22 +58,9 @@
     vars:
       kvm_config: true
       kvm_config_users: true
-      kvm_users:
-      - geoff
       kvm_config_virtual_networks: true
-      kvm_virtual_networks:
-      - name: Core_VLAN1
-        mode: bridge
-        bridge_name: vmbr1
-        autostart: true
-        state: active
-      - name: Lab_VLAN4
-        mode: bridge
-        bridge_name: vmbr4
-        autostart: true
-        state: active
 
-  - name: Allow SSH X11 Forwarding
+  - name: Allow SSH X11 Forwarding for virt-manager display
     lineinfile:
       regexp: "^X11Forwarding\\s+"
       line: "X11Forwarding yes"
