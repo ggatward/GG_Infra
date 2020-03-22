@@ -85,7 +85,6 @@ all:
         ipaclient_ssl_create_certs: true
         ipaclient_ssl_keylen: '2048'
 
-
     foreman:
       hosts:
         foreman.core.home.gatwards.org: {}
@@ -106,12 +105,22 @@ all:
         kvm1.core.home.gatwards.org:
           kvm_imgvol: /dev/mapper/pdc_cgbbjdiaic
           kvm_vlans: ['1','4']
+          kvm_virtual_networks:
+          - name: Core_VLAN1
+            mode: bridge
+            bridge_name: vmbr1
+            autostart: true
+            state: active
+          - name: Lab_VLAN4
+            mode: bridge
+            bridge_name: vmbr4
+            autostart: true
+            state: active
       vars:
         motd_role: KVM Host
         ipaclient_ssl_create_certs: true
-        ssh_X11Forwarding: 'yes'
-        # kvm_vlans: ['1','2','3','4','5','6','7']
-
+        kvm_users:
+        - geoff
 
 
     # prometheus_servers:
