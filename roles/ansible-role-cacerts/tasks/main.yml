@@ -6,6 +6,7 @@
 
 - name: Prepare system for CA updates
   command: "{{ ca_update_command }} enable"
+  changed_when: false
   when: ansible_distribution_file_variety == 'RedHat'
 
 - name: Create CA path
@@ -19,6 +20,8 @@
     dest: "{{ ca_path }}"
     mode: '0644'
   with_fileglob: files/*
+  register: cafiles
 
 - name: Reconfigure system CA certs
   command: "{{ ca_update_command }}"
+  when: cafiles.changed
