@@ -15,9 +15,10 @@
 - import_playbook: kvmhost.yml
 
 # Specific application/function config
+- import_playbook: monitoring.yml
 - import_playbook: weather.yml
 - import_playbook: automation.yml
 - import_playbook: adsb.yml
 
-#- import_playbook: monitoring.yml
+
 # - import_playbook: workstation.yml

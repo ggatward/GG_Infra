@@ -42,6 +42,13 @@ all:
 
 
   children:
+    docker:
+      children:
+        docker_nas:
+          hosts:
+            nas1.core.home.gatwards.org:
+              ansible_python_interpreter: /usr/bin/python
+
     raspberry:
       hosts:
         openhab.core.home.gatwards.org: {}
@@ -262,21 +269,4 @@ all:
         additional_ws_packages:
         - vlc
 
-    # weather:
-    #   hosts:
-    #     weather.core.home.gatwards.org: {}
-    #   vars:
-    #     motd_role: Weather Station
-    #     ipaclient_ssl_create_certs: true
-    #     # Custom scripting
-    #     bomxml2mqtt_bomuri: ftp://ftp.bom.gov.au/anon/gen/fwo/IDN11060.xml
-    #     bomxml2mqtt_user: bomxml
-    #     bomxml2mqtt_pass: "{{ vault_bomxml2mqtt_pass }}"
-    #     bomxml2mqtt_topic: weather/bomxml/
 
-    docker:
-      children:
-        docker_nas:
-          hosts:
-            nas1.core.home.gatwards.org:
-              ansible_python_interpreter: /usr/bin/python
