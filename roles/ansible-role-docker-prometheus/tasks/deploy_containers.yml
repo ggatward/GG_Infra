@@ -1,0 +1,60 @@
+---
+- name: Ensure config paths exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+  - path: "{{ docker_persistent_store_root }}"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/config"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/config/rules"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/config/nodeexporter"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/data"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/data/alertmanager"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/data/prometheus"
+    owner: 65534
+    group: 65534
+
+- name: Deploy configuration
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ docker_persistent_store_root }}/config/prometheus.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_prometheus_container
+
+- name: Deploy docker-compose config
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ docker_persistent_store_root }}/docker-compose.yml"
+
+- name: Create dockerfile to add extra directories to prometheus container
+  copy:
+    content: |
+      RUN mkdir /etc/prometheus/nodeexporter
+      RUN mkdir /etc/prometheus/rules
+    dest: "{{ docker_persistent_store_root }}/Dockerfile"
+
+## Needs docker-compose pip package - can't be installed on Synology NAS
+# - name: Build docker containers
+#   docker_compose:
+#     project_src: "{{ docker_persistent_store_root }}/docker-compose.yml"
+#     restarted: true
+#     state: present
+
+- name: Build docker containers
+  command: /usr/local/bin/docker-compose -f {{ docker_persistent_store_root }}/docker-compose.yml up -d

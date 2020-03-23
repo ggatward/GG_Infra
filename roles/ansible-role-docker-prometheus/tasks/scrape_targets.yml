@@ -1,0 +1,14 @@
+
+- name: Deploy local node_exporter configuration
+  template:
+    src: "local_exporter.yml.j2"
+    dest: "{{ docker_persistent_store_root }}/config/nodeexporter/local_http_targets.yml"
+
+- name: Deploy node_exporter target configurations
+  template:
+    src: "exporter_targets.yml.j2"
+    dest: "{{ docker_persistent_store_root }}/config/nodeexporter/HOME_http_targets.yml"
+  with_subelements:
+  - "{{ prometheus_node_exporter_targets }}"
+  - targets
+  when: prometheus_node_exporter_targets|length > 0

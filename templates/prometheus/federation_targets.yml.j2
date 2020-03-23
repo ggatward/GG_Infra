@@ -1,7 +1,0 @@
-#{{ ansible_managed }}
-
-# Subordinate prometheus servers that we scrape
-- targets:
-{% for server in item[1] %}
-  - {{ server }}
-{% endfor %}

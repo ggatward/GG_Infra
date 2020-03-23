@@ -1,0 +1,7 @@
+---
+# handlers file for docker-prometheus
+- name: restart_prometheus_container
+  docker_container:
+    name: prometheus
+    state: started
+    restart: true

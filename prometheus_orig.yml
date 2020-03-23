@@ -1,0 +1,340 @@
+---
+# Nginx (Prometheus SSL frontend)
+- name: Configure Nginx for Prometheus
+  remote_user: svc-ansible
+  become: true
+  hosts: prometheus
+  vars_files:
+  - vault.yml
+  tasks:
+  - name: Set SELinux booleans for nginx
+    tags:
+    - monitoring
+    - nginx
+    seboolean:
+      state: true
+      name: httpd_can_network_connect
+      persistent: yes
+
+  - import_role:
+      name: ansible_nginx
+    tags:
+    - monitoring
+    - nginx
+    vars:
+      nginx_yum_repo_enabled: false
+      nginx_vhosts:
+      - listen: "443 ssl http2"
+        server_name: "{{ ansible_fqdn }}"
+        extra_parameters: |
+          location / {
+            proxy_pass http://localhost:9090/;
+          }
+          ssl_session_cache         shared:SSL:10m;
+          ssl_session_timeout       1h;
+          ssl_session_tickets       on;
+          ssl_certificate           "/etc/pki/tls/certs/{{ ansible_fqdn }}.pem";
+          ssl_certificate_key       "/etc/pki/tls/private/{{ ansible_fqdn }}.key";
+          ssl_protocols             TLSv1.2;
+          ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
+          ssl_prefer_server_ciphers on;
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+
+#########################################################################################
+# Prometheus
+- name: Configure Prometheus
+  remote_user: svc-ansible
+  become: true
+  hosts: prometheus
+  vars_files:
+  - vault.yml
+
+  tasks:
+  - import_role:
+      name: ansible-prometheus
+    tags:
+    - monitoring
+    - prometheus
+    vars:
+      prometheus_install: true
+      prometheus_node_exporter_install: true
+      prometheus_alert_manager_install: false
+      prometheus_push_gateway_install: true
+      prometheus_snmp_exporter_install: true
+      prometheus_blackbox_exporter_install: true
+      prometheus_config_global_external_labels:
+      prometheus_config_remote_write:
+      - url: "https://{{ groups['influxdb'][0] }}:{{ hostvars[groups['influxdb'][0]].influxdb_http_port }}/api/v1/prom/write?db=prometheus"
+        basic_auth:
+          username: prometheus
+          password: "{{ vault_influxdb_prometheus_password }}"
+
+      prometheus_web__external_url: https://{{ ansible_fqdn }}
+      prometheus_config_scrape_configs:
+      - job_name: 'prometheus'
+        honor_labels: true
+        scrape_interval: '20s'
+        scrape_timeout: '2s'
+        metrics_path: '/metrics'
+        scheme: 'http'
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9090'
+      - job_name: 'node_exporter'
+        honor_labels: true
+        file_sd_configs:
+        - files:
+          - /etc/prometheus/nodeexporter/*.yml
+      - job_name: 'pushgateway'
+        honor_labels: true
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9091'
+      - job_name: 'statsd'
+        honor_labels: true
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9102'
+      - job_name: 'collectd'
+        honor_labels: true
+        static_configs:
+        - targets:
+          - '{{ ansible_fqdn }}:9103'
+      - job_name: 'snmp'
+        file_sd_configs:
+        - files:
+          - /etc/prometheus/snmpexporter/*.yml
+        scrape_interval: '60s'
+        scrape_timeout: '10s'
+        metrics_path: /snmp
+        params:
+          module: [if_mib]
+        relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+      - job_name: 'blackbox'
+        metrics_path: /probe
+        params:
+          module: [http_2xx]  # Look for a HTTP 200 response.
+        file_sd_configs:
+        - files:
+          - /etc/prometheus/blackboxexporter/*.yml
+        scrape_interval: '60s'
+        scrape_timeout: '10s'
+        relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 127.0.0.1:9115  # The blackbox exporter's real hostname:port.
+
+
+      prometheus_collector_____enabled_collectors:
+      - 'collector.arp'
+      - 'collector.bcache'
+      - 'collector.bonding'
+      - 'collector.cpu'
+      - 'collector.cpufreq'
+      - 'collector.edac'
+      - 'collector.entropy'
+      - 'collector.filefd'
+      - 'collector.hwmon'
+      - 'collector.ipvs'
+      - 'collector.loadavg'
+      - 'collector.mdadm'
+      - 'collector.meminfo'
+      - 'collector.netdev'
+      - 'collector.netstat'
+      - 'collector.nfs'
+      - 'collector.nfsd'
+      - 'collector.stat'
+      - 'collector.time'
+    #  - 'collector.timex'
+    #  - 'collector.uname'
+      - 'collector.vmstat'
+    #  - 'collector.xfs'
+    #  - 'collector.zfs'
+    #  - 'collector.buddyinfo' # disabled by default
+    #  - 'collector.conntrack' # disabled by default
+      - 'collector.diskstats' # disabled by default
+    #  - 'collector.drbd' # disabled by default
+      - 'collector.filesystem' # disabled by default
+    #  - 'collector.infiniband' # disabled by default
+    #  - 'collector.interrupts' # disabled by default
+    #  - 'collector.ksmd' # disabled by default
+    #  - 'collector.logind' # disabled by default
+    #  - 'collector.meminfo_numa' # disabled by default
+      - 'collector.mountstats' # disabled by default
+    #  - 'collector.netclass' # disabled by default
+    #  - 'collector.ntp' # disabled by default
+    #  - 'collector.ntp.server-is-local' # disabled by default
+    #  - 'collector.perf' # disabled by default
+    #  - 'collector.pressure' # disabled by default
+    #  - 'collector.processes' # disabled by default
+    #  - 'collector.qdisc' # disabled by default
+    #  - 'collector.runit' # disabled by default
+    #  - 'collector.sockstat' # disabled by default
+    #  - 'collector.supervisord' # disabled by default
+      - 'collector.systemd' # disabled by default
+    #  - 'collector.systemd.enable-restarts-metrics' # disabled by default
+    #  - 'collector.systemd.enable-start-time-metrics' # disabled by default
+    #  - 'collector.systemd.enable-task-metrics' # disabled by default
+    #  - 'collector.systemd.private' # disabled by default
+    #  - 'collector.tcpstat' # disabled by default
+      - 'collector.textfile' # disabled by default
+    #  - 'collector.wifi' # disabled by default
+    #  - 'web.disable-exporter-metrics' # disabled by default
+
+      prometheus_snmp_exporter_log__format: 'logfmt'
+
+      prometheus_black_box_config_modules:
+        http_2xx:
+          prober: http
+          timeout: 5s
+          http:
+            valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+            valid_status_codes: []  # Defaults to 2xx
+            method: GET
+            headers:
+              Host: vhost.example.com
+              Accept-Language: en-US
+              Origin: example.com
+            no_follow_redirects: false
+            fail_if_ssl: false
+            fail_if_not_ssl: false
+            fail_if_body_matches_regexp:
+              - "Could not connect to database"
+            fail_if_body_not_matches_regexp:
+              - "Download the latest version here"
+            fail_if_header_matches: # Verifies that no cookies are set
+              - header: Set-Cookie
+                allow_missing: true
+                regexp: '.*'
+            fail_if_header_not_matches:
+              - header: Access-Control-Allow-Origin
+                regexp: '(\*|example\.com)'
+            tls_config:
+              insecure_skip_verify: false
+            preferred_ip_protocol: "ip4" # defaults to "ip6"
+            ip_protocol_fallback: false  # no fallback to "ip6"
+
+
+  - name: Create target directories
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    file:
+      path: "/etc/prometheus/{{ item }}"
+      state: directory
+      owner: prometheus
+      group: prometheus
+      mode: '0755'
+    with_items:
+    - nodeexporter
+    - snmpexporter
+    - blackboxexporter
+
+  - name: Deploy local node_exporter configuration
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "local_exporter.yml.j2"
+      dest: /etc/prometheus/nodeexporter/local_target.yml
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+
+  - name: Deploy node_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "exporter_targets.yml.j2"
+      dest: "/etc/prometheus/nodeexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_node_exporter_targets }}"
+    - targets
+    when: prometheus_node_exporter_targets|length > 0
+
+  - name: Deploy snmp_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "exporter_targets.yml.j2"
+      dest: "/etc/prometheus/snmpexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_snmp_exporter_targets }}"
+    - targets
+    when: prometheus_snmp_exporter_targets|length > 0
+
+  - name: Deploy blackbox_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "exporter_targets.yml.j2"
+      dest: "/etc/prometheus/blackboxexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_blackbox_exporter_targets }}"
+    - targets
+    when: prometheus_blackbox_exporter_targets|length > 0
+
+  # Not done inside role (Only needed if we are federating Prometheus)
+  - name: Open Prometheus firewall ports to receive push events
+    tags:
+    - monitoring
+    - prometheus
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - 9091/tcp
+    - 9125/tcp  # statsd
+    - 9125/udp  # statsd
+    - 25826/udp # collectd
+
+  # - name: Open Prometheus firewall port for federation
+  #   tags:
+  #   - monitoring
+  #   - prometheus
+  #   firewalld:
+  #     rich_rule: 'rule family="ipv4" source address="{{ hostvars[item].instance_ip }}" port protocol="tcp" port="443" accept'
+  #     immediate: yes
+  #     permanent: yes
+  #     state: enabled
+  #   with_items:
+  #   - "{{ groups['prometheus_agg'] }}"
+
+  - name: Open Prometheus firewall port
+    tags:
+    - monitoring
+    - prometheus
+    firewalld:
+      port: '443/tcp'
+      immediate: yes
+      permanent: yes
+      state: enabled
