@@ -127,49 +127,6 @@ all:
         - geoff
 
 
-    # prometheus_servers:
-    #   vars:
-    #     cis_nginx_install: { package: nginx, state: present, service: nginx, rstate: started, enabled: true, exception: 123 }
-
-    #   children:
-    #     prometheus:
-    #       hosts:
-    #         prometheus.core.home.gatwards.org:
-    #           instance_ip: 172.22.1.69
-    #       vars:
-    #         motd_role: Prometheus Server
-    #         ipaclient_ssl_create_certs: true
-    #         ipaclient_ssl_key_mode: '0644'
-    #         prometheus_install: true
-    #         prometheus_node_exporter_install: true
-    #         prometheus_alert_manager_install: true
-    #         prometheus_push_gateway_install: true
-    #         prometheus_snmp_exporter_install: true
-    #         prometheus_blackbox_exporter_install: true
-    #         prometheus_config_alerting:
-    #         prometheus_config_rule_files:
-    #         prometheus_config_global_external_labels:
-    #           prom_cluster: PROMETHEUS
-    #         prometheus_storage__tsdb__retention: '15d'
-    #         prometheus_storage__tsdb__retention__size: '50GB'
-    #         prometheus_node_exporter_targets:
-    #         - project: HOME
-    #           targets:
-    #           - - "{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:9100"
-    #             - "foreman.core.home.gatwards.org:9100"
-    #             - "automation.core.home.gatwards.org:9100"
-    #             - "zwave1.iot.home.gatwards.org:9100"
-    #             - "weather.core.home.gatwards.org:9100"
-    #             - "ipa1.ipa.home.gatwards.org:9100"
-    #             - "ipa2.ipa.home.gatwards.org:9100"
-    #             - "baremetal1.core.home.gatwards.org:9100"
-    #             - "baremetal2.core.home.gatwards.org:9100"
-    #             - "baremetal3.core.home.gatwards.org:9100"
-
-    #         prometheus_snmp_exporter_targets: []
-    #         prometheus_blackbox_exporter_targets: []
-
-
     # grafana:
     #   hosts:
     #     prometheus.core.home.gatwards.org:
