@@ -5,3 +5,9 @@
     name: prometheus
     state: started
     restart: true
+
+- name: restart_grafana_container
+  docker_container:
+    name: grafana
+    state: started
+    restart: true

@@ -25,10 +25,13 @@
     owner: root
     group: root
   - path: "{{ docker_persistent_store_root }}/data/prometheus"
-    owner: 65534
-    group: 65534
+    owner: 65534  # nobody uid
+    group: 65534  # nobody gid
+  - path: "{{ docker_persistent_store_root }}/data/grafana"
+    owner: 472  # grafana uid
+    group: 472  # grafana gid
 
-- name: Deploy configuration
+- name: Deploy prometheus configuration
   template:
     src: prometheus.yml.j2
     dest: "{{ docker_persistent_store_root }}/config/prometheus.yml"
@@ -36,6 +39,15 @@
     group: root
     mode: 0644
   notify: restart_prometheus_container
+
+- name: Deploy grafana configuration
+  template:
+    src: grafana.ini.j2
+    dest: "{{ docker_persistent_store_root }}/config/grafana.ini"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_grafana_container
 
 - name: Deploy docker-compose config
   template:
