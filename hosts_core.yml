@@ -25,6 +25,24 @@ all:
       #  Disconnect IMMEDIATELY if you are not an authorized user!  #
       ###############################################################
     cis_remote_login_warning_banner: "{{ cis_local_login_warning_banner }}"
+    cis_sshd_client_alive_interval: 82400
+
+    node_exporter_textfile_deploy: true
+    node_exporter_enabled_collectors:
+    - diskstats
+    - filesystem:
+        ignored-mount-points: "^/(dev|proc|sys|var/lib/docker/.+)($|/)"
+        ignored-fs-types: "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+    - logind
+    - mountstats
+    - netstat
+    - systemd
+    - textfile:
+        directory: "{{ node_exporter_textfile_dir }}"
+    node_exporter_disabled_collectors:
+    - infiniband
+    - uname
+    - xfs
 
     # Common SSL parameters
     tls_cafile: /etc/pki/ca-trust/source/anchors/GatwardIT-IPA.pem
@@ -91,6 +109,44 @@ all:
         motd_role: Home Automation Server
         ipaclient_ssl_create_certs: true
         ipaclient_ssl_keylen: '2048'
+
+
+    # monitoring:
+    #   hosts:
+    #     prometheus.core.home.gatwards.org:
+    #   vars:
+    #     prometheus_config_scrape_configs:
+    #     - job_name: 'prometheus'
+    #       honor_labels: true
+    #       scrape_interval: '20s'
+    #       scrape_timeout: '2s'
+    #       metrics_path: '/metrics'
+    #       scheme: 'http'
+    #       static_configs:
+    #       - targets:
+    #         - '{{ inventory_hostname }}:9090'
+    #     - job_name: 'grafana'
+    #       honor_labels: true
+    #       scrape_interval: '20s'
+    #       scrape_timeout: '2s'
+    #       metrics_path: '/metrics'
+    #       scheme: 'http'
+    #       static_configs:
+    #       - targets:
+    #         - 'grafana.core.home.gatwards.org:3000'
+    #     - job_name: 'node_exporter'
+    #       honor_labels: true
+    #       scheme: 'http'
+    #       file_sd_configs:
+    #       - files:
+    #         - "/etc/prometheus/nodeexporter/*_http_targets.yml"
+    #     - job_name: 'tls_node_exporter'
+    #       honor_labels: true
+    #       scheme: 'https'
+    #       file_sd_configs:
+    #       - files:
+    #         - "/etc/prometheus/nodeexporter/*_tls_targets.yml"
+
 
     foreman:
       hosts:
