@@ -45,3 +45,11 @@
       dest: /etc/systemd/system/gpsd.service
     notify: systemd_reload
   when: gpsd_run_as_root
+
+# TODO:  gpsd still not starting on boot....
+  - name: Start gpsd on boot
+    lineinfile:
+      path: /etc/rc.local
+      regexp: "^systemctl start gpsd"
+      line: "systemctl start gpsd"
+      insertbefore: "exit 0"
