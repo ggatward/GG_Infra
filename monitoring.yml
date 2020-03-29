@@ -24,16 +24,26 @@
         - static_configs:
           - targets:
             - alertmanager.core.home.gatwards.org:9093
-      # prometheus_node_exporter_targets:
+      prometheus_node_exporter_targets:
+      - project: HOME
+        targets:
+        - openhab.core.home.gatwards.org:9100
+        - rpi-util1.core.home.gatwards.org:9100
+        - rpi-util2.core.home.gatwards.org:9100
+        - foreman.core.home.gatwards.org:9100
+        - kvm1.core.home.gatwards.org:9100
+        - ipa1.ipa.home.gatwards.org:9100
+        - ipa2.ipa.home.gatwards.org:9100
+      - project: LAB
+        targets:
+        - baremetal1.lab.home.gatwards.org:9100
+      # prometheus_node_exporter_tls_targets:
       # - project: HOME
       #   targets:
-      #   - openhab.core.home.gatwards.org:9100
-      #   - rpi-util1.core.home.gatwards.org:9100
-      #   - rpi-util2.core.home.gatwards.org:9100
-      #   - foreman.core.home.gatwards.org:9100
-      #   - kvm1.core.home.gatwards.org:9100
-      #   - ipa1.ipa.home.gatwards.org:9100
-      #   - ipa2.ipa.home.gatwards.org:9100
+      #   - test1.core.home.gatwards.org:9100
+      # - project: LAB
+      #   targets:
+      #   - test1.lab.home.gatwards.org:9100
       prometheus_config_scrape_configs:
       - job_name: 'prometheus'
         honor_labels: true
@@ -42,7 +52,7 @@
         scheme: 'http'
         static_configs:
         - targets:
-          - '{{ inventory_hostname }}:9090'
+          - '{{ inventory_hostname }}:9991'
       - job_name: 'alertmanager'
         honor_labels: true
         scrape_interval: '20s'
