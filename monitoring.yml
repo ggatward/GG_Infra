@@ -34,7 +34,6 @@
       #   - kvm1.core.home.gatwards.org:9100
       #   - ipa1.ipa.home.gatwards.org:9100
       #   - ipa2.ipa.home.gatwards.org:9100
-      #   - grafana.core.home.gatwards.org:3000
       prometheus_config_scrape_configs:
       - job_name: 'prometheus'
         honor_labels: true
