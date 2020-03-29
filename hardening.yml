@@ -2,7 +2,7 @@
 - name: System Hardening
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!raspberry
+  hosts: all,!docker,!raspberry,!ovirt
 
   tasks:
   - block:
