@@ -58,7 +58,8 @@ all:
     ovirt:
       hosts:
         baremetal1.lab.home.gatwards.org: {}
-
+      vars:
+        motd_role: oVirt Hypervisor
 
 
     # raspberry:
