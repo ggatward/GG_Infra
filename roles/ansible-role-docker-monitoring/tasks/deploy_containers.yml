@@ -54,12 +54,12 @@
     src: docker-compose.yml.j2
     dest: "{{ docker_persistent_store_root }}/docker-compose.yml"
 
-- name: Create dockerfile to add extra directories to prometheus container
-  copy:
-    content: |
-      RUN mkdir /etc/prometheus/nodeexporter
-      RUN mkdir /etc/prometheus/rules
-    dest: "{{ docker_persistent_store_root }}/Dockerfile"
+# - name: Create dockerfile to add extra directories to prometheus container
+#   copy:
+#     content: |
+#       RUN mkdir /etc/prometheus/nodeexporter
+#       RUN mkdir /etc/prometheus/rules
+#     dest: "{{ docker_persistent_store_root }}/Dockerfile"
 
 ## Needs docker-compose pip package - can't be installed on Synology NAS
 # - name: Build docker containers
