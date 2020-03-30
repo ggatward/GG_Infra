@@ -67,49 +67,23 @@ all:
             nas1.core.home.gatwards.org:
               ansible_python_interpreter: /usr/bin/python
 
-    raspberry:
-      hosts:
-        openhab.core.home.gatwards.org: {}
-        rpi-util1.core.home.gatwards.org: {}
-        rpi-util2.core.home.gatwards.org:
-          ssh_X11Forwarding: 'yes'
-#        rpi-util3.core.home.gatwards.org: {}
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
-        prometheus_platform_architecture: linux-armv7
-        ssl_dir: /etc/ssl/localcerts
-        ca_path: /usr/local/share/ca-certificates
-
-    influxdb:
-      hosts:
-        influxdb.core.home.gatwards.org:
-      vars:
-        influxdb_databases:
-        - name: 'prometheus'
-          retention_policy:
-            name: 1week
-            duration: 1w
-            replication: 1
-        - name: 'openhab'
-          retention_policy:
-            name: 1week
-            duration: 1w
-            replication: 1
-
-    automation:
-      hosts:
-        openhab.core.home.gatwards.org:
-          rpi_vlans:
-          - id: '2'
-            address: 172.22.2.2/24
-          ipaclient_ssl_subject_altnames:
-          - openhab.iot.home.gatwards.org
-          - home1.gatwards.org
-      vars:
-        motd_role: Home Automation Server
-        ipaclient_ssl_create_certs: true
-        ipaclient_ssl_keylen: '2048'
-
+    containers:
+      children:
+        influxdb:
+          hosts:
+            influxdb.core.home.gatwards.org:
+          vars:
+            influxdb_databases:
+            - name: 'prometheus'
+              retention_policy:
+                name: 1week
+                duration: 1w
+                replication: 1
+            - name: 'openhab'
+              retention_policy:
+                name: 1week
+                duration: 1w
+                replication: 1
 
     # monitoring:
     #   hosts:
@@ -148,6 +122,35 @@ all:
     #         - "/etc/prometheus/nodeexporter/*_tls_targets.yml"
 
 
+    raspberry:
+      hosts:
+        openhab.core.home.gatwards.org: {}
+        rpi-util1.core.home.gatwards.org: {}
+        rpi-util2.core.home.gatwards.org:
+          ssh_X11Forwarding: 'yes'
+#        rpi-util3.core.home.gatwards.org: {}
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+        prometheus_platform_architecture: linux-armv7
+        ssl_dir: /etc/ssl/localcerts
+        ca_path: /usr/local/share/ca-certificates
+
+
+    automation:
+      hosts:
+        openhab.core.home.gatwards.org:
+          rpi_vlans:
+          - id: '2'
+            address: 172.22.2.2/24
+          ipaclient_ssl_subject_altnames:
+          - openhab.iot.home.gatwards.org
+          - home1.gatwards.org
+      vars:
+        motd_role: Home Automation Server
+        ipaclient_ssl_create_certs: true
+        ipaclient_ssl_keylen: '2048'
+
+
     foreman:
       hosts:
         foreman.core.home.gatwards.org: {}
@@ -163,6 +166,7 @@ all:
         # xinetd not required if Foreman TFTP set to use systemd.socket
         cis_xinetd_install: { package: xinetd, state: present, exception: 123, service: xinetd, enabled: true, rstate: started }
         cis_xinetd_state: present
+
 
     kvm:
       hosts:
@@ -190,97 +194,6 @@ all:
         - geoff
 
 
-    # grafana:
-    #   hosts:
-    #     prometheus.core.home.gatwards.org:
-    #       instance_ip: 172.22.1.69
-    #   vars:
-    #     motd_role: Grafana
-    #     ipaclient_ssl_create_certs: true
-    #     ipaclient_ssl_key_mode: '0644'
-
-    #     grafana_datasources:
-    #     - access: proxy
-    #       database: prometheus
-    #       editable: true
-    #       isDefault: true
-    #       name: Prometheus
-    #       type: influxdb
-    #       url: https://{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:{{ hostvars[groups['influxdb'][0]].influxdb_http_port }}
-    #       user: grafana_prometheus
-    #       secureJsonData:
-    #         password: '{{ vault_influxdb_grafana_password }}'
-    #       basicAuth: true
-    #       basicAuthUser: grafana_prometheus
-    #       basicAuthPassword: "{{ vault_influxdb_grafana_password }}"
-    #       withCredentials: true
-    #     - access: proxy
-    #       database: openhab
-    #       editable: true
-    #       isDefault: false
-    #       name: OpenHAB
-    #       type: influxdb
-    #       url: https://{{ hostvars[groups['influxdb'][0]].inventory_hostname }}:{{ hostvars[groups['influxdb'][0]].influxdb_http_port }}
-    #       user: grafana_openhab
-    #       secureJsonData:
-    #         password: '{{ vault_influxdb_grafana_password }}'
-    #       basicAuth: true
-    #       basicAuthUser: grafana_openhab
-    #       basicAuthPassword: "{{ vault_influxdb_grafana_password }}"
-    #       withCredentials: true
-
-
-        # grafana_auth:
-        #   anonymous:
-        #     org_name: Main Organization
-        #     org_role: Viewer
-        #   basic:
-        #     enabled: true
-        #   disable_login_form: false
-        #   disable_signout_menu: false
-        #   ldap:
-        #     allow_sign_up: false
-        #     config_file: /etc/grafana/ldap.toml
-        #   oauth_auto_login: false
-        #   signout_redirect_url: ''
-
-
-
-    #       grafana_ldap:
-    #         group_mappings:
-    #         - groups:
-    #           - group_dn: cn=grafana-admins,cn=groups,cn=accounts,dc=grafana,dc=org
-    #             org_role: Admin
-    #           - group_dn: cn=grafana-editors,cn=groups,cn=accounts,dc=grafana,dc=org
-    #             org_role: Editor
-    #           - group_dn: '*'
-    #             org_role: Viewer
-    #           id: 1
-    #           name: Main Org.
-    #         servers:
-    #           attributes:
-    #             email: mail
-    #             member_of: memberOf
-    #             name: givenName
-    #             surname: sn
-    #             username: uid
-    #           bind_dn: uid=svc-grafana,cn=users,cn=accounts,dc=gatwards,dc=org
-    #           bind_password: grafana
-    #           group_search_base_dns:
-    #           - '{{ ldap_group_base }}'
-    #           group_search_filter: '{{ ldap_group_filter }}'
-    #           host: '{{ ldap_servers[0] }}'
-    #           port: 389
-    #           root_ca_cert: '{{ tls_cafile }}'
-    #           search_base_dns:
-    #           - '{{ ldap_user_base }}'
-    #           search_filter: '{{ ldap_user_filter }}'
-    #           ssl_skip_verify: true
-    #           start_tls: true
-    #           use_ssl: false
-    #         verbose_logging: false
-
-
     workstation:
       hosts:
         desktop-01.core.home.gatwards.org:
@@ -301,18 +214,9 @@ all:
           install_playonlinux: true
           install_spotify: true
           disable_squashfs: false
-        jumphost.lab.home.gatwards.org:
-          motd_role: External Jump Box
-          #ssh_PermitRootLogin: 'no'
-          setup_automounts: false
-          configure_printer: false
-          install_chrome: false
-          install_xrdp: true
-          additional_ws_packages: []
-        sandbox-xxx.lab.home.gatwards.org:
-          desktop_group: "Cinnamon Desktop"
       vars:
         motd_role: Workstation
+        ansible_python_interpreter: /usr/bin/python3
         setup_automounts: true
         configure_printer: true
         install_chrome: true
@@ -324,5 +228,3 @@ all:
         install_development: false
         additional_ws_packages:
         - vlc
-
-
