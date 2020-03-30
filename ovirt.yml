@@ -33,3 +33,8 @@
     systemd:
       name: cockpit.socket
       state: started
+
+  # Now we need to bootstrap oVirt via cockpit http  :-(
+  - name: Notify user
+    debug:
+      msg: "Please login to cockpit at https://{{ ansible_fqdn }}:9090 to complete the oVirt installation"
