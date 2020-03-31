@@ -1,7 +1,12 @@
 ---
-- name: Install piaware repo
-  apt:
-    deb: https://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
+# - name: Install piaware repo
+#   apt:
+#     deb: https://flightaware.com/adsb/piaware/files/packages/pool/piaware/p/piaware-support/piaware-repository_3.8.0_all.deb
+#     update_cache: true
+
+- name: Install PiAware repo
+  apt_repository:
+    repo: 'deb http://flightaware.com/adsb/piaware/files/packages buster piaware'
     update_cache: true
 
 - name: Install Dump1090
@@ -27,6 +32,6 @@
 
 - name: Enable dump1090-fa
   systemd:
-    name: dump1090
+    name: dump1090-fa
     state: started
     enabled: true
