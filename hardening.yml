@@ -27,7 +27,7 @@
 - name: Extra System Hardening
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!containers
+  hosts: all,!docker,!containers,!ovirt
   tasks:
   - name: Apply additional hardening
     import_role:
