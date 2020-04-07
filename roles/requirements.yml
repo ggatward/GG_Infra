@@ -10,9 +10,6 @@ roles:
 - src: https://github.com/adfinis-sygroup/ansible-role-hw_vm_tools.git
   scm: git
 
-# - src: https://github.com/ggatward/ansible-prometheus.git
-#   scm: git
-
 - src: https://github.com/ggatward/ansible-node-exporter.git
   scm: git
 

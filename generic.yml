@@ -39,7 +39,7 @@
 - name: Authentication
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!containers
+  hosts: all,!docker,!containers,!ovirt
   vars_files:
   - vault.yml
 

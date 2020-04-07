@@ -38,3 +38,9 @@
   - name: Notify user
     debug:
       msg: "Please login to cockpit at https://{{ ansible_fqdn }}:9090 to complete the oVirt installation"
+
+
+# yum install ovirt-hosted-engine-setup
+
+# hosted-engine --deploy
+
