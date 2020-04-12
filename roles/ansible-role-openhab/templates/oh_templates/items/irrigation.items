@@ -1,6 +1,6 @@
 Group    gIrrigation    "Irrigation"          <water>      (Home)
 
-Switch SprinklerCycle "20 Minute Cycle" <water> [ "Switchable" ]
+Switch SprinklerCycle "5 Minute Cycle" <water> [ "Switchable" ]
 Switch SprinklerSystemSchedule "Sprinkler System Schedule" <calendar> [ "Switchable" ]
 
 String SprinklerSystemZone1MQTT     {channel="mqtt:topic:mosquitto:irrigation:zone1"}

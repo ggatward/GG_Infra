@@ -42,18 +42,18 @@ end
 
 
 
-//If sprinkler system schedule is on then water each zone at 6 am for 10 min
+//If sprinkler system schedule is on then water each zone at 7 am for 5 min
 rule "Sprinkler System Schedule"
 when
-    Time cron "0 0 6 1/1 * ? *"
+    Time cron "0 0 7 1/1 * ? *"
 then
     if(SprinklerSystemSchedule.state == ON) {
         // sendBroadcastNotification("SPRINKLER SYSTEM: Daily Watering Active")
         sendCommand(SprinklerSystemZone1, ON)
-        createTimer(now.plusMinutes(10)) [|
+        createTimer(now.plusMinutes(5)) [|
             sendCommand( SprinklerSystemZone1, OFF)
             sendCommand( SprinklerSystemZone2, ON)
-            createTimer(now.plusMinutes(10)) [|
+            createTimer(now.plusMinutes(5)) [|
                 sendCommand( SprinklerSystemZone2, OFF)
                 // sendCommand( SprinklerSystemZone3, ON)
                 // createTimer(now.plusMinutes(1)) [|
@@ -64,17 +64,17 @@ then
     }
 end
 
-//If 10 Minute Cycle Switch Is On then water each zone for 10 min
-rule "10 Minute Cycle"
+//If 5 Minute Cycle Switch Is On then water each zone for 10 min
+rule "5 Minute Cycle"
 when
     Item SprinklerCycle received update ON
 then
-    // sendBroadcastNotification("SPRINKLER SYSTEM: 20 Minute Cycle Active")
+    // sendBroadcastNotification("SPRINKLER SYSTEM: 5 Minute Cycle Active")
     sendCommand(SprinklerSystemZone1, ON)
-    createTimer(now.plusMinutes(10)) [|
+    createTimer(now.plusMinutes(5)) [|
         sendCommand(SprinklerSystemZone1, OFF)
         sendCommand(SprinklerSystemZone2, ON)
-        createTimer(now.plusMinutes(10)) [|
+        createTimer(now.plusMinutes(5)) [|
             sendCommand(SprinklerSystemZone2, OFF)
             // sendCommand(SprinklerSystemZone3, ON)
             // createTimer(now.plusMinutes(1)) [|

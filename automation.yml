@@ -34,8 +34,7 @@
     tags:
     - mqtt
     - docker
-    include_tasks: tasks/deploy_container.yml
-    vars:
+    docker_container:
       name: mosquitto
       image: eclipse-mosquitto
       restart_policy: unless-stopped
@@ -43,6 +42,7 @@
       - '1883:1883'
       volumes:
       - /volume2/docker/mosquitto/config:/mosquitto/config
+
 
   - name: Restart Mosquitto container
     tags:
