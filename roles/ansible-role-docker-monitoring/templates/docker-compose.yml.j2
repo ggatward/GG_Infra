@@ -25,6 +25,7 @@ services:
     volumes:
       - {{ docker_persistent_store_root }}/config/prometheus.yml:/etc/prometheus/prometheus.yml
       - {{ docker_persistent_store_root }}/config/nodeexporter:/etc/prometheus/nodeexporter
+      - {{ docker_persistent_store_root }}/config/exporters:/etc/prometheus/exporters
       - {{ docker_persistent_store_root }}/config/tls:/etc/pki/tls
       - {{ docker_persistent_store_root }}/config/rules:/etc/prometheus/rules
       - {{ docker_persistent_store_root }}/data/prometheus:/prometheus

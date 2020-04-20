@@ -94,19 +94,27 @@ all:
     #       honor_labels: true
     #       scrape_interval: '20s'
     #       scrape_timeout: '2s'
-    #       metrics_path: '/metrics'
     #       scheme: 'http'
     #       static_configs:
     #       - targets:
-    #         - '{{ inventory_hostname }}:9090'
+    #         - '{{ inventory_hostname }}:9990'
+    #     - job_name: 'alertmanager'
+    #       honor_labels: true
+    #       scrape_interval: '20s'
+    #       scrape_timeout: '2s'
+    #       scheme: 'http'
+    #       static_configs:
+    #       - targets:
+    #         - '{{ inventory_hostname }}:9093'
     #     - job_name: 'grafana'
     #       honor_labels: true
     #       scrape_interval: '20s'
     #       scrape_timeout: '2s'
-    #       metrics_path: '/metrics'
     #       scheme: 'http'
     #       static_configs:
-    #       - targets:
+    #       - labels:
+    #           project: 'HOME'
+    #         targets:
     #         - 'grafana.core.home.gatwards.org:3000'
     #     - job_name: 'node_exporter'
     #       honor_labels: true
@@ -120,6 +128,98 @@ all:
     #       file_sd_configs:
     #       - files:
     #         - "/etc/prometheus/nodeexporter/*_tls_targets.yml"
+    #     # - job_name: 'snmp_exporter'
+    #     #   file_sd_configs:
+    #     #   - files:
+    #     #     - /etc/prometheus/snmpexporter/*.yml
+    #     #   scrape_interval: '60s'
+    #     #   scrape_timeout: '10s'
+    #     #   metrics_path: /snmp
+    #     #   params:
+    #     #     module: [if_mib]
+    #     #   relabel_configs:
+    #     #   - source_labels: [__address__]
+    #     #     target_label: __param_target
+    #     #   - source_labels: [__param_target]
+    #     #     target_label: instance
+    #     #   - target_label: __address__
+    #     #     replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+    #     # - job_name: 'blackbox_exporter_http'
+    #     #   metrics_path: /probe
+    #     #   params:
+    #     #     module: [http_2xx]  # Look for a HTTP 200 response.
+    #     #   file_sd_configs:
+    #     #   - files:
+    #     #     - /etc/prometheus/blackboxexporter/*_http_targets.yml
+    #     #   scrape_interval: '60s'
+    #     #   scrape_timeout: '10s'
+    #     #   relabel_configs:
+    #     #   - source_labels: [__address__]
+    #     #     target_label: __param_target
+    #     #   - source_labels: [__param_target]
+    #     #     target_label: instance
+    #     #   - target_label: __address__
+    #     #     replacement: 127.0.0.1:9115
+    #     # - job_name: 'blackbox_exporter_dns_a'
+    #     #   metrics_path: /probe
+    #     #   params:
+    #     #     module: [dns_a]
+    #     #   file_sd_configs:
+    #     #   - files:
+    #     #     - /etc/prometheus/blackboxexporter/*_dns_targets.yml
+    #     #   scrape_interval: '300s'
+    #     #   scrape_timeout: '10s'
+    #     #   relabel_configs:
+    #     #   - source_labels: [__address__]
+    #     #     target_label: __param_target
+    #     #   - source_labels: [__param_target]
+    #     #     target_label: instance
+    #     #   - target_label: __address__
+    #     #     replacement: 127.0.0.1:9115
+    #     # - job_name: 'blackbox_exporter_dns_mx'
+    #     #   metrics_path: /probe
+    #     #   params:
+    #     #     module: [dns_mx]
+    #     #   file_sd_configs:
+    #     #   - files:
+    #     #     - /etc/prometheus/blackboxexporter/*_dns_targets.yml
+    #     #   scrape_interval: '300s'
+    #     #   scrape_timeout: '10s'
+    #     #   relabel_configs:
+    #     #   - source_labels: [__address__]
+    #     #     target_label: __param_target
+    #     #   - source_labels: [__param_target]
+    #     #     target_label: instance
+    #     #   - target_label: __address__
+    #     #     replacement: 127.0.0.1:9115
+    #     # - job_name: 'blackbox_exporter_icmp'
+    #     #   metrics_path: /probe
+    #     #   params:
+    #     #     module: [icmp_test]
+    #     #   file_sd_configs:
+    #     #   - files:
+    #     #     - /etc/prometheus/blackboxexporter/*_icmp_targets.yml
+    #     #   scrape_interval: '60s'
+    #     #   scrape_timeout: '10s'
+    #     #   relabel_configs:
+    #     #   - source_labels: [__address__]
+    #     #     target_label: __param_target
+    #     #   - source_labels: [__param_target]
+    #     #     target_label: instance
+    #     #   - target_label: __address__
+    #     #     replacement: 127.0.0.1:9115
+    #     - job_name: 'vdsm_exporter'
+    #       honor_labels: true
+    #       scheme: 'https'
+    #       static_configs:
+    #       - labels:
+    #           project: 'LAB'
+    #         targets:
+    #         - 'baremetal1.lab.home.gatwards.org:8181'
+    #       tls_config:
+    #         ca_file: /etc/pki/tls/certs/ca.crt
+    #         cert_file: /etc/pki/tls/certs/svc-prometheus.pem
+    #         key_file: /etc/pki/tls/private/svc-prometheus.key
 
 
     raspberry:

@@ -147,11 +147,9 @@
       - job_name: 'vdsm_exporter'
         honor_labels: true
         scheme: 'https'
-        static_configs:
-        - labels:
-            project: 'LAB'
-          targets:
-          - 'baremetal1.lab.home.gatwards.org:8181'
+        file_sd_configs:
+        - files:
+          - /etc/prometheus/exporters/*_vdsm_targets.yml
         tls_config:
           ca_file: /etc/pki/tls/certs/ca.crt
           cert_file: /etc/pki/tls/certs/svc-prometheus.pem
@@ -179,5 +177,8 @@
       #   targets:
       #   - test1.lab.home.gatwards.org:9100
 
-
+      prometheus_vdsm_exporter_targets:
+      - project: LAB
+        targets:
+        - baremetal1.lab.home.gatwards.org:8181
 

@@ -18,6 +18,9 @@
   - path: "{{ docker_persistent_store_root }}/config/nodeexporter"
     owner: root
     group: root
+  - path: "{{ docker_persistent_store_root }}/config/exporters"
+    owner: root
+    group: root
   - path: "{{ docker_persistent_store_root }}/config/tls"
     owner: root
     group: root
