@@ -53,64 +53,11 @@
   hosts: ovirt
 
   tasks:
-  - name: Install vdsm-prometheus repo
+  - import_role:
+      name: ansible-vdsm-prometheus
     tags:
     - monitoring
-    - vdsm_exporter
-    copy:
-      content: |
-        [copr:copr.fedorainfracloud.org:rfenkhuber:vdsm-prometheus]
-        name=Copr repo for vdsm-prometheus owned by rfenkhuber
-        baseurl=https://download.copr.fedorainfracloud.org/results/rfenkhuber/vdsm-prometheus/epel-7-$basearch/
-        type=rpm-md
-        skip_if_unavailable=True
-        gpgcheck=1
-        gpgkey=https://download.copr.fedorainfracloud.org/results/rfenkhuber/vdsm-prometheus/pubkey.gpg
-        repo_gpgcheck=0
-        enabled=1
-        enabled_metadata=1
-      dest: /etc/yum.repos.d/vdsm-prometheus.repo
-      owner: root
-      group: root
-      mode: '0644'
-
-  - name: Install vdsm-prometheus
-    tags:
-    - monitoring
-    - vdsm_exporter
-    yum:
-      name: vdsm-prometheus
-      state: present
-
-  - name: Disable prometheus client-TLS requirement
-    tags:
-    - monitoring
-    - vdsm_exporter
-    copy:
-      content: |
-        [Service]
-        Environment=VDSM_PROM_OPTS=-no-prom-auth
-      dest: /etc/systemd/system/vdsm-prometheus.service.d/10-vdsm-prometheus.conf
-      owner: root
-      group: root
-      mode: '0644'
-
-  - name: Start vdsm-prometheus service
-    tags:
-    - monitoring
-    - vdsm_exporter
-    service:
-      name: vdsm-prometheus
-      state: started
-      enabled: true
-
-  - name: Open vdsm-prometheus firewall port
-    tags:
-    - monitoring
-    - vdsm_exporter
-    firewalld:
-      port: '8181/tcp'
-      immediate: yes
-      permanent: yes
-      state: enabled
-
+    vars:
+      vdsm_prom_ca: /etc/ipa/ca.crt
+      vdsm_prom_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+      vdsm_prom_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
