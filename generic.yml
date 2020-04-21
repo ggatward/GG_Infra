@@ -50,7 +50,8 @@
     - ipa
     - auth
     import_role:
-      name: ansible-role-ipaclient
+      # name: ansible-role-ipaclient
+      name: ansible-ipaclient
     vars:
       ipaclient_servers:
       - ipa1.ipa.home.gatwards.org
