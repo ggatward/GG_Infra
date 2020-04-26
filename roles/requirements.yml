@@ -13,14 +13,10 @@ roles:
 - src: https://github.com/adfinis-sygroup/ansible-role-hw_vm_tools.git
   scm: git
 
-- src: https://github.com/ggatward/ansible-node-exporter.git
-  scm: git
-
 - src: https://github.com/ericsysmin/ansible-role-chrony.git
   scm: git
 
-- name: ansible_nginx
-  src: https://github.com/geerlingguy/ansible-role-nginx.git
+- src: https://github.com/geerlingguy/ansible-role-nginx.git
   scm: git
 
 - src: https://github.com/mrlesmithjr/ansible-config-interfaces.git
@@ -29,21 +25,37 @@ roles:
 - src: https://github.com/mrlesmithjr/ansible-kvm
   scm: git
 
-- src: https://github.com/ggatward/ansible-vdsm-prometheus.git
-  scm: git
-
-
 # - src: git@github.com:ggatward/ansible-role-workstation.git
 #   scm: git
 #   version: development
 
+##### Prometheus and exporters #####
+- src: https://github.com/cloudalchemy/ansible-prometheus.git
+  scm: git
 
+- src: https://github.com/cloudalchemy/ansible-pushgateway.git
+  scm: git
 
-# - src: https://github.com/mrlesmithjr/ansible-keepalived.git
-#   scm: git
+- src: https://github.com/cloudalchemy/ansible-snmp-exporter.git
+  scm: git
 
-# - src: https://github.com/mrlesmithjr/ansible-haproxy.git
-#   scm: git
+- src: https://github.com/cloudalchemy/ansible-blackbox-exporter.git
+  scm: git
 
-# - src: https://github.com/ggatward/ansible-grafana.git
-#   scm: git
+- src: https://github.com/cloudalchemy/ansible-alertmanager.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-collectd-exporter.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-statsd-exporter.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-node-exporter.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-vdsm-prometheus.git
+  scm: git
+
+- src: https://github.com/ggatward/ansible-389ds-exporter.git
+  scm: git

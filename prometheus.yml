@@ -1,0 +1,336 @@
+---
+# Nginx (Prometheus SSL frontend)
+- name: Configure Nginx for Prometheus
+  remote_user: svc-ansible
+  become: true
+  hosts: prometheus
+  vars_files:
+  - vault.yml
+  tasks:
+  # - name: Set SELinux booleans for nginx
+  #   tags:
+  #   - monitoring
+  #   - nginx
+  #   seboolean:
+  #     state: true
+  #     name: httpd_can_network_connect
+  #     persistent: yes
+
+  - import_role:
+      name: ansible-role-nginx
+    tags:
+    - monitoring
+    - nginx
+    vars:
+      nginx_yum_repo_enabled: false
+      nginx_vhosts:
+      - listen: "443 ssl http2"
+        server_name: "{{ ansible_fqdn }}"
+        extra_parameters: |
+          location / {
+            proxy_pass http://localhost:9090/;
+          }
+          ssl_session_cache         shared:SSL:10m;
+          ssl_session_timeout       1h;
+          ssl_session_tickets       on;
+          ssl_certificate           "/etc/ssl/localcerts/certs/{{ ansible_fqdn }}.pem";
+          ssl_certificate_key       "/etc/ssl/localcerts/private/{{ ansible_fqdn }}.key";
+          ssl_protocols             TLSv1.2;
+          ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
+          ssl_prefer_server_ciphers on;
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+
+#########################################################################################
+# Prometheus
+- name: Configure Prometheus
+  remote_user: svc-ansible
+  become: true
+  hosts: prometheus
+  vars_files:
+  - vault.yml
+  tasks:
+  - import_role:
+      name: ansible-prometheus
+    tags:
+    - monitoring
+    - prometheus
+
+  - import_role:
+      name: ansible-alertmanager
+    tags:
+    - monitoring
+    - prometheus
+
+  - import_role:
+      name: ansible-pushgateway
+    tags:
+    - monitoring
+    - prometheus
+
+  - import_role:
+      name: ansible-collectd-exporter
+    tags:
+    - monitoring
+    - prometheus
+
+  - import_role:
+      name: ansible-statsd-exporter
+    tags:
+    - monitoring
+    - prometheus
+
+  - import_role:
+      name: ansible-snmp-exporter
+    tags:
+    - monitoring
+    - prometheus
+
+  - import_role:
+      name: ansible-blackbox-exporter
+    tags:
+    - monitoring
+    - prometheus
+    vars:
+      blackbox_exporter_configuration_modules:
+        http_2xx:
+          prober: http
+          timeout: 5s
+          http:
+            preferred_ip_protocol: ip4
+            method: GET
+            valid_status_codes: []
+        tcp_connect:
+          prober: tcp
+          timeout: 5s
+        ssh_banner:
+          prober: tcp
+          timeout: 5s
+          tcp:
+            query_response:
+            - expect: "^SSH-2.0-"
+        icmp_test:
+          prober: icmp
+          timeout: 5s
+          icmp:
+            preferred_ip_protocol: ip4
+        dns_a:
+          prober: dns
+          timeout: 5s
+          dns:
+            preferred_ip_protocol: ip4
+            query_name: "google.com"
+            query_type: "A"
+            validate_answer_rrs:
+              fail_if_matches_regexp:
+              - test
+        dns_mx:
+          prober: dns
+          timeout: 5s
+          dns:
+            preferred_ip_protocol: ip4
+            query_name: "google.com"
+            query_type: "MX"
+            validate_answer_rrs:
+              fail_if_not_matches_regexp:
+              - "google.com.\t.*\tIN\tMX\t.*google.*"
+
+  - name: Create target directories
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    file:
+      path: "/etc/prometheus/{{ item }}"
+      state: directory
+      owner: prometheus
+      group: prometheus
+      mode: '0755'
+    with_items:
+    - nodeexporter
+    - snmpexporter
+    - blackboxexporter
+    - exporters
+
+  - name: Deploy local node_exporter configuration
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/local_exporter.yml.j2"
+      dest: /etc/prometheus/nodeexporter/local_http_targets.yml
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+
+  - name: Deploy node_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/nodeexporter/{{ item.project }}_http_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_node_exporter_targets }}"
+    when: prometheus_node_exporter_targets is defined and prometheus_node_exporter_targets|length > 0
+
+  - name: Deploy tls_node_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/nodeexporter/{{ item.project }}_tls_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_tls_node_exporter_targets }}"
+    when: prometheus_tls_node_exporter_targets is defined and prometheus_tls_node_exporter_targets|length > 0
+
+  - name: Deploy grafana exporter configuration
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: /etc/prometheus/exporters/grafana_targets.yml
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_grafana_exporter_targets }}"
+    when: prometheus_grafana_exporter_targets is defined and prometheus_grafana_exporter_targets|length > 0
+
+  # Using integrated NiFi metrics - nifi_exporter role doesn't need this
+  # - name: Deploy NiFi exporter configuration
+  #   tags:
+  #   - monitoring
+  #   - prometheus
+  #   - prometheus_targets
+  #   template:
+  #     src: "prometheus/exporter_targets.yml.j2"
+  #     dest: /etc/prometheus/exporters/nifi_targets.yml
+  #     owner: prometheus
+  #     group: prometheus
+  #     mode: '0644'
+  #   with_items: "{{ prometheus_nifi_exporter_targets }}"
+  #   when: prometheus_nifi_exporter_targets is defined and prometheus_nifi_exporter_targets|length > 0
+
+  - name: Deploy snmp_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/snmpexporter/{{ item[0].project }}_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_subelements:
+    - "{{ prometheus_snmp_exporter_targets }}"
+    - targets
+    when: prometheus_snmp_exporter_targets is defined and prometheus_snmp_exporter_targets|length > 0
+
+  - name: Deploy blackbox_exporter HTTP target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/blackboxexporter/{{ item.project }}_http_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_blackbox_exporter_http_targets }}"
+    when: prometheus_blackbox_exporter_http_targets is defined and prometheus_blackbox_exporter_http_targets|length > 0
+
+  - name: Deploy blackbox_exporter DNS target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/blackboxexporter/{{ item.project }}_dns_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_blackbox_exporter_dns_targets }}"
+    when: prometheus_blackbox_exporter_dns_targets is defined and prometheus_blackbox_exporter_dns_targets|length > 0
+
+  - name: Deploy blackbox_exporter ICMP target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/blackboxexporter/{{ item.project }}_icmp_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_blackbox_exporter_icmp_targets }}"
+    when: prometheus_blackbox_exporter_icmp_targets is defined and prometheus_blackbox_exporter_icmp_targets|length > 0
+
+  - name: Deploy vdsm_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/exporters/{{ item.project }}_vdsm_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_vdsm_exporter_targets }}"
+    when: prometheus_vdsm_exporter_targets is defined and prometheus_vdsm_exporter_targets|length > 0
+
+  - name: Deploy ipa_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/exporters/{{ item.project }}_ipa_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_ipa_exporter_targets }}"
+    when: prometheus_ipa_exporter_targets is defined and prometheus_ipa_exporter_targets|length > 0
+
+
+  # Not done inside role (Only needed if we are federating Prometheus)
+  - name: Open Prometheus firewall ports to receive push events
+    tags:
+    - monitoring
+    - prometheus
+    firewalld:
+      port: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
+    with_items:
+    - 9091/tcp  # pushgateway
+    - 9093/tcp  # alertmanager
+    - 8125/tcp  # statsd
+    - 8125/udp  # statsd
+    - 25826/udp # collectd
+
+  - name: Open Prometheus firewall port
+    tags:
+    - monitoring
+    - prometheus
+    firewalld:
+      service: 'https'
+      immediate: yes
+      permanent: yes
+      state: enabled

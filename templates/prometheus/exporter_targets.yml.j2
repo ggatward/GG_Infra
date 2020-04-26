@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+- targets:
+{% for server in item.targets %}
+  - {{ server }}
+{% endfor %}
+
+  labels:
+    project: {{ item.project }}

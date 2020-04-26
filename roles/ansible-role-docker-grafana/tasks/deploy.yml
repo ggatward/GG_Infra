@@ -1,0 +1,41 @@
+---
+# tasks file for docker-grafana
+- name: Ensure config paths exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+  - path: "{{ docker_persistent_store_root }}"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/config"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/data"
+    owner: root
+    group: root
+  - path: "{{ docker_persistent_store_root }}/data/grafana"
+    owner: 472  # grafana uid
+    group: 472  # grafana gid
+
+- name: Deploy grafana configuration
+  template:
+    src: grafana.ini.j2
+    dest: "{{ docker_persistent_store_root }}/config/grafana.ini"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_container
+
+- name: Deploy Grafana container
+  docker_container:
+    name: grafana
+    image: grafana/grafana
+    restart_policy: unless-stopped
+    published_ports:
+    - '3000:3000'
+    volumes:
+    - "{{ docker_persistent_store_root }}/config/grafana.ini:/etc/grafana/grafana.ini"
+    - "{{ docker_persistent_store_root }}/data/grafana:/var/lib/grafana"

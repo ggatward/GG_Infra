@@ -1,0 +1,5 @@
+---
+# tasks file for docker-grafana
+
+- include_tasks: deploy.yml
+

@@ -1,5 +1,0 @@
----
-ipaclient_install_command: '/usr/sbin/ipa-client-install'
-ipaclient_packages:
-- freeipa-client
-ipaclient_ssl_dir: /etc/ssl/localcerts

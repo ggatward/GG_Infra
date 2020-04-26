@@ -6,6 +6,7 @@
 # Configure in DNS, add to inventory
 
 # Run play as user 'pi' - prompt for password (pi has passwordless sudo)
+# ansible-playbook -i <inventory> bootstrap-rpi -kK
 
 - name: Raspberry Pi Bootstrap
   remote_user: pi

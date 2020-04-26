@@ -1,0 +1,8 @@
+#{{ ansible_managed }}
+
+# Local node_exporter of this prometheus server
+- targets:
+  - {{ inventory_hostname }}:9100
+
+  labels:
+    project: {{ prometheus_project }}

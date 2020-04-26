@@ -1,0 +1,7 @@
+---
+# defaults file for docker
+
+docker_persistent_store_root: /volume2/docker/grafana
+docker_restart_policy: unless-stopped
+docker_ext_grafana_port: '3000'
+

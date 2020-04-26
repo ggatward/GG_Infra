@@ -69,11 +69,11 @@
   hosts: docker_nas
   vars_files:
   - vault.yml
-
   tasks:
   - name: Configure InfluxDB
     tags:
     - influxdb
+    - monitoring
     - docker
     import_role:
       name: ansible-role-docker-influxdb
@@ -83,6 +83,7 @@
   - name: Create Databases
     tags:
     - influxdb
+    - monitoring
     - docker
     influxdb_database:
       database_name: "{{ item.name }}"
@@ -92,6 +93,7 @@
   - name: Configure retention policies
     tags:
     - influxdb
+    - monitoring
     - docker
     influxdb_retention_policy:
       database_name: "{{ item.name }}"
@@ -101,6 +103,26 @@
       replication: 1
     with_items: "{{ hostvars[groups['influxdb'][0]].influxdb_databases }}"
 
+
+####################################################################################
+
+- name: Provision Grafana container
+  remote_user: svc-ansible
+  become: true
+  hosts: docker_nas
+  vars_files:
+  - vault.yml
+  tasks:
+  - name: Configure Grafana
+    tags:
+    - monitoring
+    - grafana
+    - docker
+    import_role:
+      name: ansible-role-docker-grafana
+    vars:
+      docker_persistent_store_root: /volume2/docker/grafana
+
 ####################################################################################
 
 - name: Provision UniFi container
@@ -109,7 +131,6 @@
   hosts: docker_nas
   vars_files:
   - vault.yml
-
   tasks:
   - name: Configure UniFi
     tags:
@@ -117,3 +138,31 @@
     - docker
     import_role:
       name: ansible-role-docker-unifi
+
+####################################################################################
+
+- name: Provision NAS node_exporter container
+  remote_user: svc-ansible
+  become: true
+  hosts: docker_nas
+  tasks:
+  - name: Deploy node_exporter container
+    tags:
+    - monitoring
+    - node_exporter
+    - docker
+    docker_container:
+      name: node_exporter
+      image: prom/node-exporter
+      restart_policy: unless-stopped
+      published_ports:
+      - '9100:9100'
+      volumes:
+        - /proc:/host/proc:ro
+        - /sys:/host/sys:ro
+        - /:/rootfs:ro
+      command:
+        - "--path.procfs=/host/proc"
+        - "--path.sysfs=/host/sys"
+        - "--collector.filesystem.ignored-mount-points"
+        - "^/(rootfs/)?(dev|etc|host|proc|run|sys|volume1)($$|/)"
