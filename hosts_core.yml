@@ -108,7 +108,6 @@ all:
         ipa_replica:
           hosts:
             ipa2.ipa.home.gatwards.org: {}
-            ipa3.ipa.home.gatwards.org: {}
       vars:
         motd_role: IPA Server
         ipa_server_realm: IPA.HOME.GATWARDS.ORG
