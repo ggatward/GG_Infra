@@ -7,14 +7,15 @@
   vars_files:
   - vault.yml
   tasks:
-  # - name: Set SELinux booleans for nginx
-  #   tags:
-  #   - monitoring
-  #   - nginx
-  #   seboolean:
-  #     state: true
-  #     name: httpd_can_network_connect
-  #     persistent: yes
+  - name: Set SELinux booleans for nginx
+    tags:
+    - monitoring
+    - nginx
+    seboolean:
+      state: true
+      name: httpd_can_network_connect
+      persistent: yes
+    when: ansible_distribution_file_variety == 'RedHat'
 
   - import_role:
       name: ansible-role-nginx
@@ -206,21 +207,6 @@
     with_items: "{{ prometheus_grafana_exporter_targets }}"
     when: prometheus_grafana_exporter_targets is defined and prometheus_grafana_exporter_targets|length > 0
 
-  # Using integrated NiFi metrics - nifi_exporter role doesn't need this
-  # - name: Deploy NiFi exporter configuration
-  #   tags:
-  #   - monitoring
-  #   - prometheus
-  #   - prometheus_targets
-  #   template:
-  #     src: "prometheus/exporter_targets.yml.j2"
-  #     dest: /etc/prometheus/exporters/nifi_targets.yml
-  #     owner: prometheus
-  #     group: prometheus
-  #     mode: '0644'
-  #   with_items: "{{ prometheus_nifi_exporter_targets }}"
-  #   when: prometheus_nifi_exporter_targets is defined and prometheus_nifi_exporter_targets|length > 0
-
   - name: Deploy snmp_exporter target configurations
     tags:
     - monitoring
@@ -279,20 +265,6 @@
     with_items: "{{ prometheus_blackbox_exporter_icmp_targets }}"
     when: prometheus_blackbox_exporter_icmp_targets is defined and prometheus_blackbox_exporter_icmp_targets|length > 0
 
-  - name: Deploy vdsm_exporter target configurations
-    tags:
-    - monitoring
-    - prometheus
-    - prometheus_targets
-    template:
-      src: "prometheus/exporter_targets.yml.j2"
-      dest: "/etc/prometheus/exporters/{{ item.project }}_vdsm_targets.yml"
-      owner: prometheus
-      group: prometheus
-      mode: '0644'
-    with_items: "{{ prometheus_vdsm_exporter_targets }}"
-    when: prometheus_vdsm_exporter_targets is defined and prometheus_vdsm_exporter_targets|length > 0
-
   - name: Deploy ipa_exporter target configurations
     tags:
     - monitoring
@@ -306,6 +278,35 @@
       mode: '0644'
     with_items: "{{ prometheus_ipa_exporter_targets }}"
     when: prometheus_ipa_exporter_targets is defined and prometheus_ipa_exporter_targets|length > 0
+
+  # - name: Deploy vdsm_exporter target configurations
+  #   tags:
+  #   - monitoring
+  #   - prometheus
+  #   - prometheus_targets
+  #   template:
+  #     src: "prometheus/exporter_targets.yml.j2"
+  #     dest: "/etc/prometheus/exporters/{{ item.project }}_vdsm_targets.yml"
+  #     owner: prometheus
+  #     group: prometheus
+  #     mode: '0644'
+  #   with_items: "{{ prometheus_vdsm_exporter_targets }}"
+  #   when: prometheus_vdsm_exporter_targets is defined and prometheus_vdsm_exporter_targets|length > 0
+
+  # Using integrated NiFi metrics - nifi_exporter role doesn't need this
+  # - name: Deploy NiFi exporter configuration
+  #   tags:
+  #   - monitoring
+  #   - prometheus
+  #   - prometheus_targets
+  #   template:
+  #     src: "prometheus/exporter_targets.yml.j2"
+  #     dest: /etc/prometheus/exporters/nifi_targets.yml
+  #     owner: prometheus
+  #     group: prometheus
+  #     mode: '0644'
+  #   with_items: "{{ prometheus_nifi_exporter_targets }}"
+  #   when: prometheus_nifi_exporter_targets is defined and prometheus_nifi_exporter_targets|length > 0
 
 
   # Not done inside role (Only needed if we are federating Prometheus)

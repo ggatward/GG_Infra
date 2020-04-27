@@ -2,7 +2,7 @@
 - name: System Hardening
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!containers,!raspberry,!ovirt
+  hosts: "{{ hostlist }},!docker,!containers,!raspberry,!ovirt"
 
   tasks:
   - block:
@@ -27,7 +27,7 @@
 - name: Extra System Hardening
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!containers,!ovirt
+  hosts: "{{ hostlist }},!docker,!containers"
   tasks:
   - name: Apply additional hardening
     import_role:

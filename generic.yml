@@ -2,8 +2,7 @@
 - name: Generic Infrastructure
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!containers
-
+  hosts: "{{ hostlist }},!docker,!containers"
   tasks:
   - name: Update apt cache
     tags:
@@ -39,10 +38,9 @@
 - name: Authentication
   remote_user: svc-ansible
   become: true
-  hosts: all,!docker,!containers
+  hosts: "{{ hostlist }},!docker,!containers,!ipa"
   vars_files:
   - vault.yml
-
   tasks:
   - name: Configure IPA client
     tags:
@@ -85,9 +83,8 @@
 
 - name: Monitoring
   remote_user: svc-ansible
-  hosts: all,!docker,!containers
+  hosts: "{{ hostlist }},!docker,!containers"
   become: true
-
   tasks:
   - import_role:
       name: ansible-node-exporter

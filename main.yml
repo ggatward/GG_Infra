@@ -6,7 +6,11 @@
 #- import_playbook: bootstrap_rpi.yml         # (as pi)
 
 - import_playbook: generic.yml
+  vars:
+    hostlist: all
 - import_playbook: hardening.yml
+  vars:
+    hostlist: all
 
 # General network services
 - import_playbook: general_services.yml
@@ -15,7 +19,6 @@
 - import_playbook: kvmhost.yml
 
 # Specific application/function config
-#- import_playbook: monitoring.yml
 - import_playbook: prometheus.yml
 - import_playbook: weather.yml
 - import_playbook: automation.yml

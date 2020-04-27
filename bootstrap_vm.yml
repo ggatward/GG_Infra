@@ -6,7 +6,6 @@
   hosts: all
   vars_files:
   - vault.yml
-
   tasks:
   - name: Deploy Gold Image root SSH key
     tags:

@@ -1,0 +1,160 @@
+---
+# Apply linux generic configurations
+- import_playbook: generic.yml
+  tags:
+  - generic
+  vars:
+    hostlist: ipa
+- import_playbook: hardening.yml
+  tags:
+  - hardening
+  vars:
+    hostlist: ipa
+
+- name: Configure IPA Servers
+  remote_user: svc-ansible
+  become: true
+  hosts: ipa
+  vars_files:
+  - vault.yml
+  tasks:
+  # Add host entry to hosts file
+  - name: Add local host entry to hosts file
+    lineinfile:
+      path: /etc/hosts
+      regexp: "^{{ ansible_default_ipv4.address }}"
+      line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ ansible_hostname }}"
+
+  # Open firewall ports
+  - name: Open IPA firewall ports
+    firewalld:
+      service: "{{ item }}"
+      state: enabled
+      immediate: true
+      permanent: yes
+    with_items:
+    - freeipa-ldap
+    - freeipa-ldaps
+    - dns
+
+  - name: Enable IPA dnf module
+    command: yum -y module enable idm:DL1
+    changed_when: false
+    args:
+      warn: false
+
+  - name: Sync dnf distro
+    command: yum -y distro-sync
+    changed_when: false
+    args:
+      warn: false
+
+  - name: Install IPA server
+    command: yum -y module install idm:DL1/dns
+    changed_when: false
+    args:
+      warn: false
+
+
+###############################################################################
+- name: Configure IPA Master
+  remote_user: svc-ansible
+  become: true
+  hosts: ipa_master
+  vars_files:
+  - vault.yml
+  tasks:
+  - name: Check if IPA server already installed
+    command: ipactl status
+    register: ipa_installed
+    changed_when: false
+    failed_when: false
+
+  - name: Install IPA master server
+    shell: >
+      ipa-server-install --realm {{ ipa_server_realm }} \
+        --ds-password '{{ vault_idm_directorymanager_pass }}' \
+        --admin-password '{{ vault_idm_admin_pass }}' \
+        --setup-dns \
+        --auto-reverse \
+        --forwarder 192.231.203.132 \
+        --forwarder 192.231.203.3 \
+        --unattended
+    when: "'IPA is not configured' in ipa_installed.stderr"
+
+
+###############################################################################
+- name: Configure IPA Replicas
+  remote_user: svc-ansible
+  become: true
+  hosts: ipa_replica
+  serial: 1
+  vars_files:
+  - vault.yml
+  tasks:
+  - name: Check if IPA server already installed
+    command: ipactl status
+    register: ipa_installed
+    changed_when: false
+    failed_when: false
+
+  - name: Enrol host in IPA
+    import_role:
+      name: ansible-ipaclient
+    vars:
+      ipaclient_servers:
+      - ipa1.ipa.home.gatwards.org
+      - ipa2.ipa.home.gatwards.org
+      ipaclient_domain: "{{ ipa_server_realm|lower }}"
+      ipaclient_enroll_user: admin
+      ipaclient_enroll_pass: "{{ vault_idm_admin_pass }}"
+    when: "'IPA is not configured' in ipa_installed.stderr"
+
+  - name: Get admin keytab
+    shell: kinit admin <<< "{{ vault_idm_admin_pass }}"
+    changed_when: false
+
+  - name: Add replica to ipaservers host group
+    command: ipa hostgroup-add-member ipaservers --hosts {{ inventory_hostname }}
+    register: result
+    changed_when: result.rc == 0
+    failed_when:
+    - result.rc != 0
+    - "'This entry is already a member' not in result.stdout"
+
+  - name: Install IPA replica server
+    shell: >
+      ipa-replica-install \
+        --setup-ca \
+        --setup-dns \
+        --forwarder 192.231.203.132 \
+        --forwarder 192.231.203.3 \
+        --unattended
+    when: "'IPA is not configured' in ipa_installed.stderr"
+
+
+###############################################################################
+# Add prometheus exporter
+- name: Install Prometheus exporter
+  remote_user: svc-ansible
+  become: true
+  hosts: ipa
+  vars_files:
+  - vault.yml
+  tasks:
+  - import_role:
+      name: ansible-389ds-exporter
+    tags:
+    - monitoring
+    vars:
+      ldap_389ds_ipa_domain: "{{ ipa_server_realm|lower }}"
+      ldap_389ds_password: "{{ vault_idm_directorymanager_pass }}"
+
+  - name: Open Prometheus 389ds_exporter firewall port
+    tags:
+    - monitoring
+    firewalld:
+      port: '9496/tcp'
+      immediate: yes
+      permanent: yes
+      state: enabled
