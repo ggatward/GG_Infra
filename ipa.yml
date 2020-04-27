@@ -36,6 +36,7 @@
     - freeipa-ldap
     - freeipa-ldaps
     - dns
+    - ntp
 
   - name: Enable IPA dnf module
     command: yum -y module enable idm:DL1
