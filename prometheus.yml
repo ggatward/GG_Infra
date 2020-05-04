@@ -34,8 +34,8 @@
           ssl_session_cache         shared:SSL:10m;
           ssl_session_timeout       1h;
           ssl_session_tickets       on;
-          ssl_certificate           "/etc/ssl/localcerts/certs/{{ ansible_fqdn }}.pem";
-          ssl_certificate_key       "/etc/ssl/localcerts/private/{{ ansible_fqdn }}.key";
+          ssl_certificate           "{{ ssl_dir }}/certs/{{ ansible_fqdn }}.pem";
+          ssl_certificate_key       "{{ ssl_dir }}/private/{{ ansible_fqdn }}.key";
           ssl_protocols             TLSv1.2;
           ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
           ssl_prefer_server_ciphers on;
@@ -136,6 +136,57 @@
               fail_if_not_matches_regexp:
               - "google.com.\t.*\tIN\tMX\t.*google.*"
 
+  - import_role:
+      name: ansible-ovirt-exporter
+    tags:
+    - monitoring
+    - prometheus
+    when: ovirt_exporter is defined and ovirt_exporter
+
+  - import_role:
+      name: ansible-ipmi-exporter
+    tags:
+    - monitoring
+    - prometheus
+    when: ipmi_exporter is defined and ipmi_exporter
+    vars:
+      ipmi_exporter_configuration_modules:
+        default:
+          collectors:
+          - bmc
+          - ipmi
+          - chassis
+          user: default_user
+          pass: example_pw
+          privilege: user
+          driver: LAN_2_0
+          timeout: 10000
+          exclude_sensor_ids: []
+        supermicro:
+          collectors:
+          - bmc
+          - ipmi
+          - chassis
+          - sel
+          user: prometheus
+          pass: "{{ vault_ipmi_pass }}"
+          privilege: user
+          driver: LAN_2_0
+          timeout: 10000
+          exclude_sensor_ids: []
+        hpmicroserver:
+          collectors:
+          - bmc
+          - ipmi
+          - chassis
+          user: prometheus
+          pass: "{{ vault_ipmi_pass }}"
+          privilege: user
+          driver: LAN_2_0
+          timeout: 10000
+          exclude_sensor_ids: []
+
+
   - name: Create target directories
     tags:
     - monitoring
@@ -192,6 +243,20 @@
       mode: '0644'
     with_items: "{{ prometheus_tls_node_exporter_targets }}"
     when: prometheus_tls_node_exporter_targets is defined and prometheus_tls_node_exporter_targets|length > 0
+
+  - name: Deploy wmi_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/exporters/{{ item.project }}_wmi_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_wmi_exporter_targets }}"
+    when: prometheus_wmi_exporter_targets is defined and prometheus_wmi_exporter_targets|length > 0
 
   - name: Deploy grafana exporter configuration
     tags:
@@ -279,34 +344,47 @@
     with_items: "{{ prometheus_ipa_exporter_targets }}"
     when: prometheus_ipa_exporter_targets is defined and prometheus_ipa_exporter_targets|length > 0
 
-  # - name: Deploy vdsm_exporter target configurations
-  #   tags:
-  #   - monitoring
-  #   - prometheus
-  #   - prometheus_targets
-  #   template:
-  #     src: "prometheus/exporter_targets.yml.j2"
-  #     dest: "/etc/prometheus/exporters/{{ item.project }}_vdsm_targets.yml"
-  #     owner: prometheus
-  #     group: prometheus
-  #     mode: '0644'
-  #   with_items: "{{ prometheus_vdsm_exporter_targets }}"
-  #   when: prometheus_vdsm_exporter_targets is defined and prometheus_vdsm_exporter_targets|length > 0
+  - name: Deploy vdsm_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/exporters/{{ item.project }}_vdsm_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_vdsm_exporter_targets }}"
+    when: prometheus_vdsm_exporter_targets is defined and prometheus_vdsm_exporter_targets|length > 0
 
-  # Using integrated NiFi metrics - nifi_exporter role doesn't need this
-  # - name: Deploy NiFi exporter configuration
-  #   tags:
-  #   - monitoring
-  #   - prometheus
-  #   - prometheus_targets
-  #   template:
-  #     src: "prometheus/exporter_targets.yml.j2"
-  #     dest: /etc/prometheus/exporters/nifi_targets.yml
-  #     owner: prometheus
-  #     group: prometheus
-  #     mode: '0644'
-  #   with_items: "{{ prometheus_nifi_exporter_targets }}"
-  #   when: prometheus_nifi_exporter_targets is defined and prometheus_nifi_exporter_targets|length > 0
+  - name: Deploy NiFi exporter configuration
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: /etc/prometheus/exporters/{{ item.project }}_nifi_targets.yml
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_nifi_exporter_targets }}"
+    when: prometheus_nifi_exporter_targets is defined and prometheus_nifi_exporter_targets|length > 0
+
+  - name: Deploy Artifactory exporter configuration
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: /etc/prometheus/exporters/{{ item.project }}_artifactory_targets.yml
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_artifactory_exporter_targets }}"
+    when: prometheus_artifactory_exporter_targets is defined and prometheus_artifactory_exporter_targets|length > 0
 
 
   # Not done inside role (Only needed if we are federating Prometheus)

@@ -44,11 +44,11 @@
     args:
       warn: false
 
-  - name: Sync dnf distro
-    command: yum -y distro-sync
-    changed_when: false
-    args:
-      warn: false
+  # - name: Sync dnf distro
+  #   command: yum -y distro-sync
+  #   changed_when: false
+  #   args:
+  #     warn: false
 
   - name: Install IPA server
     command: yum -y module install idm:DL1/dns

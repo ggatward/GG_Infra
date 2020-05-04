@@ -228,22 +228,14 @@ all:
         prometheus_storage_retention: "14d"
         prometheus_external_labels:
           prom_cluster: "{{ prometheus_project }}"
-
         prometheus_alertmanager_config:
-          - scheme: http
-            path_prefix: alertmanager/
-        #     basic_auth:
-        #       username: user
-        #       password: pass
-            static_configs:
-              - targets:
-                - "127.0.0.1:9093"
-
+        - scheme: http
+          path_prefix: alertmanager/
+          static_configs:
+          - targets:
+            - "127.0.0.1:9093"
         prometheus_remote_write:
         - url: "http://influxdb.core.home.gatwards.org:8086/api/v1/prom/write?db=prometheus"
-        #   basic_auth:
-        #     username: prometheus
-        #     password: "{{ vault_influxdb_prometheus_password }}"
         prometheus_scrape_configs:
         - job_name: 'prometheus'
           honor_labels: true
@@ -256,19 +248,29 @@ all:
             - '{{ ansible_host }}:9090'
             labels:
               project: "{{ prometheus_project }}"
-        - job_name: alertmanager
+        - job_name: 'alertmanager'
           honor_labels: true
           static_configs:
           - targets:
             - '{{ ansible_host }}:9093'
             labels:
               project: "{{ prometheus_project }}"
-        - job_name: haproxy_exporter
+        - job_name: 'federate'
+          honor_labels: true
+          scheme: 'https'
+          metrics_path: '/federate'
+          params:
+            match[]:
+            - '{__name__=~".*"}'
+          static_configs:
+          - targets:
+            - 'prometheus.lab.home.gatwards.org'
+        - job_name: 'haproxy_exporter'
           honor_labels: true
           file_sd_configs:
           - files:
             - /etc/prometheus/exporters/haproxy_targets.yml
-        - job_name: grafana
+        - job_name: 'grafana'
           honor_labels: true
           scheme: 'http'
           file_sd_configs:
@@ -284,6 +286,12 @@ all:
           file_sd_configs:
           - files:
             - /etc/prometheus/nodeexporter/*_tls_targets.yml
+        - job_name: 'wmi_exporter'
+          honor_labels: true
+          scheme: 'http'
+          file_sd_configs:
+          - files:
+            - /etc/prometheus/exporters/*_wmi_targets.yml
         - job_name: 'pushgateway'
           honor_labels: true
           static_configs:
@@ -385,26 +393,6 @@ all:
           file_sd_configs:
           - files:
             - /etc/prometheus/exporters/*_ipa_targets.yml
-        # - job_name: 'vdsm_exporter'
-        #   honor_labels: true
-        #   scheme: 'https'
-        #   file_sd_configs:
-        #   - files:
-        #     - /etc/prometheus/exporters/*_vdsm_targets.yml
-        #   tls_config:
-        #     ca_file: /etc/ssl/localcerts/certs/ca.crt
-        #     cert_file: /etc/ssl/localcerts/certs/svc-prometheus.pem
-        #     key_file: /etc/ssl/localcerts/private/svc-prometheus.key
-        # - job_name: 'nifi_exporter'
-        #   honor_labels: true
-        #   file_sd_configs:
-        #   - files:
-        #     - /etc/prometheus/exporters/nifi_targets.yml
-        # - job_name: 'artifactory_exporter'
-        #   honor_labels: true
-        #   static_configs:
-        #   - targets:
-        #     - 'artifactory.lab.home.gatwards.org:9531'
 
         prometheus_node_exporter_targets:
         - project: "{{ prometheus_project }}"
@@ -420,6 +408,10 @@ all:
         # - project: LAB
         #   targets:
         #   - baremetal1.lab.home.gatwards.org:9100
+        prometheus_wmi_exporter_targets:
+        - project: "{{ prometheus_project }}"
+          targets:
+          - desktop-02.core.home.gatwards.org:9182
         prometheus_grafana_exporter_targets:
         - project: "{{ prometheus_project }}"
           targets:
@@ -447,15 +439,6 @@ all:
           targets:
           - ipa1.ipa.home.gatwards.org:9496
           - ipa2.ipa.home.gatwards.org:9496
-        # prometheus_vdsm_exporter_targets:
-        # - project: LAB
-        #   targets:
-        #   - baremetal1.lab.home.gatwards.org:8181
-        # prometheus_nifi_exporter_targets:
-        # - project: LAB
-        #   targets:
-        #   - nifi1.lab.home.gatwards.org:9092
-        #   - nifi2.lab.home.gatwards.org:9092
 
 
     workstation:

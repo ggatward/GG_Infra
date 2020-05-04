@@ -90,7 +90,7 @@
   tasks:
   - name: Install nginx
     import_role:
-      name: ansible_nginx
+      name: ansible-role-nginx
     tags:
     - automation
     - nginx

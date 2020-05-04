@@ -47,17 +47,17 @@
 
 ###############################################################################
 # Add prometheus exporter
-- name: oVirt VDSM Prometheus exporter
-  remote_user: svc-ansible
-  become: true
-  hosts: ovirt
+# - name: oVirt VDSM Prometheus exporter
+#   remote_user: svc-ansible
+#   become: true
+#   hosts: ovirt
 
-  tasks:
-  - import_role:
-      name: ansible-vdsm-prometheus
-    tags:
-    - monitoring
-    vars:
-      vdsm_prom_ca: /etc/ipa/ca.crt
-      vdsm_prom_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
-      vdsm_prom_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
+#   tasks:
+#   - import_role:
+#       name: ansible-vdsm-prometheus
+#     tags:
+#     - monitoring
+#     vars:
+#       vdsm_prom_ca: /etc/ipa/ca.crt
+#       vdsm_prom_cert: /etc/pki/tls/certs/{{ ansible_fqdn }}.pem
+#       vdsm_prom_key: /etc/pki/tls/private/{{ ansible_fqdn }}.key
