@@ -393,6 +393,36 @@ all:
           file_sd_configs:
           - files:
             - /etc/prometheus/exporters/*_ipa_targets.yml
+        - job_name: ipmi_exporter
+          params:
+            module: [ipmi_lan2]
+          scrape_interval: 1m
+          scrape_timeout: 30s
+          metrics_path: /ipmi
+          scheme: http
+          file_sd_configs:
+          - files:
+            - /etc/prometheus/exporters/*_ipmi_targets.yml
+            refresh_interval: 5m
+          relabel_configs:
+          - source_labels: [__address__]
+            separator: ;
+            regex: (.*)
+            target_label: __param_target
+            replacement: ${1}
+            action: replace
+          - source_labels: [__param_target]
+            separator: ;
+            regex: (.*)
+            target_label: instance
+            replacement: ${1}
+            action: replace
+          - separator: ;
+            regex: .*
+            target_label: __address__
+            replacement: 127.0.0.1:9290
+            action: replace
+
 
         prometheus_node_exporter_targets:
         - project: "{{ prometheus_project }}"
@@ -439,6 +469,18 @@ all:
           targets:
           - ipa1.ipa.home.gatwards.org:9496
           - ipa2.ipa.home.gatwards.org:9496
+        prometheus_ipmi_exporter_targets:
+        - project: "{{ prometheus_project }}"
+          targets:
+          - kvm1-ipmi.core.home.gatwards.org
+
+        # ipmi_exporter: false
+        # ovirt_exporter: false
+        # ovirt_exporter_scrape_uri: 'https://ovirt-engine.lab.home.gatwards.org/ovirt-engine/api/'
+        # ovirt_exporter_ssl_verify: true
+        # ovirt_exporter_user: 'admin@internal'
+        # ovirt_exporter_password: '{{ vault_ovirt_admin_pass }}'
+        # ovirt_exporter_password_file: /usr/local/etc/ovirt_pass
 
 
     workstation:

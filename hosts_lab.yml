@@ -283,9 +283,6 @@ all:
           static_configs:
           - targets:
             - '{{ ansible_host }}:9325'
-          # file_sd_configs:
-          # - files:
-          #   - /etc/prometheus/exporters/*_ovirt_targets.yml
         - job_name: 'nifi_exporter'
           honor_labels: true
           file_sd_configs:
@@ -298,19 +295,21 @@ all:
             - /etc/prometheus/exporters/*_artifactory_targets.yml
         - job_name: ipmi_exporter
           params:
-            module: [supermicro]
+            module: [ipmi_lan2]
           scrape_interval: 1m
           scrape_timeout: 30s
           metrics_path: /ipmi
           scheme: http
           static_configs:
-          - targets:
-            - baremetal1-ipmi.lab.home.gatwards.org
-            - baremetal2-ipmi.lab.home.gatwards.org
-          # file_sd_configs:
-          # - files:
-          #   - /srv/ipmi_exporter/targets.yml
-          #   refresh_interval: 5m
+          # - targets:
+          #   - baremetal1-ipmi.lab.home.gatwards.org
+          #   - baremetal2-ipmi.lab.home.gatwards.org
+          #   labels:
+          #     project: "{{ prometheus_project }}"
+          file_sd_configs:
+          - files:
+            - /etc/prometheus/exporters/*_ipmi_targets.yml
+            refresh_interval: 5m
           relabel_configs:
           - source_labels: [__address__]
             separator: ;
@@ -368,10 +367,10 @@ all:
         #   targets:
         #   - ipa1.ipa.home.gatwards.org:9496
         #   - ipa2.ipa.home.gatwards.org:9496
-        prometheus_vdsm_exporter_targets:
-        - project: "{{ prometheus_project }}"
-          targets:
-          - baremetal1.lab.home.gatwards.org:8181
+        # prometheus_vdsm_exporter_targets:
+        # - project: "{{ prometheus_project }}"
+        #   targets:
+        #   - baremetal1.lab.home.gatwards.org:8181
         # prometheus_nifi_exporter_targets:
         # - project: "{{ prometheus_project }}"
         #   targets:
@@ -381,6 +380,12 @@ all:
         # - project: "{{ prometheus_project }}"
         #   targets:
         #   - artifactory.lab.home.gatwards.org:9531
+        prometheus_ipmi_exporter_targets:
+        - project: "{{ prometheus_project }}"
+          targets:
+          - baremetal1-ipmi.lab.home.gatwards.org
+          - baremetal2-ipmi.lab.home.gatwards.org
+
 
         ipmi_exporter: true
         ovirt_exporter: true

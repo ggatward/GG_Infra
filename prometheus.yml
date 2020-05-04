@@ -152,37 +152,37 @@
     vars:
       ipmi_exporter_configuration_modules:
         default:
-          collectors:
-          - bmc
-          - ipmi
-          - chassis
+          collectors: []
           user: default_user
           pass: example_pw
           privilege: user
           driver: LAN_2_0
           timeout: 10000
           exclude_sensor_ids: []
-        supermicro:
+        ipmi_lan2:
           collectors:
           - bmc
           - ipmi
           - chassis
           - sel
+          - dcmi
           user: prometheus
           pass: "{{ vault_ipmi_pass }}"
           privilege: user
           driver: LAN_2_0
           timeout: 10000
           exclude_sensor_ids: []
-        hpmicroserver:
+        ipmi_lan:
           collectors:
           - bmc
           - ipmi
           - chassis
+          - sel
+          - dcmi
           user: prometheus
           pass: "{{ vault_ipmi_pass }}"
           privilege: user
-          driver: LAN_2_0
+          driver: LAN
           timeout: 10000
           exclude_sensor_ids: []
 
@@ -386,6 +386,19 @@
     with_items: "{{ prometheus_artifactory_exporter_targets }}"
     when: prometheus_artifactory_exporter_targets is defined and prometheus_artifactory_exporter_targets|length > 0
 
+  - name: Deploy IPMI exporter configuration
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: /etc/prometheus/exporters/{{ item.project }}_ipmi_targets.yml
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_ipmi_exporter_targets }}"
+    when: prometheus_ipmi_exporter_targets is defined and prometheus_ipmi_exporter_targets|length > 0
 
   # Not done inside role (Only needed if we are federating Prometheus)
   - name: Open Prometheus firewall ports to receive push events
