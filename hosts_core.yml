@@ -474,7 +474,7 @@ all:
           targets:
           - kvm1-ipmi.core.home.gatwards.org
 
-        # ipmi_exporter: false
+        ipmi_exporter: true
         # ovirt_exporter: false
         # ovirt_exporter_scrape_uri: 'https://ovirt-engine.lab.home.gatwards.org/ovirt-engine/api/'
         # ovirt_exporter_ssl_verify: true
