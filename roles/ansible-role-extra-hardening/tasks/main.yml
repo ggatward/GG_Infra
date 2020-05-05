@@ -55,6 +55,15 @@
     permanent: true
     immediate: true
 
+- name: Set FQDN on syslog messages
+  copy:
+    content: |
+      $PreserveFQDN on
+    dest: /etc/rsyslog.d/preserve_fqdn.conf
+    owner: root
+    group: root
+    mode: '0600'
+
 - name: Include RaspberryPi tasks
   include_tasks: raspberry.yml
   when: ansible_distribution == 'Debian'

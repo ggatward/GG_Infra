@@ -18,7 +18,7 @@ all:
       server ntp2.core.home.gatwards.org iburst
       server ntp3.core.home.gatwards.org iburst
     cis_ntp_clients: "{{ cis_chrony_servers }}"
-
+    cis_rsyslog_remote_loghost_address: syslog.core.home.gatwards.org
     cis_local_login_warning_banner: |+
       ###############################################################
       #  All connections to this system are monitored and recorded  #
