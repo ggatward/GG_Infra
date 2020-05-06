@@ -4,6 +4,7 @@ network:pingdevice:MG_phone [ hostname="172.22.7.11", retry=2 ]
 network:pingdevice:AG_phone [ hostname="172.22.1.228", retry=2 ]
 network:pingdevice:GG_phone [ hostname="172.22.1.221", retry=2 ]
 
+network:pingdevice:Irrigation_Controller [ hostname="172.22.2.124", retry=2 ]
 
 //network:pingdevice:second_device [ hostname="192.168.0.65", retry=1, timeout=5000, refreshInterval=60000 ]
 //network:servicedevice:important_server [ hostname="192.168.0.62", port=1234 ]

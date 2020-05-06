@@ -18,3 +18,7 @@ DateTime  Net_CG_Since          "Caitlyn Ipod Last Change [%1$td/%1$tm %1$tH:%1$
 
 //Switch    Net_LoungeTV              "Lounge TV [MAP(onoff.map):%s]"                             <television>      (gNetwork)            {channel="network:pingdevice:Net_Lounge_TV:online"}
 //DateTime  Net_LoungeTV_Since        "Lounge TV Last Seen [%1$td.%1$tm.%1$tY, %1$tH:%1$tM]"      <time>            (gNetwork)            {channel="network:pingdevice:Net_Lounge_TV:lastseen"}
+
+Switch    Net_Irrigation_Online         "Irrigation [MAP(network.map):%s]"                            (gNetwork)   {channel="network:pingdevice:Irrigation_Controller:online"}
+DateTime  Net_Irrigation_LastUpdate     "Irrigation Last Seen [%1$td/%1$tm %1$tH:%1$tM]"      <time>  (gNetwork)   {channel="network:pingdevice:Irrigation_Controller:lastseen"}
+DateTime  Net_Irrigation_Since          "Irrigation Last Change [%1$td/%1$tm %1$tH:%1$tM]"    <time>  (gNetwork)

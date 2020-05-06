@@ -139,6 +139,18 @@ all:
             - '{{ ansible_host }}:9093'
             labels:
               project: "{{ prometheus_project }}"
+
+        - job_name: 'federate'
+          honor_labels: true
+          scheme: 'http'
+          metrics_path: '/federate'
+          params:
+            match[]:
+            - '{job!=""}'
+          static_configs:
+          - targets:
+            - 'stack.lab.home.gatwards.org:9091'
+
         - job_name: 'haproxy_exporter'
           honor_labels: true
           file_sd_configs:

@@ -464,6 +464,7 @@ all:
           - influxdb.core.home.gatwards.org
           - ipa1.ipa.home.gatwards.org
           - ipa2.ipa.home.gatwards.org
+          - irrigation.iot.home.gatwards.org
         prometheus_ipa_exporter_targets:
         - project: "{{ prometheus_project }}"
           targets:
