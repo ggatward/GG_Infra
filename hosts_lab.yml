@@ -149,7 +149,7 @@ all:
             - '{job!=""}'
           static_configs:
           - targets:
-            - 'stack.lab.home.gatwards.org:9091'
+            - 'stack.osp.home.gatwards.org:9091'
 
         - job_name: 'haproxy_exporter'
           honor_labels: true

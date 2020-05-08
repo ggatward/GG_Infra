@@ -5,6 +5,9 @@ yum -y install epel-release
 yum -y install python2-pip
 yum -y install python-virtualenv ansible
 
+# Need to do this outside the v-env as well to ensure docker pip version is installed ?????
+pip install kolla-ansible
+
 virtualenv /root/openstack
 source /root/openstack/bin/activate
 pip install -U pip
@@ -17,34 +20,157 @@ cp -r /root/openstack/share/kolla-ansible/etc_examples/kolla/* /etc/kolla
 cp /root/openstack/share/kolla-ansible/ansible/inventory/* .
 kolla-genpwd
 
-sed -i 's/^#pipelining.*/pipelining = True/' /etc/ansible/ansible.cfg
-sed -i 's/^#forks.*/forks          = 100/' /etc/ansible/ansible.cfg
-sed -i 's/^#host_key_checking.*/host_key_checking = False/' /etc/ansible/ansible.cfg
+#sed -i 's/^#pipelining.*/pipelining = True/' /etc/ansible/ansible.cfg
+#sed -i 's/^#forks.*/forks          = 100/' /etc/ansible/ansible.cfg
+#sed -i 's/^#host_key_checking.*/host_key_checking = False/' /etc/ansible/ansible.cfg
 
 
-
+sed -i 's/^#openstack_release:.*/openstack_release: "train"/' /etc/kolla/globals.yml
 sed -i 's/^#kolla_base_distro:.*/kolla_base_distro: "centos"/' /etc/kolla/globals.yml
 sed -i 's/^#kolla_install_type:.*/kolla_install_type: "binary"/' /etc/kolla/globals.yml
-sed -i 's/^#openstack_release:.*/openstack_release: "train"/' /etc/kolla/globals.yml
 sed -i 's/^#om_rpc_transport:.*/om_rpc_transport: "rabbit"/' /etc/kolla/globals.yml
-sed -i 's/^#kolla_internal_vip_address:.*/kolla_internal_vip_address: "172.22.4.201"/' /etc/kolla/globals.yml
-# sed -i 's/^#kolla_external_vip_address:.*/kolla_external_vip_address: "172.22.6.201"/' /etc/kolla/globals.yml
-# sed -i 's/^#kolla_external_fqdn:.*/kolla_external_fqdn: "stack.lab.home.gatwards.org"/' /etc/kolla/globals.yml
-# sed -i 's/^#kolla_external_vip_interface:.*/kolla_external_vip_interface: "eno2"/' /etc/kolla/globals.yml
-sed -i 's/^#kolla_internal_fqdn:.*/kolla_internal_fqdn: "stack.lab.home.gatwards.org"/' /etc/kolla/globals.yml
-sed -i 's/^#network_interface:.*/network_interface: "eno1"/' /etc/kolla/globals.yml
-sed -i 's/^#neutron_external_interface:.*/neutron_external_interface: "ens5f0"/' /etc/kolla/globals.yml
 sed -i 's/^#enable_openstack_core:.*/enable_openstack_core: "yes"/' /etc/kolla/globals.yml
 sed -i 's/^#enable_central_logging:.*/enable_central_logging: "yes"/' /etc/kolla/globals.yml
 sed -i 's/^#enable_grafana:.*/enable_grafana: "yes"/' /etc/kolla/globals.yml
 sed -i 's/^#enable_prometheus:.*/enable_prometheus: "yes"/' /etc/kolla/globals.yml
 sed -i 's/^#enable_telegraf:.*/enable_telegraf: "yes"/' /etc/kolla/globals.yml
 
+####### Baremetal
+sed -i 's/^#network_interface:.*/network_interface: "eno2"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_internal_vip_address:.*/kolla_internal_vip_address: "172.22.3.201"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_internal_fqdn:.*/kolla_internal_fqdn: "stack.osp.home.gatwards.org"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_external_vip_interface:.*/kolla_external_vip_interface: "eno1"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_external_vip_address:.*/kolla_external_vip_address: "172.22.4.201"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_external_fqdn:.*/kolla_external_fqdn: "stack.lab.home.gatwards.org"/' /etc/kolla/globals.yml
+sed -i 's/^#enable_neutron_provider_networks:.*/enable_neutron_provider_networks: "yes"/' /etc/kolla/globals.yml
+sed -i 's/^#neutron_external_interface:.*/neutron_external_interface: "ens5f0"/' /etc/kolla/globals.yml
+inventory='./all-in-one'
 
-kolla-ansible -i ./all-in-one bootstrap-servers
-kolla-ansible -i ./all-in-one prechecks
-kolla-ansible -i ./all-in-one deploy
+####### VMs
+sed -i 's/^#keepalived_virtual_router_id:.*/keepalived_virtual_router_id: "61"/' /etc/kolla/globals.yml
+sed -i 's/^#network_interface:.*/network_interface: "eth0"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_internal_vip_address:.*/kolla_internal_vip_address: "172.22.3.221"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_internal_fqdn:.*/kolla_internal_fqdn: "stack2.osp.home.gatwards.org"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_external_vip_interface:.*/kolla_external_vip_interface: "eth0"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_external_vip_address:.*/kolla_external_vip_address: "172.22.4.221"/' /etc/kolla/globals.yml
+sed -i 's/^#kolla_external_fqdn:.*/kolla_external_fqdn: "stack2.lab.home.gatwards.org"/' /etc/kolla/globals.yml
+sed -i 's/^#enable_neutron_provider_networks:.*/enable_neutron_provider_networks: "yes"/' /etc/kolla/globals.yml
+sed -i 's/^#neutron_external_interface:.*/neutron_external_interface: "eth1"/' /etc/kolla/globals.yml
+inventory='./multinode'
+
+## Copy ssh key from deploy01 to all nodes
+## Edit multinode inventory
+
+
+kolla-ansible -i ${inventory} bootstrap-servers
+kolla-ansible -i ${inventory} prechecks
+kolla-ansible -i ${inventory} deploy
 
 pip install python-openstackclient
+# Fix import for python2
+sed -i 's/import queue/import Queue as queue/' /root/openstack/lib/python2.7/site-packages/openstack/utils.py
+sed -i 's/import queue/import Queue as queue/' /root/openstack/lib/python2.7/site-packages/openstack/cloud/openstackcloud.py
+
+
 kolla-ansible post-deploy
 . /etc/kolla/admin-openrc.sh
+
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-ens5f0
+DEVICE=ens5f0
+TYPE=OVSPort
+DEVICETYPE=ovs
+OVS_BRIDGE=br-ex
+ONBOOT=yes
+NM_CONTROLLED=no
+BOOTPROTO=none
+EOF
+
+# Enable VLANs on provider networks
+sed -i 's/network_vlan_ranges =.*/network_vlan_ranges = physnet1:1:7/' /etc/kolla/neutron-server/ml2_conf.ini
+sed -i 's/flat_networks = physnet1/flat_networks =/' /etc/kolla/neutron-server/ml2_conf.ini
+docker restart neutron_server
+
+openstack network create provider-vlan6 \
+  --provider-network-type vlan \
+  --external \
+  --provider-physical-network physnet1 \
+  --provider-segment 6 \
+  --share
+
+openstack subnet create subnet-provider-vlan6 \
+  --subnet-range 172.22.6.0/24 \
+  --network provider-vlan6 \
+  --gateway 172.22.6.1 \
+  --dhcp
+
+# Upload images
+openstack image create Centos7 \
+  --disk-format qcow2 \
+  --min-disk 10 \
+  --min-ram 2 \
+  --file /root/CentOS-7-x86_64-rooted.qcow2 \
+  --public
+
+# Create flavor
+openstack flavor create g.small \
+  --vcpus 1 \
+  --ram 2 \
+  --disk 40 \
+  --public
+
+
+###################
+# Integrate with IPA
+scp root@ipa1.ipa.home.gatwards.org:/etc/ipa/ca.crt /root
+openssl x509 -in ca.crt -out ca.pem -outform PEM
+cp ca.pem /etc/pki/ca-trust/source/anchors/
+update-ca-trust
+
+setsebool -P authlogin_nsswitch_use_ldap=on
+mkdir /etc/kolla/keystone/domains
+chmod 750 /etc/kolla/keystone/domains
+sed -i 's/OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT =.*/OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True/' /etc/kolla/horizon/local_settings
+docker restart horizon
+
+openstack domain create LAB
+cat << EOF > /etc/kolla/keystone/domains/keystone.LAB.conf
+[ldap]
+url = ldaps://ipa1.ipa.home.gatwards.org
+user = uid=svc-openstack,cn=users,cn=accounts,dc=ipa,dc=home,dc=gatwards,dc=org
+user_filter = (memberOf=cn=openstack_users,cn=groups,cn=accounts,dc=ipa,dc=home,dc=gatwards,dc=org)
+password = Adm1Cmv4$
+user_tree_dn = cn=users,cn=accounts,dc=ipa,dc=home,dc=gatwards,dc=org
+user_objectclass = inetUser
+user_id_attribute = uid
+user_name_attribute = uid
+user_mail_attribute = mail
+user_pass_attribute =
+user_allow_create = False
+user_allow_update = False
+user_allow_delete = False
+group_tree_dn = cn=groups,cn=accounts,dc=ipa,dc=home,dc=gatwards,dc=org
+group_objectclass = groupOfNames
+group_id_attribute = cn
+group_name_attribute =  cn
+group_member_attribute = member
+group_desc_attribute = description
+group_allow_create = False
+group_allow_update = False
+group_allow_delete = False
+use_tls = False
+query_scope = sub
+chase_referrals = false
+tls_cacertfile = /etc/pki/ca-trust/source/anchors/ca.pem
+
+[identity]
+driver = ldap
+EOF
+
+domain_id=$(openstack domain show LAB -f shell | grep id | cut -f2 -d= | tr -d \")
+admin_id=$(openstack user list -f csv --domain default | grep admin | cut -f1 -d, | tr -d \")
+admin_role=$(openstack role list -f csv | grep admin | cut -f1 -d, | tr -d \")
+openstack role add --domain $domain_id --user $admin_id $admin_role
+
+docker restart keystone
+
