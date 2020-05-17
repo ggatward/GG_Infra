@@ -7,7 +7,7 @@ String  SayCommand
 String  Speaker
 
 Dimmer	SonosLivingroom_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:volume" }
-Player	SonosLivingroom_Control		        <player>        (gSonosState)		     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:control" }
+Player	SonosLivingroom_Control		        <player>        (gSonosState,LivingDining)		     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:control" }
 Switch  SonosLivingroom_ClearQueue      			        (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:clearqueue" }
 Image   SonosLivingroom_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:currentalbumart" }
 String  SonosLivingroom_CurrentArtist		                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}:currentartist" }
@@ -30,7 +30,7 @@ String	SonosLivingroom_Favourites                          (gSonos)
 
 
 Dimmer	SonosAlfresco_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:volume" }
-Player	SonosAlfresco_Control		        <player>		(gSonosState)		     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:control" }
+Player	SonosAlfresco_Control		        <player>		(gSonosState,Alfresco)		     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:control" }
 Switch  SonosAlfresco_ClearQueue      			            (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:clearqueue" }
 Image   SonosAlfresco_CurrentAlbumArt				        (gSonos)	             { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:currentalbumart" }
 String  SonosAlfresco_CurrentArtist			                (gSonos)			     { channel="sonos:CONNECTAMP:{{ openhab_sonos_ids.alfresco }}:currentartist" }
@@ -53,7 +53,7 @@ String	SonosAlfresco_Favourites                            (gSonos)
 
 
 Dimmer	SonosPortable1_Volume		        <soundvolume>	(gSonosVolume)	         { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:volume" }
-Player	SonosPortable1_Control		        <player>		(gSonosState)		     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:control" }
+Player	SonosPortable1_Control		        <player>		(gSonosState,AnnasRoom)		     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:control" }
 Switch  SonosPortable1_ClearQueue      			            (gSonos)	             { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:clearqueue" }
 Image   SonosPortable1_CurrentAlbumArt				        (gSonos)	             { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:currentalbumart" }
 String  SonosPortable1_CurrentArtist		                (gSonos)			     { channel="sonos:PLAY1:{{ openhab_sonos_ids.portable1 }}:currentartist" }

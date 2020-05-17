@@ -73,22 +73,22 @@ Bridge mqtt:broker:mosquitto "MQTT Broker" [ host="{{ openhab_mqtt_broker_fqdn }
         Type number : POW-Power     [ stateTopic="home/laundry/sonoff/dryer/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
     }
 
-    Thing topic sonoff3 "Sonoff3" {
+    Thing topic sonoff3 "Irrigation Pump Sonoff" {
         Channels:
-        Type switch : power       [ stateTopic="home/room/sonoff/item3/stat/POWER", commandTopic="home/room/sonoff/item3/cmnd/POWER", on="ON", off="OFF"]
-        Type string : devicestate [ stateTopic="home/room/sonoff/item3/tele/LWT"]
-        Type number : wifi-rssi   [ stateTopic="home/room/sonoff/item3/tele/STATE", transformationPattern="JSONPATH:$.Wifi.RSSI"]
-        Type string : fw          [ stateTopic="home/room/sonoff/item3/tele/INFO1", transformationPattern="JSONPATH:$.Version"]
-        Type string : hostname    [ stateTopic="home/room/sonoff/item3/tele/INFO2", transformationPattern="JSONPATH:$.Hostname"]
-        Type string : ip          [ stateTopic="home/room/sonoff/item3/tele/INFO2", transformationPattern="JSONPATH:$.IPAddress"]
-        Type string : wifi-ap       [ stateTopic="home/room/sonoff/item3/tele/STATE", transformationPattern="JSONPATH:$.Wifi.AP" ]
-        Type string : wifi-ssid     [ stateTopic="home/room/sonoff/item3/tele/STATE", transformationPattern="JSONPATH:$.Wifi.SSId" ]
-        Type string : wifi-channel  [ stateTopic="home/room/sonoff/item3/tele/STATE", transformationPattern="JSONPATH:$.Wifi.Channel" ]
-        Type string : SensorTime    [ stateTopic="home/room/sonoff/item3/tele/SENSOR", transformationPattern="JSONPATH:$.Time" ]
-        Type string : POW-startTime [ stateTopic="home/room/sonoff/item3/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.TotalStartTime" ]
-        Type number : POW-Total     [ stateTopic="home/room/sonoff/item3/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
-        Type number : POW-Voltage   [ stateTopic="home/room/sonoff/item3/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
-        Type number : POW-Power     [ stateTopic="home/room/sonoff/item3/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
+        Type switch : power       [ stateTopic="home/backyard/sonoff/irrigpump/stat/POWER", commandTopic="home/backyard/sonoff/irrigpump/cmnd/POWER", on="ON", off="OFF"]
+        Type string : devicestate [ stateTopic="home/backyard/sonoff/irrigpump/tele/LWT"]
+        Type number : wifi-rssi   [ stateTopic="home/backyard/sonoff/irrigpump/tele/STATE", transformationPattern="JSONPATH:$.Wifi.RSSI"]
+        Type string : fw          [ stateTopic="home/backyard/sonoff/irrigpump/tele/INFO1", transformationPattern="JSONPATH:$.Version"]
+        Type string : hostname    [ stateTopic="home/backyard/sonoff/irrigpump/tele/INFO2", transformationPattern="JSONPATH:$.Hostname"]
+        Type string : ip          [ stateTopic="home/backyard/sonoff/irrigpump/tele/INFO2", transformationPattern="JSONPATH:$.IPAddress"]
+        Type string : wifi-ap       [ stateTopic="home/backyard/sonoff/irrigpump/tele/STATE", transformationPattern="JSONPATH:$.Wifi.AP" ]
+        Type string : wifi-ssid     [ stateTopic="home/backyard/sonoff/irrigpump/tele/STATE", transformationPattern="JSONPATH:$.Wifi.SSId" ]
+        Type string : wifi-channel  [ stateTopic="home/backyard/sonoff/irrigpump/tele/STATE", transformationPattern="JSONPATH:$.Wifi.Channel" ]
+        Type string : SensorTime    [ stateTopic="home/backyard/sonoff/irrigpump/tele/SENSOR", transformationPattern="JSONPATH:$.Time" ]
+        Type string : POW-startTime [ stateTopic="home/backyard/sonoff/irrigpump/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.TotalStartTime" ]
+        Type number : POW-Total     [ stateTopic="home/backyard/sonoff/irrigpump/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Total" ]
+        Type number : POW-Voltage   [ stateTopic="home/backyard/sonoff/irrigpump/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Voltage" ]
+        Type number : POW-Power     [ stateTopic="home/backyard/sonoff/irrigpump/tele/SENSOR", transformationPattern="JSONPATH:$.ENERGY.Power" ]
     }
 
     Thing topic sonoff4 "Sonoff4" {

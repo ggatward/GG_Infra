@@ -1,6 +1,7 @@
 Group      gSonoff          "Sonoff Devices"    (Home)
 Group      gSonoffSw1       "Washing Machine"   (gSonoff)
 Group      gSonoffSw2       "Dryer"             (gSonoff)
+Group      gSonoffSw3       "Irrigation Pump"   (gSonoff)
 
 Switch Sonoff1_Switch          "Washing Machine Switch"                 <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff1:power" }
 String Sonoff1_DeviceState     "Washing Machine Sonoff Status [%s]"     <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff1:devicestate" }
@@ -32,6 +33,20 @@ Number:Energy Sonoff2_PowTotal "Dryer Total Energy Used [%.2f kWh]"     <powerou
 Number Sonoff2_Voltage         "Dryer Sonoff Voltage [%.1f V]"                              (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-Voltage" }
 Number Sonoff2_Power           "Dryer Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw2,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff2:POW-Power" }
 
+Switch Sonoff3_Switch          "Irrigation Pump Switch"                           <poweroutlet_au>    (Backyard,gIrrigation)      { channel="mqtt:topic:mosquitto:sonoff3:power" }
+String Sonoff3_DeviceState     "Irrigation Pump Sonoff Status [%s]"               <shield>            (gReachable)    { channel="mqtt:topic:mosquitto:sonoff3:devicestate" }
+String Sonoff3_hostname        "Irrigation Pump Sonoff hostname"                                      (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:hostname" }
+String Sonoff3_IP              "Irrigation Pump Sonoff IP"                        <ip>                (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:ip" }
+String Sonoff3_FW              "Irrigation Pump Sonoff FW"                        <selfinfo>          (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:fw" }
+String Sonoff3_WifiAp          "Irrigation Pump Sonoff Wifi AP"                                       (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:wifi-ap" }
+String Sonoff3_WifiSSID        "Irrigation Pump Sonoff Wifi SSID"                                     (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:wifi-ssid" }
+String Sonoff3_WifiChannel     "Irrigation Pump Sonoff Wifi Channel"                                  (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:wifi-channel" }
+Number Sonoff3_WifiRssi        "Irrigation Pump Sonoff Wifi RSSI"                 <network>           (gSonoffSw3,gWifiRSSI)    { channel="mqtt:topic:mosquitto:sonoff3:wifi-rssi" }
+String Sonoff3_Time            "Irrigation Pump Sonoff Sensor Time"                                   (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:SensorTime" }
+String Sonoff3_PowStart        "Irrigation Pump Sonoff Power Start"                                   (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:POW-startTime" }
+Number:Energy Sonoff3_PowTotal "Irrigation Pump Total Energy Used [%.2f kWh]"     <poweroutlet_au>    (gSonoffSw3,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff3:POW-Total" }
+Number Sonoff3_Voltage         "Irrigation Pump Sonoff Voltage [%.1f V]"                              (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:POW-Voltage" }
+Number Sonoff3_Power           "Irrigation Pump Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw3,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff3:POW-Power" }
 
 
 // Topic = home/room/sonoff/itemX

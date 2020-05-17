@@ -4,11 +4,16 @@ when
     Item SprinklerSystemZone1 received command
 then
     if(receivedCommand == ON) {
-        SprinklerSystemZone1MQTT.sendCommand('Z1ON')
-        // SprinklerSystemZone1.postUpdate(ON)
+        if (Sonoff3_Switch.state == OFF) {
+            sendCommand(Sonoff3_Switch, ON)
+            createTimer(now.plusSeconds(10)) [|
+                SprinklerSystemZone1MQTT.sendCommand('Z1ON')
+            ]
+        } else {
+            SprinklerSystemZone1MQTT.sendCommand('Z1ON')
+        }
     } else {
         SprinklerSystemZone1MQTT.sendCommand('Z1OFF')
-        // SprinklerSystemZone1.postUpdate(OFF)
     }
 end
 
@@ -17,11 +22,16 @@ when
     Item SprinklerSystemZone2 received command
 then
     if(receivedCommand == ON) {
-        SprinklerSystemZone2MQTT.sendCommand('Z2ON')
-        // SprinklerSystemZone2.postUpdate(ON)
+        if (Sonoff3_Switch.state == OFF) {
+            sendCommand(Sonoff3_Switch, ON)
+            createTimer(now.plusSeconds(10)) [|
+                SprinklerSystemZone2MQTT.sendCommand('Z2ON')
+            ]
+        } else {
+            SprinklerSystemZone2MQTT.sendCommand('Z2ON')
+        }
     } else {
         SprinklerSystemZone2MQTT.sendCommand('Z2OFF')
-        // SprinklerSystemZone2.postUpdate(OFF)
     }
 end
 
@@ -30,57 +40,125 @@ when
     Item SprinklerSystemZone3 received command
 then
     if(receivedCommand == ON) {
-        SprinklerSystemZone3MQTT.sendCommand('Z3ON')
-        // SprinklerSystemZone3.postUpdate(ON)
+        if (Sonoff3_Switch.state == OFF) {
+            sendCommand(Sonoff3_Switch, ON)
+            createTimer(now.plusSeconds(10)) [|
+                SprinklerSystemZone3MQTT.sendCommand('Z3ON')
+            ]
+        } else {
+            SprinklerSystemZone3MQTT.sendCommand('Z3ON')
+        }
     } else {
         SprinklerSystemZone3MQTT.sendCommand('Z3OFF')
-        // SprinklerSystemZone3.postUpdate(OFF)
     }
 end
 
 
+// This rule turns off the switch on the sitemap - all three zones get the same command at the same time.
+// If all three zones are OFF we also turn off the pump
+rule "Sprinkler Switch Reset"
+when
+    Item SprinklerSystemZone1MQTT received command or
+    Item SprinklerSystemZone2MQTT received command or
+    Item SprinklerSystemZone3MQTT received command
+then
+    if(receivedCommand == 'Z1OFF') {
+        sendCommand(SprinklerZone1, OFF)
+    }
+    if(receivedCommand == 'Z2OFF') {
+        sendCommand(SprinklerZone2, OFF)
+    }
+    if(receivedCommand == 'Z3OFF') {
+        sendCommand(SprinklerZone3, OFF)
+    }
+    createTimer(now.plusSeconds(30)) [|
+        if (SprinklerZone1.state != ON) {
+            if (SprinklerZone2.state != ON) {
+                if (SprinklerZone3.state != ON) {
+
+                    sendCommand(Sonoff3_Switch, OFF)
+                }
+            }
+        }
+    ]
+end
 
 
+// When a zone is turned on via sitemap switch run for 5 minutes
+rule "Zone1 5 Minute Cycle"
+when
+    Item SprinklerZone1 received update ON
+then
+    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+    sendCommand(SprinklerSystemZone1, ON)
+    createTimer(now.plusMinutes(5)) [|
+        sendCommand(SprinklerSystemZone1, OFF)
+    ]
+end
 
-//If sprinkler system schedule is on then water each zone at 7 am for 5 min
-rule "Sprinkler System Schedule"
+rule "Zone2 5 Minute Cycle"
+when
+    Item SprinklerZone2 received update ON
+then
+    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+    sendCommand(SprinklerSystemZone2, ON)
+    createTimer(now.plusMinutes(5)) [|
+        sendCommand(SprinklerSystemZone2, OFF)
+    ]
+end
+
+rule "Zone3 5 Minute Cycle"
+when
+    Item SprinklerZone3 received update ON
+then
+    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+    sendCommand(SprinklerSystemZone3, ON)
+    createTimer(now.plusMinutes(1)) [|
+        sendCommand(SprinklerSystemZone3, OFF)
+    ]
+end
+
+
+//If sprinkler system schedule is on then water each zone at 7 am
+rule "Sprinkler System 1-zone Schedule"
 when
     Time cron "0 0 7 1/1 * ? *"
 then
     if(SprinklerSystemSchedule.state == ON) {
-        // sendBroadcastNotification("SPRINKLER SYSTEM: Daily Watering Active")
+        // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
         sendCommand(SprinklerSystemZone1, ON)
         createTimer(now.plusMinutes(5)) [|
             sendCommand( SprinklerSystemZone1, OFF)
-            sendCommand( SprinklerSystemZone2, ON)
-            createTimer(now.plusMinutes(5)) [|
-                sendCommand( SprinklerSystemZone2, OFF)
-                // sendCommand( SprinklerSystemZone3, ON)
-                // createTimer(now.plusMinutes(1)) [|
-                //     sendCommand( SprinklerSystemZone3, OFF)
-                // ]
-            ]
+            // sendCommand( SprinklerSystemZone2, ON)
+            // createTimer(now.plusMinutes(5)) [|
+            //     sendCommand( SprinklerSystemZone2, OFF)
+            //     sendCommand( SprinklerSystemZone3, ON)
+            //     createTimer(now.plusMinutes(1)) [|
+            //         sendCommand( SprinklerSystemZone3, OFF)
+            //     ]
+            // ]
         ]
     }
 end
 
-//If 5 Minute Cycle Switch Is On then water each zone for 10 min
-rule "5 Minute Cycle"
-when
-    Item SprinklerCycle received update ON
-then
-    // sendBroadcastNotification("SPRINKLER SYSTEM: 5 Minute Cycle Active")
-    sendCommand(SprinklerSystemZone1, ON)
-    createTimer(now.plusMinutes(5)) [|
-        sendCommand(SprinklerSystemZone1, OFF)
-        sendCommand(SprinklerSystemZone2, ON)
-        createTimer(now.plusMinutes(5)) [|
-            sendCommand(SprinklerSystemZone2, OFF)
-            // sendCommand(SprinklerSystemZone3, ON)
-            // createTimer(now.plusMinutes(1)) [|
-            //     sendCommand(SprinklerSystemZone3, OFF)
-            // ]
-        ]
-    ]
-    sendCommand(SprinklerCycle, OFF)
-end
+//If sprinkler system schedule is on then water each zone at 7 am
+// rule "Sprinkler System 2-zone Schedule"
+// when
+//     Time cron "0 0 7 1/1 * ? *"
+// then
+//     if(SprinklerSystemSchedule.state == ON) {
+//         // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+//         sendCommand(SprinklerSystemZone1, ON)
+//         createTimer(now.plusMinutes(5)) [|
+//             sendCommand( SprinklerSystemZone1, OFF)
+//             sendCommand( SprinklerSystemZone2, ON)
+//             createTimer(now.plusMinutes(5)) [|
+//                 sendCommand( SprinklerSystemZone2, OFF)
+//                 // sendCommand( SprinklerSystemZone3, ON)
+//                 // createTimer(now.plusMinutes(1)) [|
+//                 //     sendCommand( SprinklerSystemZone3, OFF)
+//                 // ]
+//             ]
+//         ]
+//     }
+// end

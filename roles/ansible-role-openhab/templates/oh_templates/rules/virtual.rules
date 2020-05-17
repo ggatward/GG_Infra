@@ -60,7 +60,7 @@ then
 
         // Turn on the radio
         if (Today != "Saturday" && Today != "Sunday") {
-            SonosLivingroom_Volume.sendCommand(22)
+            SonosLivingroom_Volume.sendCommand(25)
             SonosLivingroom_Favourites.sendCommand("Mix1063")
         }
         if (Today == "Saturday" || Today == "Sunday") {

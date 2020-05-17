@@ -1,8 +1,8 @@
 
 network:pingdevice:CG_ipod  [ hostname="172.22.7.33", retry=2 ]
 network:pingdevice:MG_phone [ hostname="172.22.7.11", retry=2 ]
-network:pingdevice:AG_phone [ hostname="172.22.1.228", retry=2 ]
-network:pingdevice:GG_phone [ hostname="172.22.1.221", retry=2 ]
+network:pingdevice:AG_phone [ hostname="172.22.1.226", retry=2 ]
+network:pingdevice:GG_phone [ hostname="172.22.1.222", retry=2 ]
 
 network:pingdevice:Irrigation_Controller [ hostname="172.22.2.124", retry=2 ]
 

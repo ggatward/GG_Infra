@@ -6,6 +6,7 @@ sitemap ourhouse label="Our Home" {
         Group item=MasterBedroom
         Group item=Wardrobe
         Group item=Ensuite
+        Group item=AnnasRoom
         Group item=MichaelsRoom
         Group item=CaitlynsRoom
         Group item=Bathroom
@@ -24,10 +25,11 @@ sitemap ourhouse label="Our Home" {
         Group item=Driveway
         Group item=Shed
         Text label="Irrigation" icon="water" {
-            Switch item=SprinklerSystemZone1
-            Switch item=SprinklerSystemZone2
-            Switch item=SprinklerSystemZone3
-            Switch item=SprinklerCycle
+            Switch item=Sonoff3_Switch
+            Switch item=SprinklerZone1
+            Switch item=SprinklerZone2
+            Switch item=SprinklerZone3
+//            Switch item=SprinklerCycle
             Switch item=SprinklerSystemSchedule
         }
     }
