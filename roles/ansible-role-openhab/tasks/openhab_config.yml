@@ -132,6 +132,16 @@
   - all
   - config
 
+- name: Configure Java extra options
+  tags:
+  - all
+  - config
+  lineinfile:
+    path: /etc/default/openhab2
+    regexp: "^EXTRA_JAVA_OPTS="
+    line: 'EXTRA_JAVA_OPTS="-Dgnu.io.rxtx.SerialPorts=/dev/ttyUSB-ZStick"'
+  notify: Restart Openhab
+
 #   # To get the symbolic names:
 #   # ssh -p 8101 openhab@localhost
 #   # openhab> bundle:list -s

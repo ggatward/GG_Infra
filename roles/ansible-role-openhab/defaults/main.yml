@@ -52,5 +52,5 @@ openhab_pushover_user_key1: 'usertoken'
 
 openhab_voicerss_api_key: 'apitoken'
 
-openhab_zwave_device: /dev/ttyACM0
+openhab_zwave_device: /dev/ttyUSB-ZStick
 openhab_zwave_securitykey: 'securitystring'

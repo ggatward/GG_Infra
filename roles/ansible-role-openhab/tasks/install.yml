@@ -59,3 +59,14 @@
   - openhab2
   tags:
   - openhab
+
+- name: Add udev rule for ZWave stick
+  tags:
+  - openhab
+  copy:
+    content: |
+      SUBSYSTEM=="tty", ATTRS{idVendor}=="0658", ATTRS{idProduct}=="0200", SYMLINK+="ttyUSB-ZStick", GROUP="dialout", MODE="0666"
+    dest: /etc/udev/rules.d/99-zwave.rules
+    owner: root
+    group: root
+    mode: '0644'
