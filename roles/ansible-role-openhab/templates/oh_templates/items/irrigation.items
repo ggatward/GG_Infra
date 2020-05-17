@@ -1,10 +1,10 @@
 Group    gIrrigation    "Irrigation"          <water>      (Home)
 
-Switch SprinklerZone1               "Back Yard"     <water>     (gIrrigation,Backyard)    [ "Switchable" ]
-Switch SprinklerZone2               "Front Yard"    <water>     (gIrrigation,FrontYard)    [ "Switchable" ]
-Switch SprinklerZone3               "Zone 3"        <water>     (gIrrigation)    [ "Switchable" ]
+Switch SprinklerZone1               "Back Yard Sprinklers"     <water>     (gIrrigation,Backyard)    [ "Switchable" ]
+Switch SprinklerZone2               "Front Yard Sprinklers"    <water>     (gIrrigation,FrontYard)    [ "Switchable" ]
+Switch SprinklerZone3               "Zone 3 Sprinklers"        <water>     (gIrrigation)    [ "Switchable" ]
 Switch SprinklerCycle "5 Minute Cycle" <water> [ "Switchable" ]
-Switch SprinklerSystemSchedule "Sprinkler System Schedule" <calendar> [ "Switchable" ]
+Switch SprinklerSystemSchedule "Sprinkler System Automatic Schedule" <calendar> [ "Switchable" ]
 
 
 String SprinklerSystemZone1MQTT     {channel="mqtt:topic:mosquitto:irrigation:zone1"}
