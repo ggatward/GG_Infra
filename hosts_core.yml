@@ -27,6 +27,7 @@ all:
     cis_remote_login_warning_banner: "{{ cis_local_login_warning_banner }}"
     cis_sshd_client_alive_interval: 82400
 
+    node_exporter_version: 0.18.1
     node_exporter_textfile_deploy: true
     node_exporter_enabled_collectors:
     - diskstats
@@ -197,6 +198,13 @@ all:
         cis_nginx_install: { package: nginx, state: present, service: nginx, rstate: started, enabled: true, exception: 123 }
         ipaclient_ssl_create_certs: true
         ipaclient_ssl_key_mode: '0644'
+        prometheus_version: latest
+        pushgateway_version: latest
+        snmp_exporter_version: 0.18.0      # 'latest' not supported in role
+        statsd_exporter_version: latest
+        collectd_exporter_version: 0.4.0
+        blackbox_exporter_version: 0.16.0  # 'latest' not supported in role
+        alertmanager_version: latest
         alertmanager_web_external_url: http://alertmanager.core.home.gatwards.org:9093
         alertmanager_smtp:
           from: 'alertmanager@gatwards.org'
@@ -255,16 +263,16 @@ all:
             - '{{ ansible_host }}:9093'
             labels:
               project: "{{ prometheus_project }}"
-        - job_name: 'federate'
-          honor_labels: true
-          scheme: 'https'
-          metrics_path: '/federate'
-          params:
-            match[]:
-            - '{__name__=~".*"}'
-          static_configs:
-          - targets:
-            - 'prometheus.lab.home.gatwards.org'
+        # - job_name: 'federate'
+        #   honor_labels: true
+        #   scheme: 'https'
+        #   metrics_path: '/federate'
+        #   params:
+        #     match[]:
+        #     - '{__name__=~".*"}'
+        #   static_configs:
+        #   - targets:
+        #     - 'prometheus.lab.home.gatwards.org'
         - job_name: 'haproxy_exporter'
           honor_labels: true
           file_sd_configs:
@@ -393,6 +401,12 @@ all:
           file_sd_configs:
           - files:
             - /etc/prometheus/exporters/*_ipa_targets.yml
+        - job_name: 'bind_exporter'
+          honor_labels: true
+          scheme: 'http'
+          file_sd_configs:
+          - files:
+            - /etc/prometheus/exporters/*_bind_targets.yml
         - job_name: ipmi_exporter
           params:
             module: [ipmi_lan2]
@@ -470,10 +484,17 @@ all:
           targets:
           - ipa1.ipa.home.gatwards.org:9496
           - ipa2.ipa.home.gatwards.org:9496
+        prometheus_bind_exporter_targets:
+        - project: "{{ prometheus_project }}"
+          targets:
+          - ipa1.ipa.home.gatwards.org:9119
+          - ipa2.ipa.home.gatwards.org:9119
         prometheus_ipmi_exporter_targets:
         - project: "{{ prometheus_project }}"
           targets:
           - kvm1-ipmi.core.home.gatwards.org
+
+
 
         ipmi_exporter: true
         # ovirt_exporter: false

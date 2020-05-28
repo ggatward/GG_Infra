@@ -344,6 +344,20 @@
     with_items: "{{ prometheus_ipa_exporter_targets }}"
     when: prometheus_ipa_exporter_targets is defined and prometheus_ipa_exporter_targets|length > 0
 
+  - name: Deploy bind_exporter target configurations
+    tags:
+    - monitoring
+    - prometheus
+    - prometheus_targets
+    template:
+      src: "prometheus/exporter_targets.yml.j2"
+      dest: "/etc/prometheus/exporters/{{ item.project }}_bind_targets.yml"
+      owner: prometheus
+      group: prometheus
+      mode: '0644'
+    with_items: "{{ prometheus_bind_exporter_targets }}"
+    when: prometheus_bind_exporter_targets is defined and prometheus_bind_exporter_targets|length > 0
+
   - name: Deploy vdsm_exporter target configurations
     tags:
     - monitoring
