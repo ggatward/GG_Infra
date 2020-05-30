@@ -165,6 +165,18 @@
           - ipmi
           - chassis
           - sel
+          user: prometheus
+          pass: "{{ vault_ipmi_pass }}"
+          privilege: user
+          driver: LAN_2_0
+          timeout: 10000
+          exclude_sensor_ids: []
+        ipmi_lan2_dcmi:
+          collectors:
+          - bmc
+          - ipmi
+          - chassis
+          - sel
           - dcmi
           user: prometheus
           pass: "{{ vault_ipmi_pass }}"
@@ -173,6 +185,18 @@
           timeout: 10000
           exclude_sensor_ids: []
         ipmi_lan:
+          collectors:
+          - bmc
+          - ipmi
+          - chassis
+          - sel
+          user: prometheus
+          pass: "{{ vault_ipmi_pass }}"
+          privilege: user
+          driver: LAN
+          timeout: 10000
+          exclude_sensor_ids: []
+        ipmi_lan_dcmi:
           collectors:
           - bmc
           - ipmi
