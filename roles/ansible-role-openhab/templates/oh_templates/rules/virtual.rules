@@ -93,7 +93,7 @@ then
         vWasher.postUpdate(1)
     } else if (Sonoff1_Power.state < 2) {
         vWasher.postUpdate(2)
-        sendPushoverMessage(pushoverBuilder("The Washing Machine has finished").withDevice("ag_galaxys5").withTitle("Laundry notification"))
+        sendPushoverMessage(pushoverBuilder("The Washing Machine has finished").withDevice("ag_phone").withTitle("Laundry notification"))
         say("The Washing Machine has finished", "voicerss:enUS", "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}")
     }
 end
@@ -106,7 +106,7 @@ then
         vDryer.postUpdate(1)
     } else if (Sonoff2_Power.state == 0) {
         vDryer.postUpdate(0)
-        sendPushoverMessage(pushoverBuilder("The Dryer has finished").withDevice("ag_galaxys5").withTitle("Laundry notification"))
+        sendPushoverMessage(pushoverBuilder("The Dryer has finished").withDevice("ag_phone").withTitle("Laundry notification"))
         say("The Dryer has finished", "voicerss:enUS", "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}")
     }
 end

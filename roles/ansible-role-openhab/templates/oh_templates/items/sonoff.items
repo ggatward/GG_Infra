@@ -15,7 +15,7 @@ Number Sonoff1_WifiRssi        "Washing Machine Sonoff Wifi RSSI"       <network
 String Sonoff1_Time            "Washing Machine Sonoff Sensor Time"                         (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:SensorTime" }
 String Sonoff1_PowStart        "Washing Machine Power Start"                                (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-startTime" }
 Number:Energy Sonoff1_PowTotal "Washing Machine Total Energy Used [%.2f kWh]" <poweroutlet_au> (gSonoffSw1,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff1:POW-Total" }
-Number Sonoff1_Voltage         "Washing Machine Sonoff Voltage [%.1f V]"                     (gSonoffSw1)    { channel="mqtt:topic:mosquitto:sonoff1:POW-Voltage" }
+Number Sonoff1_Voltage         "Washing Machine Sonoff Voltage [%.1f V]"                     (gSonoffSw1,gPower)    { channel="mqtt:topic:mosquitto:sonoff1:POW-Voltage" }
 Number Sonoff1_Power           "Washing Machine Power [%.1f W]"         <poweroutlet_au>    (gSonoffSw1,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff1:POW-Power" }
 
 Switch Sonoff2_Switch          "Dryer Switch"                           <poweroutlet_au>    (Laundry)       { channel="mqtt:topic:mosquitto:sonoff2:power" }
@@ -30,7 +30,7 @@ Number Sonoff2_WifiRssi        "Dryer Sonoff Wifi RSSI"                 <network
 String Sonoff2_Time            "Dryer Sonoff Sensor Time"                                   (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:SensorTime" }
 String Sonoff2_PowStart        "Dryer Sonoff Power Start"                                   (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-startTime" }
 Number:Energy Sonoff2_PowTotal "Dryer Total Energy Used [%.2f kWh]"     <poweroutlet_au>    (gSonoffSw2,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff2:POW-Total" }
-Number Sonoff2_Voltage         "Dryer Sonoff Voltage [%.1f V]"                              (gSonoffSw2)    { channel="mqtt:topic:mosquitto:sonoff2:POW-Voltage" }
+Number Sonoff2_Voltage         "Dryer Sonoff Voltage [%.1f V]"                              (gSonoffSw2,gPower)    { channel="mqtt:topic:mosquitto:sonoff2:POW-Voltage" }
 Number Sonoff2_Power           "Dryer Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw2,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff2:POW-Power" }
 
 Switch Sonoff3_Switch          "Irrigation Pump Switch"                           <poweroutlet_au>    (Backyard,gIrrigation)      { channel="mqtt:topic:mosquitto:sonoff3:power" }
@@ -45,7 +45,7 @@ Number Sonoff3_WifiRssi        "Irrigation Pump Sonoff Wifi RSSI"               
 String Sonoff3_Time            "Irrigation Pump Sonoff Sensor Time"                                   (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:SensorTime" }
 String Sonoff3_PowStart        "Irrigation Pump Sonoff Power Start"                                   (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:POW-startTime" }
 Number:Energy Sonoff3_PowTotal "Irrigation Pump Total Energy Used [%.2f kWh]"     <poweroutlet_au>    (gSonoffSw3,gPower,gPowerUsed) { channel="mqtt:topic:mosquitto:sonoff3:POW-Total" }
-Number Sonoff3_Voltage         "Irrigation Pump Sonoff Voltage [%.1f V]"                              (gSonoffSw3)    { channel="mqtt:topic:mosquitto:sonoff3:POW-Voltage" }
+Number Sonoff3_Voltage         "Irrigation Pump Sonoff Voltage [%.1f V]"                              (gSonoffSw3,gPower)    { channel="mqtt:topic:mosquitto:sonoff3:POW-Voltage" }
 Number Sonoff3_Power           "Irrigation Pump Power [%.1f W]"                   <poweroutlet_au>    (gSonoffSw3,gPower,gPowerLive) { channel="mqtt:topic:mosquitto:sonoff3:POW-Power" }
 
 

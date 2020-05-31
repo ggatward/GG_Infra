@@ -1,7 +1,7 @@
 
 Number:Power            Solar_LiveProduction    "Current Solar Production [%.2f kW]"              (gPower) {channel="solaredge:generic:inv1:live#production"}
 //Number:Dimensionless    Solar_Live_Level        "Battery Charge"                 {channel="solaredge:generic:inv1:live#battery_level"}
-Number:Power            Solar_LiveConsumption   "Current Power Consumption"         <energy>      (gPower)     {channel="solaredge:generic:inv1:live#consumption"}
+Number:Power            Solar_LiveConsumption   "Current Power Consumption"         <energy>      (gPower,gPowerLive)     {channel="solaredge:generic:inv1:live#consumption"}
 Number:Power            Solar_LiveImport        "Current import from grid"                        (gPower)     {channel="solaredge:generic:inv1:live#import"}
 Number:Power            Solar_LiveExport        "Current export to grid"                          (gPower)     {channel="solaredge:generic:inv1:live#export"}
 String                  Solar_LiveGridStatus    "Grid Status"                                     (gPower)     {channel="solaredge:generic:inv1:live#grid_status"}

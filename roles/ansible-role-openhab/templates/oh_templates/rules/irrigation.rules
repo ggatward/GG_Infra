@@ -89,7 +89,7 @@ rule "Zone1 5 Minute Cycle"
 when
     Item SprinklerZone1 received update ON
 then
-    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("gg+ag_phone").withTitle("Sprinkler notification"))
     sendCommand(SprinklerSystemZone1, ON)
     createTimer(now.plusMinutes(5)) [|
         sendCommand(SprinklerSystemZone1, OFF)
@@ -100,7 +100,7 @@ rule "Zone2 5 Minute Cycle"
 when
     Item SprinklerZone2 received update ON
 then
-    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("gg+ag_phone").withTitle("Sprinkler notification"))
     sendCommand(SprinklerSystemZone2, ON)
     createTimer(now.plusMinutes(5)) [|
         sendCommand(SprinklerSystemZone2, OFF)
@@ -111,7 +111,7 @@ rule "Zone3 5 Minute Cycle"
 when
     Item SprinklerZone3 received update ON
 then
-    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+    // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("gg+ag_phone").withTitle("Sprinkler notification"))
     sendCommand(SprinklerSystemZone3, ON)
     createTimer(now.plusMinutes(1)) [|
         sendCommand(SprinklerSystemZone3, OFF)
@@ -122,10 +122,10 @@ end
 //If sprinkler system schedule is on then water each zone at 7 am
 rule "Sprinkler System 1-zone Schedule"
 when
-    Time cron "0 0 7 1/1 * ? *"
+    Time cron "0 0 10 ? * MON,WED,FRI,SUN *"
 then
     if(SprinklerSystemSchedule.state == ON) {
-        // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+        sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("gg+ag_phone").withTitle("Sprinkler notification"))
         sendCommand(SprinklerSystemZone1, ON)
         createTimer(now.plusMinutes(5)) [|
             sendCommand( SprinklerSystemZone1, OFF)
@@ -147,7 +147,7 @@ end
 //     Time cron "0 0 7 1/1 * ? *"
 // then
 //     if(SprinklerSystemSchedule.state == ON) {
-//         // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("ag_galaxys5").withTitle("Sprinkler notification"))
+//         // sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("gg+ag_phone").withTitle("Sprinkler notification"))
 //         sendCommand(SprinklerSystemZone1, ON)
 //         createTimer(now.plusMinutes(5)) [|
 //             sendCommand( SprinklerSystemZone1, OFF)

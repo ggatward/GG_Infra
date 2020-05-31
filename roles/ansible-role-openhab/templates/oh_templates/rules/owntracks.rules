@@ -59,7 +59,7 @@ then
             logInfo(logName,"gg_current_location=" + gg_current_location)
             logInfo(logName,"gg_distance_delta=" + gg_starting_location.distanceFrom(gg_current_location))
             if (gg_starting_location.distanceFrom(gg_current_location) > 300){
-                sendPushoverMessage(pushoverBuilder("Geoff is on the move").withDevice("gg_galaxys5").withTitle("Movement Alarm"))
+                sendPushoverMessage(pushoverBuilder("Geoff is on the move").withDevice("gg_phone").withTitle("Movement Alarm"))
                 postUpdate(GPS_GG_Moving, OFF)
             }
         }
@@ -80,7 +80,7 @@ then
             logInfo(logName,"ag_current_location=" + ag_current_location)
             logInfo(logName,"ag_distance_delta=" + ag_starting_location.distanceFrom(ag_current_location))
             if (ag_starting_location.distanceFrom(ag_current_location) > 300){
-                sendPushoverMessage(pushoverBuilder("Anna is on the move").withDevice("gg_galaxys5").withTitle("Movement Alarm"))
+                sendPushoverMessage(pushoverBuilder("Anna is on the move").withDevice("gg_phone").withTitle("Movement Alarm"))
                 postUpdate(GPS_AG_Moving, OFF)
             }
         }
@@ -101,7 +101,7 @@ then
             logInfo(logName,"mg_current_location=" + mg_current_location)
             logInfo(logName,"mg_distance_delta=" + mg_starting_location.distanceFrom(mg_current_location))
             if (mg_starting_location.distanceFrom(mg_current_location) > 300){
-                sendPushoverMessage(pushoverBuilder("Michael is on the move").withDevice("gg_galaxys5").withTitle("Movement Alarm"))
+                sendPushoverMessage(pushoverBuilder("Michael is on the move").withDevice("gg_phone").withTitle("Movement Alarm"))
                 postUpdate(GPS_MG_Moving, OFF)
             }
         }
