@@ -71,16 +71,18 @@ then
     if(receivedCommand == 'Z3OFF') {
         sendCommand(SprinklerZone3, OFF)
     }
-    createTimer(now.plusSeconds(30)) [|
-        if (SprinklerZone1.state != ON) {
-            if (SprinklerZone2.state != ON) {
-                if (SprinklerZone3.state != ON) {
+    if(receivedCommand == 'Z1OFF' || receivedCommand == 'Z2OFF' || receivedCommand == 'Z3OFF' ) {
+        createTimer(now.plusSeconds(30)) [|
+            if (SprinklerZone1.state != ON) {
+                if (SprinklerZone2.state != ON) {
+                    if (SprinklerZone3.state != ON) {
 
-                    sendCommand(Sonoff3_Switch, OFF)
+                        sendCommand(Sonoff3_Switch, OFF)
+                    }
                 }
             }
-        }
-    ]
+        ]
+    }
 end
 
 
@@ -122,7 +124,7 @@ end
 //If sprinkler system schedule is on then water each zone at 7 am
 rule "Sprinkler System 1-zone Schedule"
 when
-    Time cron "0 0 10 ? * MON,WED,FRI,SUN *"
+    Time cron "0 0 10 ? * MON,WED,FRI *"
 then
     if(SprinklerSystemSchedule.state == ON) {
         sendPushoverMessage(pushoverBuilder("The sprinker schedule has started").withDevice("gg+ag_phone").withTitle("Sprinkler notification"))
