@@ -94,6 +94,7 @@ all:
         rpi-util2.core.home.gatwards.org:
           ssh_X11Forwarding: 'yes'
         prometheus.core.home.gatwards.org: {}
+        rpi-sensor1.iot.home.gatwards.org: {}
       vars:
         ansible_python_interpreter: /usr/bin/python3
         prometheus_platform_architecture: linux-armv7
@@ -448,6 +449,7 @@ all:
           - kvm1.core.home.gatwards.org:9100
           - ipa1.ipa.home.gatwards.org:9100
           - ipa2.ipa.home.gatwards.org:9100
+          - rpi-sensor1.iot.home.gatwards.org:9100
         # prometheus_tls_node_exporter_targets:
         # - project: LAB
         #   targets:
