@@ -39,6 +39,20 @@
       state: present
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
 
+- block:
+  - name: Set Fedora required packages
+    set_fact:
+      required_pkgs:
+      - python3
+      - policycoreutils-python-utils
+      - cronie
+
+  - name: Install pre-requisite packages
+    yum:
+      name: "{{ required_pkgs }}"
+      state: present
+  when: ansible_distribution == 'Fedora'
+
 - name: Deploy MOTD
   template:
     src: motd.j2

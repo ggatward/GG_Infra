@@ -32,7 +32,7 @@
       blockinfile:
         path: /etc/skel/.bashrc
         block: |
-          if [ $(mount | grep -c DH-AD) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5p nas1.core.home.gatwards.org:/volume1/homes/@DH-AD/0/$USER /home/$USER/nas_home; fi
+          if [ $(mount | grep -c LH-IPA) -eq 0 ]; then sudo /usr/bin/mount -o sec=sys nas1.core.home.gatwards.org:/volume1/homes/@LH-IPA.HOME.GATWARDS.ORG/21704/$USER-$UID /home/$USER/nas_home; fi
 
           # BACKUP FOR AUTOMOUNT
           #if [ $(mount | grep -c Multimedia) -eq 0 ]; then sudo /usr/bin/mount -o sec=krb5 nas1.core.home.gatwards.org:/volume1/Multimedia /media/Multimedia; fi

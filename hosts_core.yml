@@ -521,7 +521,7 @@ all:
           disable_squashfs: false
         desktop-04.core.home.gatwards.org:
           desktop_group: "Cinnamon Desktop"
-          #has_wifi: true
+          has_wifi: true
           install_playonlinux: true
           install_spotify: true
           disable_squashfs: false
