@@ -1,6 +1,0 @@
----
-# defaults file for ansible-generic-os
-
-motd_system: 'Undefined'
-motd_sys_env: 'Undefined'
-motd_role: 'Undefined'
