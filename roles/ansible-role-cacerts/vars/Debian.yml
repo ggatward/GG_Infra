@@ -1,4 +1,0 @@
----
-
-ca_path: /usr/local/share/ca-certificates
-ca_update_command: update-ca-certificates

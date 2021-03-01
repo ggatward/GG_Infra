@@ -1,4 +1,6 @@
 # Make sure external roles are not committed to this repo.
-.roles_cache/
-roles/galaxy/
+roles/*
+!roles/requirements.yml
+collections/*
+!collections/requirements.yml
 *.retry
