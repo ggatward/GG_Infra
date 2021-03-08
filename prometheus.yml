@@ -136,79 +136,73 @@
               fail_if_not_matches_regexp:
               - "google.com.\t.*\tIN\tMX\t.*google.*"
 
-  - import_role:
-      name: ansible-ovirt-exporter
-    tags:
-    - monitoring
-    - prometheus
-    when: ovirt_exporter is defined and ovirt_exporter
 
-  - import_role:
-      name: ansible-ipmi-exporter
-    tags:
-    - monitoring
-    - prometheus
-    when: ipmi_exporter is defined and ipmi_exporter
-    vars:
-      ipmi_exporter_configuration_modules:
-        default:
-          collectors: []
-          user: default_user
-          pass: example_pw
-          privilege: user
-          driver: LAN_2_0
-          timeout: 10000
-          exclude_sensor_ids: []
-        ipmi_lan2:
-          collectors:
-          - bmc
-          - ipmi
-          - chassis
-          - sel
-          user: prometheus
-          pass: "{{ vault_ipmi_pass }}"
-          privilege: user
-          driver: LAN_2_0
-          timeout: 10000
-          exclude_sensor_ids: []
-        ipmi_lan2_dcmi:
-          collectors:
-          - bmc
-          - ipmi
-          - chassis
-          - sel
-          - dcmi
-          user: prometheus
-          pass: "{{ vault_ipmi_pass }}"
-          privilege: user
-          driver: LAN_2_0
-          timeout: 10000
-          exclude_sensor_ids: []
-        ipmi_lan:
-          collectors:
-          - bmc
-          - ipmi
-          - chassis
-          - sel
-          user: prometheus
-          pass: "{{ vault_ipmi_pass }}"
-          privilege: user
-          driver: LAN
-          timeout: 10000
-          exclude_sensor_ids: []
-        ipmi_lan_dcmi:
-          collectors:
-          - bmc
-          - ipmi
-          - chassis
-          - sel
-          - dcmi
-          user: prometheus
-          pass: "{{ vault_ipmi_pass }}"
-          privilege: user
-          driver: LAN
-          timeout: 10000
-          exclude_sensor_ids: []
+  # - import_role:
+  #     name: ansible-ipmi-exporter
+  #   tags:
+  #   - monitoring
+  #   - prometheus
+  #   when: ipmi_exporter is defined and ipmi_exporter
+  #   vars:
+  #     ipmi_exporter_configuration_modules:
+  #       default:
+  #         collectors: []
+  #         user: default_user
+  #         pass: example_pw
+  #         privilege: user
+  #         driver: LAN_2_0
+  #         timeout: 10000
+  #         exclude_sensor_ids: []
+  #       ipmi_lan2:
+  #         collectors:
+  #         - bmc
+  #         - ipmi
+  #         - chassis
+  #         - sel
+  #         user: prometheus
+  #         pass: "{{ vault_ipmi_pass }}"
+  #         privilege: user
+  #         driver: LAN_2_0
+  #         timeout: 10000
+  #         exclude_sensor_ids: []
+  #       ipmi_lan2_dcmi:
+  #         collectors:
+  #         - bmc
+  #         - ipmi
+  #         - chassis
+  #         - sel
+  #         - dcmi
+  #         user: prometheus
+  #         pass: "{{ vault_ipmi_pass }}"
+  #         privilege: user
+  #         driver: LAN_2_0
+  #         timeout: 10000
+  #         exclude_sensor_ids: []
+  #       ipmi_lan:
+  #         collectors:
+  #         - bmc
+  #         - ipmi
+  #         - chassis
+  #         - sel
+  #         user: prometheus
+  #         pass: "{{ vault_ipmi_pass }}"
+  #         privilege: user
+  #         driver: LAN
+  #         timeout: 10000
+  #         exclude_sensor_ids: []
+  #       ipmi_lan_dcmi:
+  #         collectors:
+  #         - bmc
+  #         - ipmi
+  #         - chassis
+  #         - sel
+  #         - dcmi
+  #         user: prometheus
+  #         pass: "{{ vault_ipmi_pass }}"
+  #         privilege: user
+  #         driver: LAN
+  #         timeout: 10000
+  #         exclude_sensor_ids: []
 
 
   - name: Create target directories

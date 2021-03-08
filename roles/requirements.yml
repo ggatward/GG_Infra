@@ -63,13 +63,7 @@ roles:
 - src: https://github.com/ggatward/ansible-node-exporter.git
   scm: git
 
-# - src: https://github.com/ggatward/ansible-vdsm-prometheus.git
-#   scm: git
-
 - src: https://github.com/ggatward/ansible-389ds-exporter.git
-  scm: git
-
-- src: https://github.com/ggatward/ansible-ovirt-exporter.git
   scm: git
 
 - src: https://github.com/ggatward/ansible-ipmi-exporter.git
