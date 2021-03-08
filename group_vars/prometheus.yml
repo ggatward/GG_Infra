@@ -101,27 +101,33 @@ prometheus_scrape_configs:
   file_sd_configs:
   - files:
     - /etc/prometheus/nodeexporter/*_tls_targets.yml
-- job_name: 'wmi_exporter'
+- job_name: 'windows_exporter'
   honor_labels: true
   scheme: 'http'
   file_sd_configs:
   - files:
-    - /etc/prometheus/exporters/*_wmi_targets.yml
+    - /etc/prometheus/exporters/*_windows_targets.yml
 - job_name: 'pushgateway'
   honor_labels: true
   static_configs:
   - targets:
     - '{{ ansible_host }}:9091'
+    labels:
+      project: "{{ prometheus_project }}"
 - job_name: 'statsd_exporter'
   honor_labels: true
   static_configs:
   - targets:
     - '{{ ansible_host }}:9102'
+    labels:
+      project: "{{ prometheus_project }}"
 - job_name: 'collectd_exporter'
   honor_labels: true
   static_configs:
   - targets:
     - '{{ ansible_host }}:9103'
+    labels:
+      project: "{{ prometheus_project }}"
 - job_name: 'snmp_exporter'
   file_sd_configs:
   - files:
@@ -243,13 +249,12 @@ prometheus_scrape_configs:
     target_label: __address__
     replacement: 127.0.0.1:9290
     action: replace
-
 - job_name: 'ovirt_exporter'
   honor_labels: true
   scheme: 'http'
-  static_configs:
-  - targets:
-    - 'ovirt-engine.lab.home.gatwards.org:9325'
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/*_ovirt_targets.yml
 
 
 prometheus_node_exporter_targets:
@@ -270,7 +275,7 @@ prometheus_node_exporter_targets:
 # - project: LAB
 #   targets:
 #   - baremetal1.lab.home.gatwards.org:9100
-prometheus_wmi_exporter_targets:
+prometheus_windows_exporter_targets:
 - project: "{{ prometheus_project }}"
   targets:
   - desktop-02.core.home.gatwards.org:9182
@@ -311,3 +316,7 @@ prometheus_bind_exporter_targets:
 # - project: "{{ prometheus_project }}"
 #   targets:
 #   - kvm1-ipmi.core.home.gatwards.org
+prometheus_ovirt_exporter_targets:
+- project: LAB
+  targets:
+  - ovirt-engine.lab.home.gatwards.org:9325
