@@ -37,6 +37,7 @@
     docker_container:
       name: mosquitto
       image: eclipse-mosquitto
+      pull: "{{ update_containers | default(false) }}"
       restart_policy: unless-stopped
       published_ports:
       - '1883:1883'

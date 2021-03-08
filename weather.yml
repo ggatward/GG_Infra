@@ -16,6 +16,7 @@
     vars:
       docker_persistent_store_root: /volume2/docker/weewx
       weewx_version: 3.9.2
+      #weewx_version: latest   # Latest takes us to v4.4 which breaks MQTT
       weewx_location: Bungendore, NSW
       weewx_latitude: "{{ latitude }}"
       weewx_longitude: "{{ longitude }}"
@@ -44,8 +45,10 @@
     changed_when: false
 
   - block:
+      # Latest container uses pip3 but fails to install prereqs for python-cjson
     - name: Install pip pre-reqs for MQTT plugin
       command: /usr/local/bin/docker exec weewx bash -c 'pip install paho-mqtt python-cjson'
+      #command: /usr/local/bin/docker exec weewx bash -c 'pip3 install paho-mqtt'
 
     - name: Download MQTT plugin
       command: /usr/local/bin/docker exec weewx bash -c 'curl -o weewx-mqtt-0.19.tgz http://lancet.mit.edu/mwall/projects/weather/releases/weewx-mqtt-0.19.tgz'

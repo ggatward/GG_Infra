@@ -33,6 +33,7 @@
   docker_container:
     name: grafana
     image: grafana/grafana
+    pull: "{{ update_containers | default(false) }}"
     restart_policy: unless-stopped
     published_ports:
     - '3000:3000'

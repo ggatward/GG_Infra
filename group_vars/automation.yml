@@ -1,0 +1,5 @@
+---
+motd_role: Home Automation Server
+ipaclient_ssl_create_certs: true
+ipaclient_ssl_keylen: '2048'
+openhab_influxdb_host: "influxdb.iot.home.gatwards.org"
