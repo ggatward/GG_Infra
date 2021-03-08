@@ -1,0 +1,14 @@
+---
+motd_role: Workstation
+ansible_python_interpreter: /usr/bin/python3
+setup_automounts: true
+configure_printer: true
+install_chrome: true
+install_xrdp: true
+install_playonlinux: false
+install_spotify: false
+#desktop_group: "Cinnamon Desktop"
+browser_startup_url: 'https://google.com.au'
+install_development: false
+additional_ws_packages:
+- vlc

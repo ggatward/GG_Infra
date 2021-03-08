@@ -80,6 +80,19 @@
     vars:
       docker_persistent_store_root: /volume2/docker/influxdb
 
+  - name: Wait for InfluxDB to be online
+    tags:
+    - influxdb
+    - monitoring
+    - docker
+    uri:
+      url: "http://127.0.0.1:8086/query?q=SHOW+DATABASES"
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 60
+    delay: 1
+
   - name: Create Databases
     tags:
     - influxdb
@@ -123,6 +136,19 @@
     vars:
       docker_persistent_store_root: /volume2/docker/grafana
 
+  - name: Wait for Grafana to be online
+    tags:
+    - monitoring
+    - grafana
+    - docker
+    uri:
+      url: "http://127.0.0.1:3000/"
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 60
+    delay: 1
+
 ####################################################################################
 
 - name: Provision UniFi container
@@ -154,6 +180,7 @@
     docker_container:
       name: node_exporter
       image: prom/node-exporter
+      pull: "{{ update_containers | default(false) }}"
       restart_policy: unless-stopped
       published_ports:
       - '9100:9100'

@@ -21,7 +21,8 @@
 - name: Deploy InfluxDB container
   docker_container:
     name: influxdb
-    image: influxdb
+    image: influxdb:1.8.4
+    pull: "{{ update_containers | default(false) }}"
     restart_policy: unless-stopped
     published_ports:
     - '8086:8086'

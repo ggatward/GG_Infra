@@ -1,0 +1,5 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+prometheus_platform_architecture: linux-armv7
+ssl_dir: /etc/ssl/localcerts
+ca_path: /usr/local/share/ca-certificates

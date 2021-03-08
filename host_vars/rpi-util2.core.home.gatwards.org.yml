@@ -1,0 +1,2 @@
+---
+ssh_X11Forwarding: 'yes'

@@ -1,0 +1,7 @@
+---
+rpi_vlans:
+- id: '2'
+  address: 172.22.2.2/24
+ipaclient_ssl_subject_altnames:
+- openhab.iot.home.gatwards.org
+- home1.gatwards.org

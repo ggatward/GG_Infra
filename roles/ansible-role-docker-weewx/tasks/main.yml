@@ -29,7 +29,6 @@
     volumes:
     - "{{ docker_persistent_store_root }}/config:/home/weewx/conf"
     - "{{ weewx_web_mount }}:/home/weewx/public_html"
-    # - "{{ docker_persistent_store_root }}/skins:/home/weewx/skins"
     - "{{ docker_persistent_store_root }}/logs:/var/log"
     - "{{ docker_persistent_store_root }}/data:/var/lib/weewx/"
 

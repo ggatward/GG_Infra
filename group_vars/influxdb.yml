@@ -1,0 +1,12 @@
+---
+influxdb_databases:
+- name: 'prometheus'
+  retention_policy:
+    name: 1week
+    duration: 1w
+    replication: 1
+- name: 'openhab'
+  retention_policy:
+    name: 1week
+    duration: 1w
+    replication: 1

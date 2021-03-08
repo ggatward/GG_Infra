@@ -15,9 +15,6 @@
 # General network services
 - import_playbook: general_services.yml
 
-# Prepare KVM hosts for VMs
-- import_playbook: kvmhost.yml
-
 # Specific application/function config
 - import_playbook: prometheus.yml
 - import_playbook: weather.yml

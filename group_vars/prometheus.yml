@@ -1,0 +1,305 @@
+---
+motd_role: Prometheus Server
+cis_nginx_install: { package: nginx, state: present, service: nginx, rstate: started, enabled: true, exception: 123 }
+ipaclient_ssl_create_certs: true
+ipaclient_ssl_key_mode: '0644'
+
+prometheus_version: 2.25.0
+pushgateway_version: 1.4.0
+snmp_exporter_version: 0.20.0
+statsd_exporter_version: 0.20.0
+collectd_exporter_version: 0.5.0
+blackbox_exporter_version: 0.18.0
+alertmanager_version: 0.21.0
+
+alertmanager_web_external_url: http://alertmanager.core.home.gatwards.org:9093
+alertmanager_smtp:
+  from: 'alertmanager@gatwards.org'
+  smarthost: 'mailhost.core.home.gatwards.org:25'
+alertmanager_receivers:
+- name: default
+- name: email
+  email_configs:
+  - to: 'geoff@gatwards.org'
+# - name: pushover
+alertmanager_inhibit_rules: []
+alertmanager_route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: default
+  routes:
+  - match:
+      severity: info
+    receiver: default
+  - match:
+      severity: critical
+    receiver: email
+  # - match:
+  #     severity: critical
+  #   receiver: pushover
+prometheus_project: CORE
+prometheus_storage_retention: "14d"
+prometheus_external_labels:
+  prom_cluster: "{{ prometheus_project }}"
+prometheus_alertmanager_config:
+- scheme: http
+  path_prefix: alertmanager/
+  static_configs:
+  - targets:
+    - "127.0.0.1:9093"
+prometheus_remote_write:
+- url: "http://influxdb.core.home.gatwards.org:8086/api/v1/prom/write?db=prometheus"
+prometheus_scrape_configs:
+- job_name: 'prometheus'
+  honor_labels: true
+  scrape_interval: '20s'
+  scrape_timeout: '2s'
+  metrics_path: '/metrics'
+  scheme: 'http'
+  static_configs:
+  - targets:
+    - '{{ ansible_host }}:9090'
+    labels:
+      project: "{{ prometheus_project }}"
+- job_name: 'alertmanager'
+  honor_labels: true
+  static_configs:
+  - targets:
+    - '{{ ansible_host }}:9093'
+    labels:
+      project: "{{ prometheus_project }}"
+# - job_name: 'federate'
+#   honor_labels: true
+#   scheme: 'https'
+#   metrics_path: '/federate'
+#   params:
+#     match[]:
+#     - '{__name__=~".*"}'
+#   static_configs:
+#   - targets:
+#     - 'prometheus.lab.home.gatwards.org'
+- job_name: 'haproxy_exporter'
+  honor_labels: true
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/haproxy_targets.yml
+- job_name: 'grafana'
+  honor_labels: true
+  scheme: 'http'
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/grafana_targets.yml
+- job_name: 'node_exporter'
+  honor_labels: true
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/nodeexporter/*_http_targets.yml
+- job_name: 'tls_node_exporter'
+  honor_labels: true
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/nodeexporter/*_tls_targets.yml
+- job_name: 'wmi_exporter'
+  honor_labels: true
+  scheme: 'http'
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/*_wmi_targets.yml
+- job_name: 'pushgateway'
+  honor_labels: true
+  static_configs:
+  - targets:
+    - '{{ ansible_host }}:9091'
+- job_name: 'statsd_exporter'
+  honor_labels: true
+  static_configs:
+  - targets:
+    - '{{ ansible_host }}:9102'
+- job_name: 'collectd_exporter'
+  honor_labels: true
+  static_configs:
+  - targets:
+    - '{{ ansible_host }}:9103'
+- job_name: 'snmp_exporter'
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/snmpexporter/*.yml
+  scrape_interval: '60s'
+  scrape_timeout: '10s'
+  metrics_path: /snmp
+  params:
+    module: [if_mib]
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: 127.0.0.1:9116
+- job_name: 'blackbox_exporter_http'
+  metrics_path: /probe
+  params:
+    module: [http_2xx]
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/blackboxexporter/*_http_targets.yml
+  scrape_interval: '60s'
+  scrape_timeout: '10s'
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: 127.0.0.1:9115
+- job_name: 'blackbox_exporter_dns_a'
+  metrics_path: /probe
+  params:
+    module: [dns_a]
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/blackboxexporter/*_dns_targets.yml
+  scrape_interval: '300s'
+  scrape_timeout: '10s'
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: 127.0.0.1:9115
+- job_name: 'blackbox_exporter_dns_mx'
+  metrics_path: /probe
+  params:
+    module: [dns_mx]
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/blackboxexporter/*_dns_targets.yml
+  scrape_interval: '300s'
+  scrape_timeout: '10s'
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: 127.0.0.1:9115
+- job_name: 'blackbox_exporter_icmp'
+  metrics_path: /probe
+  params:
+    module: [icmp_test]
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/blackboxexporter/*_icmp_targets.yml
+  scrape_interval: '60s'
+  scrape_timeout: '10s'
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: 127.0.0.1:9115
+- job_name: 'ipa_exporter'
+  honor_labels: true
+  scheme: 'http'
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/*_ipa_targets.yml
+- job_name: 'bind_exporter'
+  honor_labels: true
+  scheme: 'http'
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/*_bind_targets.yml
+- job_name: ipmi_exporter
+  params:
+    module: [ipmi_lan2]
+  scrape_interval: 1m
+  scrape_timeout: 30s
+  metrics_path: /ipmi
+  scheme: http
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/exporters/*_ipmi_targets.yml
+    refresh_interval: 5m
+  relabel_configs:
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*)
+    target_label: __param_target
+    replacement: ${1}
+    action: replace
+  - source_labels: [__param_target]
+    separator: ;
+    regex: (.*)
+    target_label: instance
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: .*
+    target_label: __address__
+    replacement: 127.0.0.1:9290
+    action: replace
+
+prometheus_node_exporter_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - openhab.core.home.gatwards.org:9100
+  - rpi-util1.core.home.gatwards.org:9100
+  - rpi-util2.core.home.gatwards.org:9100
+  - ipa01.ipa.home.gatwards.org:9100
+  - ipa02.ipa.home.gatwards.org:9100
+  - rpi-sensor1.iot.home.gatwards.org:9100
+- project: LAB
+  targets:
+  - baremetal1.lab.home.gatwards.org:9100
+  - baremetal2.lab.home.gatwards.org:9100
+  - ovirt-engine.lab.home.gatwards.org:9100
+# prometheus_tls_node_exporter_targets:
+# - project: LAB
+#   targets:
+#   - baremetal1.lab.home.gatwards.org:9100
+prometheus_wmi_exporter_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - desktop-02.core.home.gatwards.org:9182
+prometheus_grafana_exporter_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - grafana.core.home.gatwards.org:3000
+prometheus_blackbox_exporter_http_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - http://grafana.core.home.gatwards.org:3000
+prometheus_blackbox_exporter_dns_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - 172.22.1.3
+  - 172.22.1.5
+  # - 172.22.1.240
+prometheus_blackbox_exporter_icmp_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - prometheus.core.home.gatwards.org
+  - grafana.core.home.gatwards.org
+  - influxdb.core.home.gatwards.org
+  - ipa01.ipa.home.gatwards.org
+  - ipa02.ipa.home.gatwards.org
+  - irrigation.iot.home.gatwards.org
+prometheus_ipa_exporter_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - ipa01.ipa.home.gatwards.org:9496
+  - ipa02.ipa.home.gatwards.org:9496
+prometheus_bind_exporter_targets:
+- project: "{{ prometheus_project }}"
+  targets:
+  - ipa01.ipa.home.gatwards.org:9119
+  - ipa02.ipa.home.gatwards.org:9119
+# prometheus_ipmi_exporter_targets:
+# - project: "{{ prometheus_project }}"
+#   targets:
+#   - kvm1-ipmi.core.home.gatwards.org
