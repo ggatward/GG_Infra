@@ -376,19 +376,19 @@
     with_items: "{{ prometheus_bind_exporter_targets }}"
     when: prometheus_bind_exporter_targets is defined and prometheus_bind_exporter_targets|length > 0
 
-  - name: Deploy vdsm_exporter target configurations
+  - name: Deploy ovirt_exporter target configurations
     tags:
     - monitoring
     - prometheus
     - prometheus_targets
     template:
       src: "prometheus/exporter_targets.yml.j2"
-      dest: "/etc/prometheus/exporters/{{ item.project }}_vdsm_targets.yml"
+      dest: "/etc/prometheus/exporters/{{ item.project }}_ovirt_targets.yml"
       owner: prometheus
       group: prometheus
       mode: '0644'
-    with_items: "{{ prometheus_vdsm_exporter_targets }}"
-    when: prometheus_vdsm_exporter_targets is defined and prometheus_vdsm_exporter_targets|length > 0
+    with_items: "{{ prometheus_ovirt_exporter_targets }}"
+    when: prometheus_ovirt_exporter_targets is defined and prometheus_ovirt_exporter_targets|length > 0
 
   - name: Deploy NiFi exporter configuration
     tags:
