@@ -244,6 +244,14 @@ prometheus_scrape_configs:
     replacement: 127.0.0.1:9290
     action: replace
 
+- job_name: 'ovirt_exporter'
+  honor_labels: true
+  scheme: 'http'
+  static_configs:
+  - targets:
+    - 'ovirt-engine.lab.home.gatwards.org:9325'
+
+
 prometheus_node_exporter_targets:
 - project: "{{ prometheus_project }}"
   targets:
