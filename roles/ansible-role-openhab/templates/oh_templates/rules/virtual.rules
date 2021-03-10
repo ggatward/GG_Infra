@@ -65,7 +65,8 @@ then
         }
         if (Today == "Saturday" || Today == "Sunday") {
             SonosLivingroom_Volume.sendCommand(25)
-            SonosLivingroom_Favourites.sendCommand("KIX")
+//            SonosLivingroom_Favourites.sendCommand("KIX")
+            SonosLivingroom_Favourites.sendCommand("Mix1063")
         }
     }
 end
