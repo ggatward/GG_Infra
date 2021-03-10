@@ -2,8 +2,8 @@ val logName = "Virtual Devices"
 
 rule "Morning Announce Trigger"
 when
-    Time cron "0 30 6 ? * MON-FRI *" or
-    Time cron "0 20 7 ? * SAT,SUN *"
+    Time cron "0 15 6 ? * MON-FRI *" or
+    Time cron "0 00 7 ? * SAT,SUN *"
 then
     logInfo(logName, "Arming vMorningTrigger...")
     vMorningTrigger.postUpdate(ON)
