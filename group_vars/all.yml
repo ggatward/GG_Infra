@@ -26,6 +26,14 @@ cis_local_login_warning_banner: |+
 cis_remote_login_warning_banner: "{{ cis_local_login_warning_banner }}"
 cis_sshd_client_alive_interval: 82400
 
+generic_dns_servers:
+- 172.22.1.3
+- 172.22.1.5
+generic_ldap_servers:
+- ipa01.ipa.home.gatwards.org
+- ipa02.ipa.home.gatwards.org
+generic_ldap_basedn: dc=ipa,dc=home,dc=gatwards,dc=org
+
 node_exporter_version: 1.1.2
 node_exporter_textfile_deploy: true
 node_exporter_enabled_collectors:
