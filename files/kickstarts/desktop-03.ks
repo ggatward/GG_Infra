@@ -669,18 +669,18 @@ fi
 
 
 echo ">>> Adding Ansible user"
-useradd svc-ansible
-cat << EOF > /etc/sudoers.d/svc-ansible
-svc-ansible	ALL = (ALL)	NOPASSWD : ALL
-Defaults: svc-ansible !requiretty
+useradd ansible
+cat << EOF > /etc/sudoers.d/ansible
+ansible	ALL = (ALL)	NOPASSWD : ALL
+Defaults: ansible !requiretty
 EOF
-mkdir /home/svc-ansible/.ssh
-chmod 700 /home/svc-ansible/.ssh
-cat << EOF > /home/svc-ansible/.ssh/authorized_keys
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC75ApOJW1sf360AYmh9B57suv+etPYYa6CzvEJjCVZyU+8xPaZR5EacToq9HPYILNAv3TQk1r+K6DKA5+wEpJqm2YzgIPLkZOP1N4Bw19DnAiqIMnDTYa8iIYHOQMpqG/DY6q1/QnP2Gw6r0uTw7zFKH1Vw4DbVJMGOQBJblWFq1G+LSN4j60eiN72kZEMf3fQgLCKUzDdbOUkjJnl/4/SUq5lncMBm88efiJLNwdJzelGkH5QveNioiQ/mXP/DlnLYiCKHh1qJlaD/OGlEuHJSnDD9uD4TknEi8AFqLTDc4XZZgUWF5RWSUwxMIiBuyMtr5Zma20dQpdwqYZT6LcNcMokHHAQ+S/cuibtR/YQ3PsYubUIAbCfeIHjKRdBDUP5ZE/VfybKTE/rlAUQCzpt5w5iBWr3qo2iW7gW/Rvlt78bqCHETnCNHLIT5mm9koA0+kr2dNmiUnb91KpdpNs4tLveVYGtN8tJHL4NDSHqiEeOYklV+uLL2gN6kziB53c= svc-ansible@ansible.core.home.gatwards.org
+mkdir /home/ansible/.ssh
+chmod 700 /home/ansible/.ssh
+cat << EOF > /home/ansible/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC75ApOJW1sf360AYmh9B57suv+etPYYa6CzvEJjCVZyU+8xPaZR5EacToq9HPYILNAv3TQk1r+K6DKA5+wEpJqm2YzgIPLkZOP1N4Bw19DnAiqIMnDTYa8iIYHOQMpqG/DY6q1/QnP2Gw6r0uTw7zFKH1Vw4DbVJMGOQBJblWFq1G+LSN4j60eiN72kZEMf3fQgLCKUzDdbOUkjJnl/4/SUq5lncMBm88efiJLNwdJzelGkH5QveNioiQ/mXP/DlnLYiCKHh1qJlaD/OGlEuHJSnDD9uD4TknEi8AFqLTDc4XZZgUWF5RWSUwxMIiBuyMtr5Zma20dQpdwqYZT6LcNcMokHHAQ+S/cuibtR/YQ3PsYubUIAbCfeIHjKRdBDUP5ZE/VfybKTE/rlAUQCzpt5w5iBWr3qo2iW7gW/Rvlt78bqCHETnCNHLIT5mm9koA0+kr2dNmiUnb91KpdpNs4tLveVYGtN8tJHL4NDSHqiEeOYklV+uLL2gN6kziB53c= ansible@ansible.core.home.gatwards.org
 EOF
-chown -R svc-ansible: /home/svc-ansible/.ssh
-chmod 600 /home/svc-ansible/.ssh/authorized_keys
+chown -R ansible: /home/ansible/.ssh
+chmod 600 /home/ansible/.ssh/authorized_keys
 restorecon -Rv /home
 
 

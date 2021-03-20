@@ -1,6 +1,6 @@
 ---
 - name: Install Weather Server
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: docker_nas
   vars_files:

@@ -1,6 +1,6 @@
 ---
 - name: System Hardening
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: "{{ hostlist }},!docker,!containers,!raspberry"
 
@@ -25,7 +25,7 @@
 
 
 - name: Extra System Hardening
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: "{{ hostlist }},!docker,!containers"
   tasks:

@@ -1,7 +1,7 @@
 ---
 # Nginx (Prometheus SSL frontend)
 - name: Configure Nginx for Prometheus
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: prometheus
   vars_files:
@@ -45,7 +45,7 @@
 #########################################################################################
 # Prometheus
 - name: Configure Prometheus
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: prometheus
   vars_files:

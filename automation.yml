@@ -1,6 +1,6 @@
 ---
 - name: Install MQTT Broker
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: docker_nas
 
@@ -57,7 +57,7 @@
 ###################################################################
 
 - name: Install Caller ID Server
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: rpi-util1.core.home.gatwards.org
   tasks:
@@ -85,7 +85,7 @@
 
 # Nginx SSL proxy to provide an auth layer for inbound Internet traffic
 - name: Install nginx
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: automation
   tasks:
@@ -120,7 +120,7 @@
 
 
 - name: Install OpenHAB
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: automation
   vars_files:
@@ -245,7 +245,7 @@
 #####################################################################
 
 - name: Install Custom Scripting
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: automation
 

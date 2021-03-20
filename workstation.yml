@@ -1,6 +1,6 @@
 ---
 - name: Install Workstation
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: workstation
   vars_files:

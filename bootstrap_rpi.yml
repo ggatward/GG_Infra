@@ -37,29 +37,29 @@
 
   - name: Create Ansible account
     user:
-      name: svc-ansible
+      name: ansible
       state: present
 
   - name: Create SSH directory
     file:
-      path: /home/svc-ansible/.ssh
+      path: /home/ansible/.ssh
       state: directory
-      owner: svc-ansible
-      group: svc-ansible
+      owner: ansible
+      group: ansible
       mode: '0700'
 
   - name: Deploy Ansible account SSH key
     copy:
       content: |
         ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC75ApOJW1sf360AYmh9B57suv+etPYYa6CzvEJjCVZyU+8xPaZR5EacToq9HPYILNAv3TQk1r+K6DKA5+wEpJqm2YzgIPLkZOP1N4Bw19DnAiqIMnDTYa8iIYHOQMpqG/DY6q1/QnP2Gw6r0uTw7zFKH1Vw4DbVJMGOQBJblWFq1G+LSN4j60eiN72kZEMf3fQgLCKUzDdbOUkjJnl/4/SUq5lncMBm88efiJLNwdJzelGkH5QveNioiQ/mXP/DlnLYiCKHh1qJlaD/OGlEuHJSnDD9uD4TknEi8AFqLTDc4XZZgUWF5RWSUwxMIiBuyMtr5Zma20dQpdwqYZT6LcNcMokHHAQ+S/cuibtR/YQ3PsYubUIAbCfeIHjKRdBDUP5ZE/VfybKTE/rlAUQCzpt5w5iBWr3qo2iW7gW/Rvlt78bqCHETnCNHLIT5mm9koA0+kr2dNmiUnb91KpdpNs4tLveVYGtN8tJHL4NDSHqiEeOYklV+uLL2gN6kziB53c=
-      dest: /home/svc-ansible/.ssh/authorized_keys
-      owner: svc-ansible
-      group: svc-ansible
+      dest: /home/ansible/.ssh/authorized_keys
+      owner: ansible
+      group: ansible
       mode: '0644'
 
   - name: Configure Ansible account sudo
     copy:
-      content: "svc-ansible ALL=(ALL) NOPASSWD: ALL"
+      content: "ansible ALL=(ALL) NOPASSWD: ALL"
       dest: /etc/sudoers.d/ansible
       owner: root
       group: root

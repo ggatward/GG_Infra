@@ -1,6 +1,6 @@
 ---
 - name: Configure Grafana
-  remote_user: svc-ansible
+  remote_user: ansible
   become: true
   hosts: grafana
   vars_files:
