@@ -1,1 +1,0 @@
-ntp:ntp:local  [ hostname="172.22.1.2", refreshInterval=60, refreshNtp=30 ]

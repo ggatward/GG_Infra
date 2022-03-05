@@ -83,163 +83,163 @@
 
 #####################################################################
 
-# Nginx SSL proxy to provide an auth layer for inbound Internet traffic
-- name: Install nginx
-  remote_user: ansible
-  become: true
-  hosts: automation
-  tasks:
-  - name: Install nginx
-    import_role:
-      name: ansible-role-nginx
-    tags:
-    - automation
-    - nginx
-    vars:
-      nginx_yum_repo_enabled: false
-      nginx_vhosts:
-      - listen: "7443 ssl http2"
-        server_name: "{{ ansible_fqdn }}"
-        extra_parameters: |
-          location / {
-            proxy_pass http://localhost:8080/;
-            proxy_set_header Host               $http_host;
-            proxy_set_header X-Real-IP          $remote_addr;
-            proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto  $scheme;
-          }
-          ssl_session_cache         shared:SSL:10m;
-          ssl_session_timeout       1h;
-          ssl_session_tickets       on;
-          ssl_certificate           "{{ ssl_dir }}/certs/{{ ansible_fqdn }}.pem";
-          ssl_certificate_key       "{{ ssl_dir }}/private/{{ ansible_fqdn }}.key";
-          ssl_protocols             TLSv1.2;
-          ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
-          ssl_prefer_server_ciphers on;
-          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+# # Nginx SSL proxy to provide an auth layer for inbound Internet traffic
+# - name: Install nginx
+#   remote_user: ansible
+#   become: true
+#   hosts: automation
+#   tasks:
+#   - name: Install nginx
+#     import_role:
+#       name: ansible-role-nginx
+#     tags:
+#     - automation
+#     - nginx
+#     vars:
+#       nginx_yum_repo_enabled: false
+#       nginx_vhosts:
+#       - listen: "7443 ssl http2"
+#         server_name: "{{ ansible_fqdn }}"
+#         extra_parameters: |
+#           location / {
+#             proxy_pass http://localhost:8080/;
+#             proxy_set_header Host               $http_host;
+#             proxy_set_header X-Real-IP          $remote_addr;
+#             proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+#             proxy_set_header X-Forwarded-Proto  $scheme;
+#           }
+#           ssl_session_cache         shared:SSL:10m;
+#           ssl_session_timeout       1h;
+#           ssl_session_tickets       on;
+#           ssl_certificate           "{{ ssl_dir }}/certs/{{ ansible_fqdn }}.pem";
+#           ssl_certificate_key       "{{ ssl_dir }}/private/{{ ansible_fqdn }}.key";
+#           ssl_protocols             TLSv1.2;
+#           ssl_ciphers               EECDH+AESGCM:EDH+AESGCM:!ADH:!AECDH:!MD5;
+#           ssl_prefer_server_ciphers on;
+#           add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
 
-- name: Install OpenHAB
-  remote_user: ansible
-  become: true
-  hosts: automation
-  vars_files:
-  - vault.yml
+# - name: Install OpenHAB
+#   remote_user: ansible
+#   become: true
+#   hosts: automation
+#   vars_files:
+#   - vault.yml
 
-  tasks:
-  - import_role:
-      name: ansible-role-openhab
-    tags:
-    - automation
-    - openhab
-    - config
-    vars:
-      # Get sensitive vars from the vault
-      openhab_keystore_password: "{{ vault_openhab_keystore_password }}"
-      openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
-      openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
-      openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
-      openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
-      openhab_pushover_api_key: "{{ vault_openhab_pushover_api_key }}"
-      openhab_pushover_user_key1: "{{ vault_openhab_pushover_user_key1 }}"
-      openhab_sonos_ids:
-        livingroom: "{{ vault_sonos_livingroom }}"
-        alfresco: "{{ vault_sonos_alfresco }}"
-        portable1: "{{ vault_sonos_portable1 }}"
-      openhab_audio_sink: "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}"
-      openhab_latlon: "{{ latitude }},{{ longitude }}"
-      openhab_mqtt_broker_fqdn: mqtt.iot.home.gatwards.org
-      openhab_influxdb_host: influxdb.iot.home.gatwards.org
-      openhab_influxdb_db: 'openhab'
-      openhab_elk_ip: 172.22.2.10
+#   tasks:
+#   - import_role:
+#       name: ansible-role-openhab
+#     tags:
+#     - automation
+#     - openhab
+#     - config
+#     vars:
+#       # Get sensitive vars from the vault
+#       openhab_keystore_password: "{{ vault_openhab_keystore_password }}"
+#       openhab_voicerss_api_key: "{{ vault_openhab_voicerss_api_key }}"
+#       openhab_zwave_securitykey: "{{ vault_openhab_zwave_securitykey }}"
+#       openhab_solaredge_api_key: "{{ vault_openhab_solaredge_api_key }}"
+#       openhab_solaredge_siteId: "{{ vault_openhab_solaredge_siteId }}"
+#       openhab_pushover_api_key: "{{ vault_openhab_pushover_api_key }}"
+#       openhab_pushover_user_key1: "{{ vault_openhab_pushover_user_key1 }}"
+#       openhab_sonos_ids:
+#         livingroom: "{{ vault_sonos_livingroom }}"
+#         alfresco: "{{ vault_sonos_alfresco }}"
+#         portable1: "{{ vault_sonos_portable1 }}"
+#       openhab_audio_sink: "sonos:CONNECTAMP:{{ openhab_sonos_ids.livingroom }}"
+#       openhab_latlon: "{{ latitude }},{{ longitude }}"
+#       openhab_mqtt_broker_fqdn: mqtt.iot.home.gatwards.org
+#       openhab_influxdb_host: influxdb.iot.home.gatwards.org
+#       openhab_influxdb_db: 'openhab'
+#       openhab_elk_ip: 172.22.2.10
 
-      # OpenHAB Base configuration - addons.cfg
-      openhab_package: expert
-      openhab_bindings:
-      - astro
-      - expire1
-      - gpstracker
-      - mqtt
-      - network
-      - ntp
-      - solaredge
-      - sonos
-      - tcp1
-      - zwave
-      openhab_ui:
-      - basic
-      - paper
-      - habmin
-      - habpanel
-      - homebuilder
-      openhab_action:
-      - pushover
-      openhab_persistence:
-      - mapdb
-      - influxdb
-      openhab_transformation:
-      - javascript
-      - jsonpath
-      - map
-      - regex
-      openhab_voice:
-      - voicerss
-      openhab_misc:
-      - market
+#       # OpenHAB Base configuration - addons.cfg
+#       openhab_package: expert
+#       openhab_bindings:
+#       - astro
+#       - expire1
+#       - gpstracker
+#       - mqtt
+#       - network
+#       - ntp
+#       - solaredge
+#       - sonos
+#       - tcp1
+#       - zwave
+#       openhab_ui:
+#       - basic
+#       - paper
+#       - habmin
+#       - habpanel
+#       - homebuilder
+#       openhab_action:
+#       - pushover
+#       openhab_persistence:
+#       - mapdb
+#       - influxdb
+#       openhab_transformation:
+#       - javascript
+#       - jsonpath
+#       - map
+#       - regex
+#       openhab_voice:
+#       - voicerss
+#       openhab_misc:
+#       - market
 
-  - name: Open Firewall Ports
-    tags:
-    - automation
-    - openhab
-    - firewall
-    firewalld:
-      port: "{{ item }}"
-      immediate: yes
-      permanent: yes
-      state: enabled
-    with_items:
-    - 8080/tcp
-    - 8443/tcp
-    - 7443/tcp
-    - 1900/udp
-    - 5007/tcp
+#   - name: Open Firewall Ports
+#     tags:
+#     - automation
+#     - openhab
+#     - firewall
+#     firewalld:
+#       port: "{{ item }}"
+#       immediate: yes
+#       permanent: yes
+#       state: enabled
+#     with_items:
+#     - 8080/tcp
+#     - 8443/tcp
+#     - 7443/tcp
+#     - 1900/udp
+#     - 5007/tcp
 
-  - name: Open Firewall Services
-    tags:
-    - automation
-    - openhab
-    - firewall
-    firewalld:
-      service: "{{ item }}"
-      immediate: yes
-      permanent: yes
-      state: enabled
-    with_items:
-    - upnp-client
+#   - name: Open Firewall Services
+#     tags:
+#     - automation
+#     - openhab
+#     - firewall
+#     firewalld:
+#       service: "{{ item }}"
+#       immediate: yes
+#       permanent: yes
+#       state: enabled
+#     with_items:
+#     - upnp-client
 
-  - name: Add rich-rule to allow Sonos uPNP
-    tags:
-    - automation
-    - openhab
-    - firewall
-    firewalld:
-      rich_rule: 'rule family="ipv4" source address="172.22.1.0/24" destination address="239.255.255.250/32" port port="1900" protocol="udp" accept'
-      immediate: yes
-      permanent: yes
-      state: enabled
+#   - name: Add rich-rule to allow Sonos uPNP
+#     tags:
+#     - automation
+#     - openhab
+#     - firewall
+#     firewalld:
+#       rich_rule: 'rule family="ipv4" source address="172.22.1.0/24" destination address="239.255.255.250/32" port port="1900" protocol="udp" accept'
+#       immediate: yes
+#       permanent: yes
+#       state: enabled
 
-  # - name: Add rule to allow DHCP proxy listener
-  #   tags:
-  #   - automation
-  #   - openhab
-  #   - firewall
-  #   firewalld:
-  #     port: "{{ item }}"
-  #     immediate: yes
-  #     permanent: yes
-  #     state: enabled
-  #   with_items:
-  #   - 6767/udp
+#   # - name: Add rule to allow DHCP proxy listener
+#   #   tags:
+#   #   - automation
+#   #   - openhab
+#   #   - firewall
+#   #   firewalld:
+#   #     port: "{{ item }}"
+#   #     immediate: yes
+#   #     permanent: yes
+#   #     state: enabled
+#   #   with_items:
+#   #   - 6767/udp
 
 
 #####################################################################

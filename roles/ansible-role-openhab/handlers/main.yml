@@ -1,6 +1,0 @@
----
-# handlers file for ansible-role-openhab
-- name: Restart Openhab
-  service:
-    name: openhab2
-    state: restarted

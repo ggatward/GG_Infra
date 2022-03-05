@@ -1,6 +1,0 @@
-astro:sun:local    [ geolocation="{{ latitude }},{{ longitude }},{{ altitude }}", interval=60 ]
-astro:moon:local   [ geolocation="{{ latitude }},{{ longitude }}", interval=60 ]
-astro:sun:minus90 [ geolocation="{{ latitude }},{{ longitude }},{{ altitude }}", interval=60 ] {
-    Channels:
-        Type rangeEvent : set#start [ offset=-90 ]
-}

@@ -1,5 +1,0 @@
-// String callerid_raw    "[%s]" { tcp=">[172.22.1.2:3333:'REGEX((.*))']" }
-// DateTime callerid_time "[%s]"
-// String callerid_phone  "[%s]"
-// String callerid_name   "[%s]"
-// String callerid_message "[%s]"
